@@ -2,6 +2,9 @@
 
 import FormProvider from "@/Forms/FormProvider";
 import RHFTextField from "@/Forms/RHFTextField";
+import { z, ZodType } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import {
   Button,
   Card,
@@ -24,7 +27,28 @@ export function Login() {
     password: "",
   };
 
-  const methods = useForm<FormValues>({ defaultValues });
+  const LoginSchema: ZodType<FormValues> = z.object({
+    nic: z
+      .string({
+        required_error: "required field",
+        invalid_type_error: "NIC is required",
+      })
+      .refine(
+        (value) => /^(?:\d{12}|\d{9}V)$/.test(value),
+        "Please enter a valid NIC number ex: 123456789012 or 123456789V"
+      ),
+    password: z
+      .string({
+        required_error: "required field",
+        invalid_type_error: "Password is required",
+      })
+      .min(6, "Password must be at least 6 characters"),
+  });
+
+  const methods = useForm<FormValues>({
+    defaultValues,
+    resolver: zodResolver(LoginSchema),
+  });
 
   const { handleSubmit, reset } = methods;
 
