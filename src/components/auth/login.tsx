@@ -4,6 +4,7 @@ import FormProvider from "@/Forms/FormProvider";
 import RHFTextField from "@/Forms/RHFTextField";
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { usePathname } from "next/navigation";
 
 import {
   Button,
@@ -15,6 +16,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useEffect, useState } from "react";
 
 type FormValues = {
   nic: string;
@@ -22,6 +24,10 @@ type FormValues = {
 };
 
 export function Login() {
+  const [title, setTitle] = useState("Patient");
+
+  const pathName = usePathname();
+
   const defaultValues = {
     nic: "",
     password: "",
@@ -83,7 +89,7 @@ export function Login() {
             mb: 4,
           }}
         >
-          Patients Login
+          {title} Login
         </Typography>
         <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
           <RHFTextField name="nic" label="NIC" />
@@ -96,15 +102,42 @@ export function Login() {
           </Button>
         </Stack>
         <Stack spacing={1} sx={{ alignItems: "center" }}>
-          <MUILink href="/login" component={Link}>
-            Login as a doctor
-          </MUILink>
-          <MUILink href="/login" component={Link}>
-            Login as a laboratory
-          </MUILink>
-          <MUILink href="/login" component={Link}>
-            Login as a pharmacy
-          </MUILink>
+          {title != "Patient" && (
+            <MUILink
+              href="/login"
+              component={Link}
+              onClick={() => setTitle("Patient")}
+            >
+              Login as a patient
+            </MUILink>
+          )}
+          {title != "Doctor" && (
+            <MUILink
+              href="/login#doctor"
+              component={Link}
+              onClick={() => setTitle("Doctor")}
+            >
+              Login as a doctor
+            </MUILink>
+          )}
+          {title != "Laboratory" && (
+            <MUILink
+              href="/login#lab"
+              component={Link}
+              onClick={() => setTitle("Laboratory")}
+            >
+              Login as a laboratory
+            </MUILink>
+          )}
+          {title != "Pharmacy" && (
+            <MUILink
+              href="/login#pharmacy"
+              component={Link}
+              onClick={() => setTitle("Pharmacy")}
+            >
+              Login as a pharmacy
+            </MUILink>
+          )}
         </Stack>
       </Card>
     </FormProvider>
