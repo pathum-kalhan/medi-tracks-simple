@@ -4,7 +4,6 @@ import FormProvider from "@/Forms/FormProvider";
 import RHFTextField from "@/Forms/RHFTextField";
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { usePathname } from "next/navigation";
 
 import {
   Button,
@@ -16,7 +15,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type FormValues = {
   nic: string;
@@ -25,8 +24,6 @@ type FormValues = {
 
 export function Login() {
   const [title, setTitle] = useState("Patient");
-
-  const pathName = usePathname();
 
   const defaultValues = {
     nic: "",
@@ -94,8 +91,8 @@ export function Login() {
         <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
           <RHFTextField name="nic" label="NIC" />
           <RHFTextField name="password" label="Password" type="password" />
-          <MUILink href="/register" component={Link}>
-            Register as a new user
+          <MUILink href={`/register/${title.toLowerCase()}`} component={Link}>
+            Register as a new {title.toLowerCase()}
           </MUILink>
           <Button type="submit" variant="contained">
             Login

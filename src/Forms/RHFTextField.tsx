@@ -61,9 +61,10 @@ export default function RHFTextField({ name, ...other }: Props) {
           {...other}
           InputProps={{
             style: {
-              borderRadius: "20px",
+              borderRadius: "12px",
             },
           }}
+          size="small"
         />
       )}
     />
