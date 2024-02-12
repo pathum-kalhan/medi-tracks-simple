@@ -25,7 +25,7 @@ type FormValues = {
   confirmPassword: string;
 };
 
-export function Register({ title, children }) {
+export function Register() {
   const defaultValues = {
     name: "",
     nic: "",
@@ -124,11 +124,8 @@ export function Register({ title, children }) {
             color: "white",
             mb: 4,
           }}
-        >
-          {title}
-        </Typography>
+        ></Typography>
         <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-          {children}
           <Button
             type="submit"
             variant="contained"
