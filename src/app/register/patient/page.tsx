@@ -25,7 +25,7 @@ type FormValues = {
   confirmPassword: string;
 };
 
-export function Register({ title, children }) {
+export default function Home() {
   const defaultValues = {
     name: "",
     nic: "",
@@ -62,10 +62,15 @@ export function Register({ title, children }) {
           "Please enter a valid mobile number ex: 0771234568"
         )
         .transform((data) => Number(data)),
-      otp: z.string({
-        required_error: "required field",
-        invalid_type_error: "OTP is required",
-      }),
+      otp: z
+        .string({
+          required_error: "required field",
+          invalid_type_error: "OTP is required",
+        })
+        .refine(
+          (value) => /^(?:\d{4})$/.test(value),
+          "Please enter 4 digit OTP number ex: 1234"
+        ),
       password: z
         .string({
           required_error: "required field",
@@ -98,56 +103,80 @@ export function Register({ title, children }) {
     console.log(data);
     reset();
   };
-
   return (
-    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-      <Card
-        sx={{
-          top: "50%",
-          left: "50%",
-          position: "absolute",
-          transform: "translate(-50%, -50%)",
-          width: "100%",
-          maxWidth: 505,
-          maxHeight: 732,
-          margin: "0 auto",
-          padding: 4,
-          backgroundColor: "#bdbdbd",
-          borderRadius: 5,
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <Typography
-          align="center"
-          variant="h3"
+    <main>
+      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        <Card
           sx={{
-            color: "white",
-            mb: 4,
+            top: "50%",
+            left: "50%",
+            position: "absolute",
+            transform: "translate(-50%, -50%)",
+            width: "100%",
+            maxWidth: 505,
+            maxHeight: 732,
+            margin: "0 auto",
+            padding: 4,
+            backgroundColor: "#bdbdbd",
+            borderRadius: 5,
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
           }}
         >
-          {title}
-        </Typography>
-        <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-          {children}
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            style={{ borderRadius: 20 }}
+          <Typography
+            align="center"
+            variant="h3"
+            sx={{
+              color: "white",
+              mb: 4,
+            }}
           >
-            Register
-          </Button>
-          <Button
-            href="/login"
-            variant="contained"
-            color="purple"
-            fullWidth
-            style={{ borderRadius: 20 }}
-          >
-            Have an account? Sign in
-          </Button>
-        </Stack>
-      </Card>
-    </FormProvider>
+            Patients Register
+          </Typography>
+          <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
+            <RHFTextField name="name" label="Patient Name" />
+            <RHFTextField name="nic" label="NIC" />
+            <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
+              <RHFTextField
+                name="mobileNumber"
+                label="Mobile Number"
+                type="number"
+              />
+              <Button
+                color="green"
+                variant="contained"
+                style={{ borderRadius: 10 }}
+              >
+                Verify
+              </Button>
+            </Stack>
+
+            <RHFTextField name="otp" label="OTP" />
+            <RHFTextField name="password" label="Password" type="password" />
+            <RHFTextField
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              style={{ borderRadius: 20 }}
+            >
+              Register
+            </Button>
+            <Button
+              href="/login"
+              variant="contained"
+              color="purple"
+              fullWidth
+              style={{ borderRadius: 20 }}
+            >
+              Have an account? Sign in
+            </Button>
+          </Stack>
+        </Card>
+      </FormProvider>
+    </main>
   );
 }
