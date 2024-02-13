@@ -33,6 +33,9 @@ const theme = createTheme({
     primary: {
       main: "#416BFF",
     },
+    secondary: {
+      main: "#D9D9D9",
+    },
     purple: {
       main: "#3700B3",
       contrastText: "#fff",
@@ -44,6 +47,9 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: roboto.style.fontFamily,
+    button: {
+      textTransform: "none",
+    },
   },
   components: {
     MuiAlert: {
