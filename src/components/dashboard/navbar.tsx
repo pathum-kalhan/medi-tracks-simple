@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
@@ -96,7 +95,6 @@ export function NavBar({ children }: { children: React.ReactNode }) {
         component="main"
         sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
       >
-        <Toolbar />
         {children}
       </Box>
     </Box>
