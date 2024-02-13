@@ -59,6 +59,12 @@ export default function RHFTextField({ name, ...other }: Props) {
           error={!!error}
           helperText={error?.message}
           {...other}
+          InputProps={{
+            style: {
+              borderRadius: "12px",
+            },
+          }}
+          size="small"
         />
       )}
     />
