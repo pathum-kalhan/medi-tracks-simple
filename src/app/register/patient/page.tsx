@@ -116,10 +116,7 @@ export default function Home() {
             maxWidth: 505,
             maxHeight: 732,
             margin: "0 auto",
-            padding: 4,
-            backgroundColor: "#bdbdbd",
-            borderRadius: 5,
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 1)",
           }}
         >
           <Typography

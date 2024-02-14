@@ -27,43 +27,9 @@ export default function RHFTextField({ name, ...other }: Props) {
               ? ""
               : field.value
           }
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              "&:hover fieldset": {
-                borderColor: "white",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "white",
-              },
-              "& fieldset": {
-                borderColor: "white",
-              },
-            },
-            "&:hover": {
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "white",
-                },
-              },
-            },
-            "& label": {
-              color: "white",
-            },
-            "& label.Mui-focused": {
-              color: "white",
-            },
-            "& input": {
-              color: "white",
-            },
-          }}
           error={!!error}
           helperText={error?.message}
           {...other}
-          InputProps={{
-            style: {
-              borderRadius: "12px",
-            },
-          }}
           size="small"
         />
       )}

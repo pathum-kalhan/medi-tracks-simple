@@ -130,16 +130,13 @@ export default function Home() {
             maxHeight: 1000,
             margin: "0 auto",
             padding: 4,
-            backgroundColor: "#bdbdbd",
-            borderRadius: 5,
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 1)",
           }}
         >
           <Typography
             align="center"
             variant="h3"
             sx={{
-              color: "white",
               mb: 4,
             }}
           >
