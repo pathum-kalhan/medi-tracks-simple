@@ -15,6 +15,7 @@ import { z, ZodType } from "zod";
 import { Grid, Stack } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { CreatePatient } from "./create";
 
 type FormValues = {
   id: string;
@@ -25,6 +26,7 @@ type FormValues = {
 
 export default function FormDialog() {
   const [open, setOpen] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -89,6 +91,12 @@ export default function FormDialog() {
     reset();
   };
 
+  const handleCreatePatientRecords = () => {
+    reset();
+    setOpen(false);
+    setOpenCreate(true);
+  };
+
   return (
     <Grid item spacing={2}>
       <Grid xs={12} md={6} item>
@@ -132,14 +140,19 @@ export default function FormDialog() {
               >
                 Search
               </Button>
-              <Button variant="contained" sx={{ borderRadius: 15 }}>
-                Search Patients
+              <Button
+                variant="contained"
+                sx={{ borderRadius: 15 }}
+                onClick={handleCreatePatientRecords}
+              >
+                Create Patient Record
               </Button>
               <Button onClick={handleClose}>Cancel</Button>
             </DialogActions>
           </FormProvider>
         </Dialog>
       </Grid>
+      <CreatePatient setOpen={setOpenCreate} open={openCreate} />
     </Grid>
   );
 }
