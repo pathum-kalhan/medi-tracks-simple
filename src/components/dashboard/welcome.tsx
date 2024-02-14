@@ -38,6 +38,7 @@ export const Welcome = ({ name, data }: Props) => {
           ))}
         </Grid>
       </Box>
+      <FormDialog />
     </main>
   );
 };
