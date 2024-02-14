@@ -1,4 +1,5 @@
-import { Box, Button, Divider, Grid, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
+import FormDialog from "./search";
 import { Fragment } from "react";
 
 type Props = {
@@ -9,35 +10,30 @@ type Props = {
 export const Welcome = ({ name, data }: Props) => {
   return (
     <main>
-      <Typography variant="h3" align="center" sx={{ mt: 2 }}>
-        Welcome
-      </Typography>
-      <Typography variant="h5" align="center" sx={{ mt: 1 }}>
-        Dr .xxxxxx
-      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h3" align="center">
+            Welcome
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h5" align="center" sx={{ mt: 1 }}>
+            Dr .xxxxxx
+          </Typography>
+        </Grid>
+      </Grid>
+
       <Divider sx={{ my: 2 }} />
       <Box bgcolor={"secondary.main"} sx={{ p: 4, mx: 12 }}>
-        <Grid container spacing={2}>
+        <Stack spacing={2}>
           {data.map((item, index) => (
-            <Fragment key={index}>
-              <Grid item xs={6}>
-                <Typography sx={{ ml: 12 }}>{item.left}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography>: {item.right}</Typography>
-              </Grid>
-            </Fragment>
+            <Typography key={index}>
+              {item.left}: {item.right}
+            </Typography>
           ))}
-        </Grid>
+        </Stack>
       </Box>
-      <Button
-        variant="contained"
-        color="secondary"
-        sx={{ mt: 8, ml: 54, px: 6, py: 1 }}
-        style={{ borderRadius: 20 }}
-      >
-        Search Patient
-      </Button>
+      <FormDialog />
     </main>
   );
 };
