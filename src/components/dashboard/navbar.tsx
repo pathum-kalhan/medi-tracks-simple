@@ -8,7 +8,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { CssBaseline, IconButton, Menu, Toolbar } from "@mui/material";
+import { Avatar, CssBaseline, IconButton, Menu, Toolbar } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ArticleIcon from "@mui/icons-material/Article";
 import AssessmentIcon from "@mui/icons-material/Assessment";
@@ -20,8 +20,10 @@ import { useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import Logo from "../../../logo.png";
 
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
+import Image from "next/image";
 
 const drawerWidth = 240;
 
@@ -97,6 +99,18 @@ export function NavBar({ children }: { children: React.ReactNode }) {
 
   const drawer = (
     <div>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 2,
+          height: 135,
+        }}
+      >
+        <Avatar alt="User" sx={{ width: 100, height: 100 }} />
+      </Box>
+
       <List>
         {routes.map((route) => (
           <ListItem key={route.path} disablePadding>
@@ -168,6 +182,21 @@ export function NavBar({ children }: { children: React.ReactNode }) {
         open={open}
       >
         <DrawerHeader>
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton href={"/dashboard"}>
+                <ListItemIcon>
+                  <Image
+                    src={Logo}
+                    alt="MediTracks Pro"
+                    width={60}
+                    height={40}
+                  />
+                </ListItemIcon>
+                <ListItemText primary="MediTracks Pro" />
+              </ListItemButton>
+            </ListItem>
+          </List>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
@@ -176,7 +205,6 @@ export function NavBar({ children }: { children: React.ReactNode }) {
             )}
           </IconButton>
         </DrawerHeader>
-        <Divider />
         {drawer}
       </Drawer>
       <Main open={open}>
