@@ -179,7 +179,7 @@ export default function Home() {
               Register
             </Button>
             <Button
-              href="/login#lab"
+              href="/login/laboratory"
               variant="contained"
               color="purple"
               fullWidth
