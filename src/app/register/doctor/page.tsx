@@ -156,7 +156,7 @@ export default function Home() {
               Register
             </Button>
             <Button
-              href="/login#doctor"
+              href="/login/doctor"
               variant="contained"
               color="purple"
               fullWidth
