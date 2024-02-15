@@ -18,7 +18,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 
 type FormValues = {
   name: string;
-  slmccNo: string;
+  slmcNo: string;
   phone: string | number;
   otp: string;
   password: string;
@@ -28,7 +28,7 @@ type FormValues = {
 export default function Home() {
   const defaultValues = {
     name: "",
-    slmccNo: "",
+    slmcNo: "",
     phone: "",
     otp: "",
     password: "",
@@ -43,7 +43,7 @@ export default function Home() {
           invalid_type_error: "Name is required",
         })
         .min(3, "Name must be at least 3 characters"),
-      slmccNo: z
+      slmcNo: z
         .string({
           required_error: "required field",
           invalid_type_error: "NIC is required",
@@ -128,7 +128,7 @@ export default function Home() {
           </Typography>
           <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
             <RHFTextField name="name" label="Full Name" />
-            <RHFTextField name="slmccNo" label="SLMCC No." />
+            <RHFTextField name="slmcNo" label="SLMC No." />
             <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
               <RHFTextField name="phone" label="Phone" type="number" />
               <Button

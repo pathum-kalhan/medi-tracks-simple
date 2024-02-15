@@ -17,47 +17,46 @@ import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 
-type FormValues = {
-  nic: string;
-  password: string;
+type Props = {
+  role: "patient" | "doctor" | "laboratory" | "pharmacist";
 };
 
-export function Login() {
-  const [title, setTitle] = useState("Patient");
+export function Login({ role }: Props) {
+  const [title, setTitle] = useState(role);
 
-  const defaultValues = {
-    nic: "",
-    password: "",
-  };
+  let schema: ZodType;
+  switch (role) {
+    case "patient":
+      schema = z.object({
+        nic: z.string().length(10),
+        password: z.string().min(6),
+      });
+      break;
+    case "doctor":
+      schema = z.object({
+        slmc: z.string().length(10),
+        password: z.string().min(6),
+      });
+      break;
+    case "laboratory":
+      schema = z.object({
+        email: z.string().email(),
+        password: z.string().min(6),
+      });
+      break;
+    case "pharmacist":
+      schema = z.object({
+        email: z.string().email(),
+        password: z.string().min(6),
+      });
+      break;
+  }
+  const methods = useForm({ resolver: zodResolver(schema) });
 
-  const LoginSchema: ZodType<FormValues> = z.object({
-    nic: z
-      .string({
-        required_error: "required field",
-        invalid_type_error: "NIC is required",
-      })
-      .refine(
-        (value) => /^(?:\d{12}|\d{9}V)$/.test(value),
-        "Please enter a valid NIC number ex: 123456789012 or 123456789V"
-      ),
-    password: z
-      .string({
-        required_error: "required field",
-        invalid_type_error: "Password is required",
-      })
-      .min(6, "Password must be at least 6 characters"),
-  });
+  const { handleSubmit } = methods;
 
-  const methods = useForm<FormValues>({
-    defaultValues,
-    resolver: zodResolver(LoginSchema),
-  });
-
-  const { handleSubmit, reset } = methods;
-
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
+  const onSubmit: SubmitHandler<any> = (data) => {
     console.log(data);
-    reset();
   };
 
   return (
@@ -83,10 +82,19 @@ export function Login() {
             mb: 4,
           }}
         >
-          {title} Login
+          {title.charAt(0).toUpperCase() + title.slice(1) + " Login"}
         </Typography>
         <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-          <RHFTextField name="nic" label="NIC" />
+          {role === "patient" && (
+            <RHFTextField name="nic" label="NIC" type="text" />
+          )}
+          {role === "doctor" && (
+            <RHFTextField name="slmc" label="SLMC" type="text" />
+          )}
+          {(role === "laboratory" || role === "pharmacist") && (
+            <RHFTextField name="email" label="Email" type="email" />
+          )}
+
           <RHFTextField name="password" label="Password" type="password" />
           <MUILink href={`/register/${title.toLowerCase()}`} component={Link}>
             Register as a new {title.toLowerCase()}
@@ -96,38 +104,38 @@ export function Login() {
           </Button>
         </Stack>
         <Stack spacing={1} sx={{ alignItems: "center" }}>
-          {title != "Patient" && (
+          {role != "patient" && (
             <MUILink
-              href="/login"
+              href="/login/patient"
               component={Link}
-              onClick={() => setTitle("Patient")}
+              onClick={() => setTitle("patient")}
             >
               Login as a patient
             </MUILink>
           )}
-          {title != "Doctor" && (
+          {role != "doctor" && (
             <MUILink
-              href="/login#doctor"
+              href="/login/doctor"
               component={Link}
-              onClick={() => setTitle("Doctor")}
+              onClick={() => setTitle("doctor")}
             >
               Login as a doctor
             </MUILink>
           )}
-          {title != "Laboratory" && (
+          {role != "laboratory" && (
             <MUILink
-              href="/login#lab"
+              href="/login/laboratory"
               component={Link}
-              onClick={() => setTitle("Laboratory")}
+              onClick={() => setTitle("laboratory")}
             >
               Login as a laboratory
             </MUILink>
           )}
-          {title != "Pharmacy" && (
+          {role != "pharmacist" && (
             <MUILink
-              href="/login#pharmacy"
+              href="/login/pharmacist"
               component={Link}
-              onClick={() => setTitle("Pharmacy")}
+              onClick={() => setTitle("pharmacist")}
             >
               Login as a pharmacy
             </MUILink>
