@@ -1,14 +1,24 @@
 "use client";
 import DataTable from "@/components/dashboard/table";
 import { Box, Button, Divider, Typography } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
+import { GridColDef, GridRowParams } from "@mui/x-data-grid";
 
 export default function Home() {
-  const ViewButton = () => {
+  type RowProps = {
+    row: (typeof rows)[0];
+  };
+  const ViewButton = (row: RowProps) => {
+    const handleView = () => {};
+
     return (
       <>
-        <Button variant="contained" size="small">
-          Open
+        <Button
+          variant="contained"
+          size="small"
+          href="/files/dummy.pdf"
+          target="_blank"
+        >
+          View PDF
         </Button>
       </>
     );
@@ -17,8 +27,15 @@ export default function Home() {
   const DownloadButton = () => {
     return (
       <>
-        <Button variant="contained" size="small">
-          Open
+        <Button
+          variant="contained"
+          size="small"
+          color="green"
+          href="/files/dummy.pdf"
+          target="_blank"
+          download={true}
+        >
+          Download PDF
         </Button>
       </>
     );
@@ -42,8 +59,6 @@ export default function Home() {
       renderCell: ViewButton,
       sortable: false,
       disableColumnMenu: true,
-      headerAlign: "right",
-      align: "right",
       width: 150,
     },
     {
@@ -52,8 +67,6 @@ export default function Home() {
       renderCell: DownloadButton,
       sortable: false,
       disableColumnMenu: true,
-      headerAlign: "right",
-      align: "right",
       width: 150,
     },
   ];

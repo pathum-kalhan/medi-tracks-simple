@@ -24,8 +24,12 @@ type FormValues = {
   mobile: string | number;
 };
 
-export default function FormDialog() {
-  const [open, setOpen] = useState(false);
+type Props = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+};
+
+export default function FormDialog({ open, setOpen }: Props) {
   const [openCreate, setOpenCreate] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -98,61 +102,47 @@ export default function FormDialog() {
   };
 
   return (
-    <Grid item spacing={2}>
-      <Grid xs={12} md={6} item>
-        <Button
-          variant="contained"
-          onClick={handleClickOpen}
-          sx={{ mx: 56, mt: 4, px: 4, py: 1, borderRadius: 15 }}
-        >
-          Search Patient
-        </Button>
-      </Grid>
-      <Grid xs={12} md={6}>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          fullScreen={fullScreen}
-          aria-labelledby="responsive-dialog-title"
-        >
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <DialogTitle id="responsive-dialog-title">
-              Patient Records
-            </DialogTitle>
-            <DialogContent>
-              <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-                <RHFTextField name="id" label="Patient ID" fullWidth />
-                <RHFTextField name="nic" label="NIC" fullWidth />
-                <RHFTextField name="name" label="Patient Name" fullWidth />
-                <RHFTextField
-                  name="mobile"
-                  label="Mobile No"
-                  fullWidth
-                  type="number"
-                />
-              </Stack>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                variant="contained"
-                type="submit"
-                sx={{ borderRadius: 15 }}
-              >
-                Search
-              </Button>
-              <Button
-                variant="contained"
-                sx={{ borderRadius: 15 }}
-                onClick={handleCreatePatientRecords}
-              >
-                Create Patient Record
-              </Button>
-              <Button onClick={handleClose}>Cancel</Button>
-            </DialogActions>
-          </FormProvider>
-        </Dialog>
-      </Grid>
+    <>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullScreen={fullScreen}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+          <DialogTitle id="responsive-dialog-title">
+            Patient Records
+          </DialogTitle>
+          <DialogContent>
+            <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
+              <RHFTextField name="id" label="Patient ID" fullWidth />
+              <RHFTextField name="nic" label="NIC" fullWidth />
+              <RHFTextField name="name" label="Patient Name" fullWidth />
+              <RHFTextField
+                name="mobile"
+                label="Mobile No"
+                fullWidth
+                type="number"
+              />
+            </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" type="submit" sx={{ borderRadius: 15 }}>
+              Search
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ borderRadius: 15 }}
+              onClick={handleCreatePatientRecords}
+            >
+              Create Patient Record
+            </Button>
+            <Button onClick={handleClose}>Cancel</Button>
+          </DialogActions>
+        </FormProvider>
+      </Dialog>
+
       <CreatePatient setOpen={setOpenCreate} open={openCreate} />
-    </Grid>
+    </>
   );
 }
