@@ -116,6 +116,7 @@ export default function Home() {
             maxWidth: 505,
             maxHeight: 732,
             margin: "0 auto",
+            padding: 4,
             boxShadow: "0 2px 4px rgba(0, 0, 0, 1)",
           }}
         >
@@ -123,7 +124,6 @@ export default function Home() {
             align="center"
             variant="h3"
             sx={{
-              color: "white",
               mb: 4,
             }}
           >
