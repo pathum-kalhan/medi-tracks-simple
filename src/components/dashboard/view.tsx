@@ -100,12 +100,12 @@ export const ViewPatient = ({ setOpen, open }: Props) => {
   return (
     <Dialog open={open} onClose={handleClose} fullScreen={fullScreen}>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>Create Patient Record</DialogTitle>
+        <DialogTitle>Upload lab report</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-            <RHFTextField name="id" label="Patient ID" fullWidth />
-            <RHFTextField name="nic" label="NIC" fullWidth />
-            <RHFTextField name="name" label="Patient Name" fullWidth />
+            <RHFTextField name="id" label="Patient ID" disabled fullWidth />
+            <RHFTextField name="nic" label="NIC" disabled fullWidth />
+            <RHFTextField name="name" label="Patient Name" disabled fullWidth />
             <RHFTextField name="testType" label="Test Type" fullWidth />
             <Controller
               name="file"

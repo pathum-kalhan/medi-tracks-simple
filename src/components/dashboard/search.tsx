@@ -16,6 +16,7 @@ import { Grid, Stack } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { CreatePatient } from "./create";
+import { useRouter } from "next/navigation";
 
 type FormValues = {
   id: string;
@@ -33,6 +34,7 @@ export default function FormDialog({ open, setOpen }: Props) {
   const [openCreate, setOpenCreate] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const router = useRouter()
 
   const defaultValues = {
     id: "",
@@ -76,13 +78,14 @@ export default function FormDialog({ open, setOpen }: Props) {
 
   const methods = useForm<FormValues>({
     defaultValues,
-    resolver: zodResolver(LoginSchema),
+    // resolver: zodResolver(LoginSchema),
   });
 
   const { handleSubmit, reset } = methods;
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
+    router.push('/dashboard/search')
     reset();
   };
 
