@@ -84,7 +84,7 @@ export default function Home() {
           Patients Lab Reports
         </Typography>
         <Divider />
-        <DataTable columns={columns} rows={rows} />
+        <DataTable columns={columns} rows={rows} pageSize={5} />
       </Box>
     </main>
   );
