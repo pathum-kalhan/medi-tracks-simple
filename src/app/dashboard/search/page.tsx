@@ -71,7 +71,12 @@ export default function Home() {
 
   return (
     <main>
-      <DataTable columns={columns} rows={rows} />
+      <DataTable
+        columns={columns}
+        rows={rows}
+        hideFooter={false}
+        pageSize={5}
+      />
     </main>
   );
 }
