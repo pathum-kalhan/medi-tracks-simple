@@ -29,8 +29,16 @@ const drawerWidth = 240;
 
 const routes = [
   { path: "/dashboard", name: "Dashboard", icon: <DashboardIcon /> },
-  { path: "/patients-records", name: "Patient Records", icon: <ArticleIcon /> },
-  { path: "/dashboard/lab-report", name: "Lab Reports", icon: <AssessmentIcon /> },
+  {
+    path: "/dashboard/patient-records",
+    name: "Patient Records",
+    icon: <ArticleIcon />,
+  },
+  {
+    path: "/dashboard/lab-report",
+    name: "Lab Reports",
+    icon: <AssessmentIcon />,
+  },
   { path: "/help", name: "Help & Support", icon: <HelpCenterIcon /> },
   { path: "/settings", name: "Account Settings", icon: <SettingsIcon /> },
 ];
@@ -108,12 +116,7 @@ export function NavBar({ children }: { children: React.ReactNode }) {
           height: 135,
         }}
       >
-        <Image
-          src={Logo}
-          alt="MediTracks Pro"
-          width={160}
-          height={100}
-        />
+        <Image src={Logo} alt="MediTracks Pro" width={160} height={100} />
       </Box>
 
       <List>

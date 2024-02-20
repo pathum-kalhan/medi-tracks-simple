@@ -4,11 +4,18 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 type Props<T> = {
   columns: GridColDef[];
   rows: T[];
+  hideFooter?: boolean;
+  pageSize?: number;
 };
 
-export default function DataTable({ columns, rows }: Props<any>) {
+export default function DataTable({
+  columns,
+  rows,
+  pageSize,
+  ...other
+}: Props<any>) {
   return (
-    <Box sx={{ height: "100%", overflowX: "auto" }}>
+    <Box sx={{ height: "100%" }}>
       <DataGrid
         sx={{ m: 2 }}
         rows={rows}
@@ -17,10 +24,11 @@ export default function DataTable({ columns, rows }: Props<any>) {
         style={{ minWidth: "100%" }}
         initialState={{
           pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
+            paginationModel: { page: 0, pageSize: pageSize },
           },
         }}
         pageSizeOptions={[5, 10]}
+        {...other}
       />
     </Box>
   );
