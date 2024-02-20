@@ -8,7 +8,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { Avatar, CssBaseline, IconButton, Menu, Toolbar } from "@mui/material";
+import { CssBaseline, IconButton, Toolbar } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ArticleIcon from "@mui/icons-material/Article";
 import AssessmentIcon from "@mui/icons-material/Assessment";
@@ -30,7 +30,7 @@ const drawerWidth = 240;
 const routes = [
   { path: "/dashboard", name: "Dashboard", icon: <DashboardIcon /> },
   { path: "/patients-records", name: "Patient Records", icon: <ArticleIcon /> },
-  { path: "/lab-reports", name: "Lab Reports", icon: <AssessmentIcon /> },
+  { path: "/dashboard/lab-report", name: "Lab Reports", icon: <AssessmentIcon /> },
   { path: "/help", name: "Help & Support", icon: <HelpCenterIcon /> },
   { path: "/settings", name: "Account Settings", icon: <SettingsIcon /> },
 ];
@@ -108,7 +108,12 @@ export function NavBar({ children }: { children: React.ReactNode }) {
           height: 135,
         }}
       >
-        <Avatar alt="User" sx={{ width: 100, height: 100 }} />
+        <Image
+          src={Logo}
+          alt="MediTracks Pro"
+          width={160}
+          height={100}
+        />
       </Box>
 
       <List>
@@ -182,21 +187,6 @@ export function NavBar({ children }: { children: React.ReactNode }) {
         open={open}
       >
         <DrawerHeader>
-          <List>
-            <ListItem disablePadding>
-              <ListItemButton href={"/dashboard"}>
-                <ListItemIcon>
-                  <Image
-                    src={Logo}
-                    alt="MediTracks Pro"
-                    width={60}
-                    height={40}
-                  />
-                </ListItemIcon>
-                <ListItemText primary="MediTracks Pro" />
-              </ListItemButton>
-            </ListItem>
-          </List>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />

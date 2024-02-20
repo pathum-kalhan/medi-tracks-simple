@@ -4,6 +4,7 @@ import FormProvider from "@/Forms/FormProvider";
 import RHFTextField from "@/Forms/RHFTextField";
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 import {
   Button,
@@ -24,13 +25,12 @@ type Props = {
 export function Login({ role }: Props) {
   const [title, setTitle] = useState(role);
 
+  const router = useRouter()
+
   let schema: ZodType;
   switch (role) {
     case "patient":
-      schema = z.object({
-        nic: z.string().length(10),
-        password: z.string().min(6),
-      });
+      schema = z.object({}) 
       break;
     case "doctor":
       schema = z.object({
@@ -57,6 +57,7 @@ export function Login({ role }: Props) {
 
   const onSubmit: SubmitHandler<any> = (data) => {
     console.log(data);
+    router.push('/dashboard')
   };
 
   return (

@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ZodType, z } from "zod";
+import toast, { Toaster } from 'react-hot-toast';
 
 type FormValues = {
   nic: string;
@@ -72,6 +73,7 @@ export const CreatePatient = ({ setOpen, open }: Props) => {
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
+    toast.success('Successfuly created patient record') 
     reset();
   };
 
@@ -103,6 +105,7 @@ export const CreatePatient = ({ setOpen, open }: Props) => {
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>
       </FormProvider>
+      <Toaster />
     </Dialog>
   );
 };
