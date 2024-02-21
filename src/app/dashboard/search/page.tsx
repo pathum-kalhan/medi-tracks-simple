@@ -1,82 +1,59 @@
 "use client";
-import DataTable from "@/components/dashboard/table";
+
+import { PaginationPage } from "@/components/common/pagination";
+import { User } from "@/components/dashboard/user-card";
 import { ViewPatient } from "@/components/dashboard/view";
-import { Button } from "@mui/material";
+import { Button, Grid, Pagination } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
 
 export default function Home() {
-  const ViewButton = () => {
-    const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [postsPerPage, setPostsPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
 
-    return (
-      <>
-        <Button variant="contained" size="small" onClick={() => setOpen(true)}>
-          Open
-        </Button>
-        <ViewPatient open={open} setOpen={setOpen} />
-      </>
-    );
+  const searchResults = new Array(20).fill(0).map((_, index) => {
+    return {
+      name: `John Doe ${index}`,
+      gender: index % 2 === 0 ? "Male" : "Female",
+      age: index + 20,
+    };
+  });
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = searchResults.slice(indexOfFirstPost, indexOfLastPost);
+
+  const paginate = (pageNumber: number) => {
+    console.log(currentPosts);
+    setCurrentPage(pageNumber);
   };
-  const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 150 },
-    { field: "Name", headerName: "Name", width: 200 },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      width: 100,
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      renderCell: ViewButton,
-      sortable: false,
-      disableColumnMenu: true,
-      headerAlign: "right",
-      align: "right",
-      width: 150,
-    },
-  ];
-
-  const rows = [
-    { id: 1, Name: "Jon", age: 35 },
-    { id: 2, Name: "Cersei", age: 42 },
-    { id: 3, Name: "Jaime", age: 45 },
-    { id: 4, Name: "Arya", age: 16 },
-    { id: 5, Name: "Daenerys", age: 25 },
-    { id: 6, Name: "Tyrion", age: 35 },
-    { id: 7, Name: "Sansa", age: 21 },
-    { id: 8, Name: "Robb", age: 25 },
-    { id: 9, Name: "Bran", age: 15 },
-    { id: 10, Name: "Hodor", age: 45 },
-    { id: 11, Name: "Jorah", age: 50 },
-    { id: 12, Name: "Margaery", age: 25 },
-    { id: 13, Name: "Tommen", age: 16 },
-    { id: 14, Name: "Stannis", age: 35 },
-    { id: 15, Name: "Renly", age: 25 },
-    { id: 16, Name: "Joffrey", age: 16 },
-    { id: 17, Name: "Sandor", age: 45 },
-    { id: 18, Name: "Petyr", age: 35 },
-    { id: 19, Name: "Lysa", age: 25 },
-    { id: 20, Name: "Oberyn", age: 45 },
-    { id: 21, Name: "Gregor", age: 35 },
-    { id: 22, Name: "Khal", age: 25 },
-    { id: 23, Name: "Ramsay", age: 16 },
-    { id: 24, Name: "Robert", age: 45 },
-    { id: 25, Name: "Theon", age: 35 },
-    { id: 26, Name: "Roose", age: 25 },
-    { id: 27, Name: "Euron", age: 45 },
-  ];
 
   return (
-    <main>
-      <DataTable
-        columns={columns}
-        rows={rows}
-        hideFooter={false}
-        pageSize={5}
-      />
-    </main>
+    <div>
+      <Grid container spacing={2} direction="column">
+        <Grid item xs={12}>
+          <Grid container spacing={2} direction="row">
+            {currentPosts.map((result, index) => (
+              <Grid key={index} item xs={12}>
+                <User setOpen={setOpen} results={result} />
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <PaginationPage
+            postsPerPage={postsPerPage}
+            totalPosts={searchResults.length}
+            paginate={paginate}
+          />
+        </Grid>
+      </Grid>
+      <ViewPatient open={open} setOpen={setOpen} />
+    </div>
   );
 }
