@@ -1,4 +1,8 @@
+"use client";
 import { Avatar, Box, Grid, Typography } from "@mui/material";
+import { usePathname } from "next/navigation";
+import { Link as MUILink } from "@mui/material";
+import Link from "next/link";
 
 type Props = {
   name: string;
@@ -8,6 +12,8 @@ type Props = {
 };
 
 export const Profile = ({ name = "Name", gender, age, mobile }: Props) => {
+  const pathname = usePathname();
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
@@ -44,6 +50,20 @@ export const Profile = ({ name = "Name", gender, age, mobile }: Props) => {
             </Typography>
           </Box>
         </Grid>
+        {pathname === "/dashboard/settings" && (
+          <>
+            <Grid item xs={12}>
+              <MUILink href={"#"} component={Link}>
+                Update Profile Information
+              </MUILink>
+            </Grid>
+            <Grid item xs={12}>
+              <MUILink href={"#"} component={Link}>
+                Upload Profile Picture
+              </MUILink>
+            </Grid>
+          </>
+        )}
       </Grid>
     </Box>
   );
