@@ -8,7 +8,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { CssBaseline, IconButton, Toolbar } from "@mui/material";
+import { CssBaseline, Grid, IconButton, Toolbar } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ArticleIcon from "@mui/icons-material/Article";
 import AssessmentIcon from "@mui/icons-material/Assessment";
@@ -24,6 +24,7 @@ import Logo from "../../../logo.png";
 
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Image from "next/image";
+import { Profile } from "./profile";
 
 const drawerWidth = 240;
 
@@ -202,7 +203,14 @@ export function NavBar({ children }: { children: React.ReactNode }) {
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
-        {children}
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={10}>
+            {children}
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Profile />
+          </Grid>
+        </Grid>
       </Main>
     </Box>
   );
