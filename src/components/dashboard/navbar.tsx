@@ -41,7 +41,11 @@ const routes = [
     icon: <AssessmentIcon />,
   },
   { path: "/help", name: "Help & Support", icon: <HelpCenterIcon /> },
-  { path: "/settings", name: "Account Settings", icon: <SettingsIcon /> },
+  {
+    path: "/dashboard/settings",
+    name: "Account Settings",
+    icon: <SettingsIcon />,
+  },
 ];
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
