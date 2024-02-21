@@ -208,7 +208,7 @@ export function NavBar({ children }: { children: React.ReactNode }) {
             {children}
           </Grid>
           <Grid item xs={12} md={2}>
-            <Profile />
+            <Profile name="Name" gender="Male" age={24} mobile={767079234} />
           </Grid>
         </Grid>
       </Main>

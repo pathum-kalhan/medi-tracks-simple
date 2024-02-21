@@ -4,7 +4,7 @@ type Props = {
   name: string;
   gender: string;
   age: number;
-  mobile: string;
+  mobile: number;
 };
 
 export const Profile = ({ name = "Name", gender, age, mobile }: Props) => {
