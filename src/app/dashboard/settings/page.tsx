@@ -17,7 +17,7 @@ export default function Home() {
         </MUILink>
       </Grid>
       <Grid item xs={12}>
-        <MUILink href={"#"} component={Link}>
+        <MUILink href={"/dashboard/settings/notifications"} component={Link}>
           Notification
         </MUILink>
       </Grid>
@@ -27,7 +27,7 @@ export default function Home() {
         </MUILink>
       </Grid>
       <Grid item xs={12}>
-        <MUILink href={"#"} component={Link}>
+        <MUILink href={"/dashboard/settings/accessibility"} component={Link}>
           Accessibility
         </MUILink>
       </Grid>
