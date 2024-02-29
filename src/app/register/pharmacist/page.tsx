@@ -22,7 +22,6 @@ type FormValues = {
   pharmacyLocation: string;
   contactNo: string | number;
   email: string | number;
-  otp: string;
   password: string;
   confirmPassword: string;
 };
@@ -34,7 +33,6 @@ export default function Home() {
     pharmacyLocation: "",
     contactNo: "",
     email: "",
-    otp: "",
     password: "",
     confirmPassword: "",
   };
@@ -75,15 +73,6 @@ export default function Home() {
           invalid_type_error: "Email is required",
         })
         .email("Please enter a valid email"),
-      otp: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "OTP is required",
-        })
-        .refine(
-          (value) => /^(?:\d{4})$/.test(value),
-          "Please enter 4 digit OTP number ex: 1234"
-        ),
       password: z
         .string({
           required_error: "required field",
@@ -154,18 +143,9 @@ export default function Home() {
               label="Contact Number"
               type="number"
             />
-            <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
-              <RHFTextField name="email" label="Email" type="email" />
-              <Button
-                color="green"
-                variant="contained"
-                style={{ borderRadius: 10 }}
-              >
-                Verify
-              </Button>
-            </Stack>
 
-            <RHFTextField name="otp" label="OTP" />
+            <RHFTextField name="email" label="Email" type="email" />
+
             <RHFTextField name="password" label="Password" type="password" />
             <RHFTextField
               name="confirmPassword"
@@ -183,7 +163,6 @@ export default function Home() {
             <Button
               href="/login/patient"
               variant="contained"
-              color="purple"
               fullWidth
               style={{ borderRadius: 20 }}
             >

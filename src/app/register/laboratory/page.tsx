@@ -151,17 +151,8 @@ export default function Home() {
               label="Contact Number"
               type="number"
             />
-            <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
-              <RHFTextField name="email" label="Email" type="email" />
 
-              <Button
-                color="green"
-                variant="contained"
-                style={{ borderRadius: 10 }}
-              >
-                Verify
-              </Button>
-            </Stack>
+            <RHFTextField name="email" label="Email" type="email" />
 
             <RHFTextField name="otp" label="OTP" />
             <RHFTextField name="password" label="Password" type="password" />

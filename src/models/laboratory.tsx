@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import email from "next-auth/providers/email";
 
 const laboratorySchema = new Schema({
   labName: {
@@ -8,6 +9,7 @@ const laboratorySchema = new Schema({
   labRegNo: {
     type: String,
     required: true,
+    unique: true,
   },
   labLocation: {
     type: String,
@@ -53,5 +55,7 @@ const labReportSchema = new Schema({
   },
 });
 
-export const Laboratory = mongoose.model("Laboratory", laboratorySchema);
-export const LabReport = mongoose.model("LabReport", labReportSchema);
+export const Laboratory =
+  mongoose.models.Laboratory || mongoose.model("Laboratory", laboratorySchema);
+export const LabReport =
+  mongoose.models.LabReport || mongoose.model("LabReport", labReportSchema);

@@ -1,6 +1,6 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, mongo } from "mongoose";
 
-export const chatMessageSchema = new Schema({
+const chatMessageSchema = new Schema({
   senderRole: {
     type: String,
     enum: ["patient", "doctor"],
@@ -34,4 +34,6 @@ export const chatMessageSchema = new Schema({
   },
 });
 
-export const ChatMessage = mongoose.model("ChatMessage", chatMessageSchema);
+export const ChatMessage =
+  mongoose.models.ChatMessage ||
+  mongoose.model("ChatMessage", chatMessageSchema);

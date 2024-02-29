@@ -132,22 +132,13 @@ export default function Home() {
           <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
             <RHFTextField name="name" label="Patient Name" />
             <RHFTextField name="nic" label="NIC" />
-            <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
-              <RHFTextField
-                name="mobileNumber"
-                label="Mobile Number"
-                type="number"
-              />
-              <Button
-                color="green"
-                variant="contained"
-                style={{ borderRadius: 10 }}
-              >
-                Verify
-              </Button>
-            </Stack>
 
-            <RHFTextField name="otp" label="OTP" />
+            <RHFTextField
+              name="mobileNumber"
+              label="Mobile Number"
+              type="number"
+            />
+
             <RHFTextField name="password" label="Password" type="password" />
             <RHFTextField
               name="confirmPassword"
@@ -165,7 +156,6 @@ export default function Home() {
             <Button
               href="/login/patient"
               variant="contained"
-              color="purple"
               fullWidth
               style={{ borderRadius: 20 }}
             >

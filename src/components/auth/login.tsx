@@ -5,6 +5,7 @@ import RHFTextField from "@/Forms/RHFTextField";
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { signIn } from "../../../auth";
 
 import {
   Button,
@@ -17,6 +18,8 @@ import {
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
+import { AuthError } from "next-auth";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {
   role: "patient" | "doctor" | "laboratory" | "pharmacist";
@@ -25,16 +28,19 @@ type Props = {
 export function Login({ role }: Props) {
   const [title, setTitle] = useState(role);
 
-  const router = useRouter()
+  const router = useRouter();
 
   let schema: ZodType;
   switch (role) {
     case "patient":
-      schema = z.object({}) 
+      schema = z.object({
+        nic: z.string().min(10),
+        password: z.string().min(6),
+      });
       break;
     case "doctor":
       schema = z.object({
-        slmc: z.string().length(10),
+        slmc: z.string().min(6),
         password: z.string().min(6),
       });
       break;
@@ -55,9 +61,17 @@ export function Login({ role }: Props) {
 
   const { handleSubmit } = methods;
 
-  const onSubmit: SubmitHandler<any> = (data) => {
-    console.log(data);
-    router.push('/dashboard')
+  const onSubmit: SubmitHandler<any> = async (data) => {
+    try {
+      await signIn("credentials", data, role).then(() => {
+        router.push("/dashboard");
+      });
+    } catch (error) {
+      const err = error as AuthError;
+      if (err.stack?.includes("CredentialsSignin")) {
+        toast.error("Please check your login credentials, and try again.");
+      }
+    }
   };
 
   return (
@@ -143,6 +157,7 @@ export function Login({ role }: Props) {
           )}
         </Stack>
       </Card>
+      <Toaster />
     </FormProvider>
   );
 }

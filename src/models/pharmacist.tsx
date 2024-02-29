@@ -8,6 +8,7 @@ const pharmacistSchema = new Schema({
   pharmacyRegNo: {
     type: String,
     required: true,
+    unique: true,
   },
   pharmacyLocation: {
     type: String,
@@ -28,4 +29,5 @@ const pharmacistSchema = new Schema({
   },
 });
 
-export const Pharmacist = mongoose.model("Pharmacist", pharmacistSchema);
+export const Pharmacist =
+  mongoose.models.Pharmacist || mongoose.model("Pharmacist", pharmacistSchema);

@@ -1,5 +1,7 @@
-import mongoose, { Schema } from "mongoose";
-import { chatMessageSchema } from "./chat";
+import mongoose from "mongoose";
+import { ChatMessage } from "./chat";
+
+const { Schema } = mongoose;
 
 const patientSchema = new Schema({
   name: {
@@ -31,7 +33,8 @@ const patientSchema = new Schema({
       ref: "Prescription",
     },
   ],
-  chatMessages: [chatMessageSchema],
+  chatMessages: [ChatMessage.schema],
 });
 
-export const Patient = mongoose.model("Patient", patientSchema);
+export const Patient =
+  mongoose.models.Patient || mongoose.model("Patient", patientSchema);

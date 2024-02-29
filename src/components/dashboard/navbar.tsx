@@ -25,6 +25,7 @@ import Logo from "../../../logo.png";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Image from "next/image";
 import { Profile } from "./profile";
+import { signOut } from "../../../auth";
 
 const drawerWidth = 240;
 
@@ -151,7 +152,13 @@ export function NavBar({ children }: { children: React.ReactNode }) {
       <Divider />
       <List>
         <ListItem disablePadding>
-          <ListItemButton href={"/logout"}>
+          <ListItemButton
+            onClick={async () => {
+              await signOut({
+                redirectTo: "/",
+              });
+            }}
+          >
             <ListItemIcon>
               <LogoutIcon />
             </ListItemIcon>
