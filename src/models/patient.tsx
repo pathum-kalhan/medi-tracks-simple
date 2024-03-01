@@ -1,37 +1,35 @@
-import mongoose, { Schema } from "mongoose";
-import { chatMessageSchema } from "./chat";
+import mongoose from "mongoose";
+import { ChatMessage } from "./chat";
 
-const patientSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  nic: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  mobileNumber: {
-    type: Number,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  labReports: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "LabReport",
-    },
-  ],
-  prescriptions: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Prescription",
-    },
-  ],
-  chatMessages: [chatMessageSchema],
-});
+const { Schema } = mongoose;
 
-export const Patient = mongoose.model("Patient", patientSchema);
+const patientSchema = new Schema(
+  {
+    nic: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    labReports: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "LabReport",
+      },
+    ],
+    prescriptions: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Prescription",
+      },
+    ],
+    chatMessages: [ChatMessage.schema],
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  },
+  { timestamps: true }
+);
+
+export const Patient =
+  mongoose.models.Patient || mongoose.model("Patient", patientSchema);

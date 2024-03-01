@@ -1,13 +1,9 @@
 import { NavBar } from "@/components/dashboard/navbar";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <body>
-      <NavBar>{children}</NavBar>
-    </body>
-  );
+  return <NavBar>{children}</NavBar>;
 }

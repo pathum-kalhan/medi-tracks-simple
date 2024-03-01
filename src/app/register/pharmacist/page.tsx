@@ -15,14 +15,14 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
 
 type FormValues = {
   pharmacyName: string;
   pharmacyRegNo: string;
   pharmacyLocation: string;
   contactNo: string | number;
-  email: string | number;
-  otp: string;
+  email: string;
   password: string;
   confirmPassword: string;
 };
@@ -34,7 +34,6 @@ export default function Home() {
     pharmacyLocation: "",
     contactNo: "",
     email: "",
-    otp: "",
     password: "",
     confirmPassword: "",
   };
@@ -75,15 +74,6 @@ export default function Home() {
           invalid_type_error: "Email is required",
         })
         .email("Please enter a valid email"),
-      otp: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "OTP is required",
-        })
-        .refine(
-          (value) => /^(?:\d{4})$/.test(value),
-          "Please enter 4 digit OTP number ex: 1234"
-        ),
       password: z
         .string({
           required_error: "required field",
@@ -112,10 +102,25 @@ export default function Home() {
 
   const { handleSubmit, reset } = methods;
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const response = await fetch("/api/user/pharmacist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (response.ok) {
+      toast.success(
+        "Great! You have successfully registered. Please sign in to continue."
+      );
+    } else {
+      toast.error(result.message);
+    }
     reset();
   };
+
   return (
     <main>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -154,18 +159,9 @@ export default function Home() {
               label="Contact Number"
               type="number"
             />
-            <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
-              <RHFTextField name="email" label="Email" type="email" />
-              <Button
-                color="green"
-                variant="contained"
-                style={{ borderRadius: 10 }}
-              >
-                Verify
-              </Button>
-            </Stack>
 
-            <RHFTextField name="otp" label="OTP" />
+            <RHFTextField name="email" label="Email" type="email" />
+
             <RHFTextField name="password" label="Password" type="password" />
             <RHFTextField
               name="confirmPassword"
@@ -183,7 +179,6 @@ export default function Home() {
             <Button
               href="/login/patient"
               variant="contained"
-              color="purple"
               fullWidth
               style={{ borderRadius: 20 }}
             >
@@ -192,6 +187,7 @@ export default function Home() {
           </Stack>
         </Card>
       </FormProvider>
+      <Toaster />
     </main>
   );
 }
