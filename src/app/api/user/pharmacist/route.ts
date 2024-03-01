@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { connect } from "@/lib/db";
 import { z } from "zod";
+import { User } from "@/models/user";
 
 export async function POST(req: Request) {
   try {
@@ -46,13 +47,18 @@ export async function POST(req: Request) {
 
     const hashedPassword = await hash(password, 10);
 
-    const newPharmacist = await Pharmacist.create({
-      pharmacyName,
-      pharmacyRegNo,
-      pharmacyLocation,
-      contactNumber,
-      email,
+    const newUser = await User.create({
+      name: pharmacyName,
+      phone: contactNumber,
       password: hashedPassword,
+      userType: "pharmacist",
+    });
+
+    const newPharmacist = await Pharmacist.create({
+      regNo: pharmacyRegNo,
+      location: pharmacyLocation,
+      email,
+      user: newUser._id,
     });
 
     return NextResponse.json(

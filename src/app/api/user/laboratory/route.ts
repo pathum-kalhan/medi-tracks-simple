@@ -3,6 +3,7 @@ import { Laboratory } from "@/models/laboratory";
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { connect } from "@/lib/db";
+import { User } from "@/models/user";
 
 export async function POST(req: Request) {
   try {
@@ -22,13 +23,18 @@ export async function POST(req: Request) {
 
     const hashedPassword = await hash(password, 10);
 
-    const newLab = await Laboratory.create({
-      labName,
-      labRegNo,
-      labLocation,
-      contactNumber,
-      email,
+    const newUser = await User.create({
+      name: labName,
+      phone: contactNumber,
       password: hashedPassword,
+      userType: "laboratory",
+    });
+
+    const newLab = await Laboratory.create({
+      regNo: labRegNo,
+      location: labLocation,
+      email,
+      user: newUser._id,
     });
 
     return NextResponse.json(

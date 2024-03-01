@@ -1,10 +1,14 @@
 "use server";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { authConfig } from "./auth.config";
+import { authConfig } from "../auth.config";
 import { z } from "zod";
 import { compare } from "bcryptjs";
-import { clientPromise } from "@/lib/db";
+import { connect } from "@/lib/db";
+import clientPromise from "@/lib/adapter";
+import { User } from "@/models/user";
+import { Doctor } from "@/models/doctor";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
 
 async function getUser(id: string, role: string): Promise<any> {
   try {
@@ -12,22 +16,117 @@ async function getUser(id: string, role: string): Promise<any> {
     const db = client.db("medicareDB");
     switch (role) {
       case "doctor":
-        const doctor = await db.collection("doctors").findOne({ slmcNo: id });
-        console.log("Doctor:", doctor);
-        return doctor;
+        const doctor = await db
+          .collection("doctors")
+          .aggregate([
+            {
+              $match: { slmcNo: id },
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+              },
+            },
+            {
+              $unwind: "$user",
+            },
+          ])
+          .toArray();
+
+        const user = {
+          _id: doctor[0]._id,
+          name: doctor[0].user.name,
+          userType: "doctor",
+          password: doctor[0].user.password,
+        };
+        return user;
       case "patient":
-        const patient = await db.collection("patients").findOne({ nic: id });
-        return patient;
+        const patient = await db
+          .collection("patients")
+          .aggregate([
+            {
+              $match: { nic: id },
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+              },
+            },
+            {
+              $unwind: "$user",
+            },
+          ])
+          .toArray();
+
+        const userPatient = {
+          _id: patient[0]._id,
+          name: patient[0].user.name,
+          userType: "patient",
+          password: patient[0].user.password,
+        };
+        return userPatient;
       case "laboratory":
         const laboratory = await db
           .collection("laboratories")
-          .findOne({ email: id });
-        return laboratory;
+          .aggregate([
+            {
+              $match: { email: id },
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+              },
+            },
+            {
+              $unwind: "$user",
+            },
+          ])
+          .toArray();
+
+        const userLaboratory = {
+          _id: laboratory[0]._id,
+          name: laboratory[0].user.name,
+          userType: "laboratory",
+          password: laboratory[0].user.password,
+        };
+        return userLaboratory;
       case "pharmacist":
         const pharmacist = await db
           .collection("pharmacists")
-          .findOne({ email: id });
-        return pharmacist;
+          .aggregate([
+            {
+              $match: { email: id },
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+              },
+            },
+            {
+              $unwind: "$user",
+            },
+          ])
+          .toArray();
+
+        const userPharmacist = {
+          _id: pharmacist[0]._id,
+          name: pharmacist[0].user.name,
+          userType: "pharmacist",
+          password: pharmacist[0].user.password,
+        };
+        return userPharmacist;
     }
   } catch (error) {
     console.error("Failed to fetch user:", error);
@@ -37,7 +136,7 @@ async function getUser(id: string, role: string): Promise<any> {
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
-
+  adapter: MongoDBAdapter(clientPromise),
   providers: [
     Credentials({
       async authorize(credentials, role) {
@@ -49,6 +148,7 @@ export const { auth, signIn, signOut } = NextAuth({
           if (parsedCredentials.success) {
             const { slmc, password } = parsedCredentials.data;
             const user = await getUser(slmc, "doctor");
+            console.log(user, "user");
             if (!user) return null;
             const passwordsMatch = await compare(password, user.password);
 
@@ -113,14 +213,17 @@ export const { auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  secret: process.env.AUTH_SECRET,
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         return {
           ...token,
           id: user._id,
-          slmcNo: user.slmcNo,
-          phone: user.phone,
+          userType: user.userType,
         };
       }
       return token;
@@ -131,8 +234,7 @@ export const { auth, signIn, signOut } = NextAuth({
         user: {
           ...session.user,
           id: token.id,
-          slmcNo: token.slmcNo,
-          phone: token.phone,
+          type: token.userType,
         },
       };
     },

@@ -3,38 +3,33 @@ import { ChatMessage } from "./chat";
 
 const { Schema } = mongoose;
 
-const patientSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  nic: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  mobileNumber: {
-    type: Number,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  labReports: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "LabReport",
+const patientSchema = new Schema(
+  {
+    nic: {
+      type: String,
+      required: true,
+      unique: true,
     },
-  ],
-  prescriptions: [
-    {
+    labReports: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "LabReport",
+      },
+    ],
+    prescriptions: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Prescription",
+      },
+    ],
+    chatMessages: [ChatMessage.schema],
+    user: {
       type: Schema.Types.ObjectId,
-      ref: "Prescription",
+      ref: "User",
     },
-  ],
-  chatMessages: [ChatMessage.schema],
-});
+  },
+  { timestamps: true }
+);
 
 export const Patient =
   mongoose.models.Patient || mongoose.model("Patient", patientSchema);

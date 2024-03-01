@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import { Link as MUILink } from "@mui/material";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
   return (
     <Grid
       container
@@ -12,7 +12,7 @@ export default function Home() {
       padding={2}
     >
       <Grid item xs={12}>
-        <MUILink href={"#"} component={Link}>
+        <MUILink href={"/dashboard/settings/change-password"} component={Link}>
           Change Password
         </MUILink>
       </Grid>

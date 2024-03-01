@@ -31,8 +31,14 @@ declare module "@mui/material/Button" {
 }
 
 export function ToggleColorMode({ children }: { children: React.ReactNode }) {
-  let localTheme = localStorage.getItem("theme") ?? "light";
-  let localFont = localStorage.getItem("font") ?? 14;
+  let localTheme;
+  let localFont;
+  if (typeof window !== "undefined") {
+    localTheme = localStorage.getItem("theme") ?? "light";
+  }
+  if (typeof window !== "undefined") {
+    localFont = parseInt(localStorage.getItem("font") ?? "16");
+  }
   const [mode, setMode] = useState<"light" | "dark">(
     localTheme as "light" | "dark"
   );

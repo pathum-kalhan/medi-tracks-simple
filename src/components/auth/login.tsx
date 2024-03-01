@@ -5,7 +5,7 @@ import RHFTextField from "@/Forms/RHFTextField";
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { signIn } from "../../../auth";
+import { signIn } from "../../auth";
 
 import {
   Button,

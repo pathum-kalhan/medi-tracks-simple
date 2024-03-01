@@ -1,33 +1,28 @@
 import mongoose, { Schema } from "mongoose";
 
-const pharmacistSchema = new Schema({
-  pharmacyName: {
-    type: String,
-    required: true,
+const pharmacistSchema = new Schema(
+  {
+    regNo: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      lowercase: true,
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
-  pharmacyRegNo: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  pharmacyLocation: {
-    type: String,
-    required: true,
-  },
-  contactNumber: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    lowercase: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  { timestamps: true }
+);
 
 export const Pharmacist =
   mongoose.models.Pharmacist || mongoose.model("Pharmacist", pharmacistSchema);

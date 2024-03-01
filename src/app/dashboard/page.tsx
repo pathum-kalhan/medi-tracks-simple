@@ -1,5 +1,5 @@
 import { Welcome } from "@/components/dashboard/welcome";
-import { auth } from "../../../auth";
+import { auth } from "../../auth";
 
 export default async function Home() {
   const data = [

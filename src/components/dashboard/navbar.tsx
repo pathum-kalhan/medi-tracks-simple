@@ -25,7 +25,7 @@ import Logo from "../../../logo.png";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Image from "next/image";
 import { Profile } from "./profile";
-import { signOut } from "../../../auth";
+import { signOut } from "../../auth";
 
 const drawerWidth = 240;
 

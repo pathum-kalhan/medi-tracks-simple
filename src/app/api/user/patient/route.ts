@@ -3,6 +3,7 @@ import { Patient } from "@/models/patient";
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { connect } from "@/lib/db";
+import { User } from "@/models/user";
 
 export async function POST(req: Request) {
   try {
@@ -21,11 +22,16 @@ export async function POST(req: Request) {
 
     const hashedPassword = await hash(password, 10);
 
-    const newPatient = await Patient.create({
+    const newUser = await User.create({
       name,
-      nic,
-      mobileNumber,
+      phone: mobileNumber,
       password: hashedPassword,
+      userType: "patient",
+    });
+
+    const newPatient = await Patient.create({
+      nic,
+      user: newUser._id,
     });
 
     return NextResponse.json(
