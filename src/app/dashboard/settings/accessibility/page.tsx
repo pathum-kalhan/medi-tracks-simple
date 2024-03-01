@@ -18,7 +18,10 @@ import {
 export default function Home() {
   const theme = useTheme();
   const colorMode = useContext(ColorModeContext);
-  const localFont = localStorage.getItem("font") ?? "14";
+  let localFont = "14";
+  if (typeof window !== "undefined") {
+    localFont = localStorage.getItem("font") ?? "14";
+  }
   const [fontSize, setFontSize] = useState(parseInt(localFont));
 
   const handleChange = (event: SelectChangeEvent<number>) => {

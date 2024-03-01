@@ -11,32 +11,18 @@ export async function POST(req: Request) {
     const conn = await connect();
     const body = await req.json();
 
-    const schema = z.object({
-      pharmacyName: z.string(),
-      pharmacyRegNo: z.string(),
-      pharmacyLocation: z.string(),
-      contactNumber: z.string(),
-      email: z.string().email(),
-      password: z.string(),
-    });
-
-    const result = schema.safeParse(body);
-    if (!result.success) {
-      return NextResponse.json({ message: "Invalid input" }, { status: 422 });
-    }
-
     const {
       pharmacyName,
       pharmacyRegNo,
       pharmacyLocation,
-      contactNumber,
+      contactNo,
       email,
       password,
-    } = result.data;
+    } = body;
 
     //check if the PharmacyRegNo is already registered
     const isPharmacyExist = await Pharmacist.findOne({
-      pharmacyRegNo,
+      regNo: pharmacyRegNo,
     });
     if (isPharmacyExist) {
       return NextResponse.json(
@@ -49,7 +35,7 @@ export async function POST(req: Request) {
 
     const newUser = await User.create({
       name: pharmacyName,
-      phone: contactNumber,
+      phone: contactNo,
       password: hashedPassword,
       userType: "pharmacist",
     });

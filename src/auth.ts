@@ -222,12 +222,15 @@ export const { auth, signIn, signOut } = NextAuth({
       if (user) {
         return {
           ...token,
+          // @ts-ignore
           id: user._id,
+          // @ts-ignore
           userType: user.userType,
         };
       }
       return token;
     },
+    // @ts-ignore
     async session({ session, user, token }) {
       return {
         ...session,

@@ -1,11 +1,14 @@
 "use server";
 
 import { z } from "zod";
-import { auth } from "@/auth";
+import { auth, signOut } from "@/auth";
 import { compare, hash } from "bcryptjs";
 import { Doctor } from "@/models/doctor";
 import { connect } from "@/lib/db";
 import { User } from "@/models/user";
+import { Patient } from "@/models/patient";
+import { Laboratory } from "@/models/laboratory";
+import { Pharmacist } from "@/models/pharmacist";
 
 export type PasswordChangeFormState = {
   errors?: {
@@ -22,13 +25,26 @@ const PasswordFormSchema = z
   })
   .required();
 
+// @ts-ignore
 async function CheckUser(userType, id) {
   console.log(userType, id, "userType, id, doctor");
   switch (userType) {
     case "doctor":
       const doctor = await Doctor.findById(id);
-      const user = await User.findById(doctor?.user);
-      return user;
+      const userDoctor = await User.findById(doctor?.user);
+      return userDoctor;
+    case "patient":
+      const patient = await Patient.findById(id);
+      const userPatient = await User.findById(patient?.user);
+      return userPatient;
+    case "laboratory":
+      const laboratory = await Laboratory.findById(id);
+      const userLab = await User.findById(laboratory?.user);
+      return userLab;
+    case "pharmacist":
+      const pharmacist = await Pharmacist.findById(id);
+      const userPharmacist = await User.findById(pharmacist?.user);
+      return userPharmacist;
   }
 }
 
@@ -53,8 +69,9 @@ export async function changePassword(
     };
   } else {
     //get the user
-
+    // @ts-ignore
     console.log(session?.user?.type, session?.user?.id, "session");
+    // @ts-ignore
     const user = await CheckUser(session?.user?.type, session?.user?.id);
     console.log(user, "user");
     //check old password correct
@@ -115,8 +132,10 @@ export async function updateProfile(
     };
   } else {
     //get the user
-
+    // @ts-ignore
     console.log(session?.user?.type, session?.user?.id, "session");
+    // @ts-ignore
+
     const user = await CheckUser(session?.user?.type, session?.user?.id);
     console.log(user, "user");
   }

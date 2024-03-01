@@ -15,13 +15,14 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
 
 type FormValues = {
   pharmacyName: string;
   pharmacyRegNo: string;
   pharmacyLocation: string;
   contactNo: string | number;
-  email: string | number;
+  email: string;
   password: string;
   confirmPassword: string;
 };
@@ -101,10 +102,25 @@ export default function Home() {
 
   const { handleSubmit, reset } = methods;
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const response = await fetch("/api/user/pharmacist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (response.ok) {
+      toast.success(
+        "Great! You have successfully registered. Please sign in to continue."
+      );
+    } else {
+      toast.error(result.message);
+    }
     reset();
   };
+
   return (
     <main>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -171,6 +187,7 @@ export default function Home() {
           </Stack>
         </Card>
       </FormProvider>
+      <Toaster />
     </main>
   );
 }

@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
 
 type FormValues = {
   labName: string;
@@ -22,7 +23,6 @@ type FormValues = {
   labLocation: string;
   contactNo: string | number;
   email: string;
-  otp: string;
   password: string;
   confirmPassword: string;
 };
@@ -34,7 +34,6 @@ export default function Home() {
     labLocation: "",
     contactNo: "",
     email: "",
-    otp: "",
     password: "",
     confirmPassword: "",
   };
@@ -75,15 +74,6 @@ export default function Home() {
           invalid_type_error: "Email is required",
         })
         .email("Please enter a valid email"),
-      otp: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "OTP is required",
-        })
-        .refine(
-          (value) => /^(?:\d{4})$/.test(value),
-          "Please enter 4 digit OTP number ex: 1234"
-        ),
       password: z
         .string({
           required_error: "required field",
@@ -112,10 +102,26 @@ export default function Home() {
 
   const { handleSubmit, reset } = methods;
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
     console.log(data);
+    const response = await fetch("/api/user/laboratory", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (response.ok) {
+      toast.success(
+        "Great! You have successfully registered. Please sign in to continue."
+      );
+    } else {
+      toast.error(result.message);
+    }
     reset();
   };
+
   return (
     <main>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -153,8 +159,6 @@ export default function Home() {
             />
 
             <RHFTextField name="email" label="Email" type="email" />
-
-            <RHFTextField name="otp" label="OTP" />
             <RHFTextField name="password" label="Password" type="password" />
             <RHFTextField
               name="confirmPassword"
@@ -172,7 +176,6 @@ export default function Home() {
             <Button
               href="/login/laboratory"
               variant="contained"
-              color="purple"
               fullWidth
               style={{ borderRadius: 20 }}
             >
@@ -181,6 +184,7 @@ export default function Home() {
           </Stack>
         </Card>
       </FormProvider>
+      <Toaster />
     </main>
   );
 }
