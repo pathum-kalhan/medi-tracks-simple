@@ -1,4 +1,4 @@
-import { signIn } from "@/auth";
+"use client";
 import { Button, Card, Stack, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { Link as MUILink } from "@mui/material";
@@ -7,8 +7,9 @@ import { logIn } from "@/actions/login/laboratory";
 import toast from "react-hot-toast";
 import { useFormState } from "react-dom";
 
-export default async function Page() {
+export default function Page() {
   const initialState = { message: null };
+  // @ts-ignore
   const [state, dispatch] = useFormState(logIn, initialState);
 
   if (state) {

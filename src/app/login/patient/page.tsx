@@ -9,6 +9,7 @@ import { useFormState } from "react-dom";
 
 export default function Page() {
   const initialState = { message: null };
+  // @ts-ignore
   const [state, dispatch] = useFormState(logIn, initialState);
 
   if (state) {
