@@ -11,7 +11,6 @@ export default async function Home() {
     { left: "Doctor ID No.", right: "123456" },
   ];
   const session = await auth();
-  console.log(session, "session");
   return (
     <main>
       {JSON.stringify(session)}
