@@ -8,7 +8,7 @@ import { ZodType, z } from "zod";
 import toast, { Toaster } from "react-hot-toast";
 import { updatePassword, State } from "@/actions/profile/update-password";
 import { useFormState } from "react-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 type FormValue = {
   oldPassword: string;
@@ -17,6 +17,18 @@ type FormValue = {
 
 export default function Home() {
   const [state, dispatch] = useFormState<State, FormData>(updatePassword, null);
+
+  useEffect(() => {
+    if (!state) {
+      return;
+    }
+    if (state.status === "success") {
+      toast.success(state.message);
+    }
+    if (state.status === "error") {
+      toast.error(state.message);
+    }
+  });
 
   return (
     <form action={dispatch}>

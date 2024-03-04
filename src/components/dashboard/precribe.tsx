@@ -1,6 +1,4 @@
-import FormProvider from "@/Forms/FormProvider";
-import RHFTextField from "@/Forms/RHFTextField";
-import { zodResolver } from "@hookform/resolvers/zod";
+"use client";
 import {
   Button,
   Dialog,
@@ -9,13 +7,14 @@ import {
   DialogTitle,
   Grid,
   Stack,
-  styled,
+  TextField,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { ChangeEvent, FormEvent } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { ZodType, z } from "zod";
+import { useFormState } from "react-dom";
+import { createPrescription, State } from "@/actions/doctor/add-data";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 //type form
 
@@ -28,18 +27,6 @@ type Props = {
   type: "prescribe" | "surgery";
 };
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
-
 export const Prescribe = ({
   open,
   setOpen,
@@ -50,92 +37,105 @@ export const Prescribe = ({
 }: Props) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [state, dispatch] = useFormState<State, FormData>(
+    createPrescription,
+    null
+  );
 
-  const defaultValues = {
-    hospital: "",
-    decease: "",
-    medicine: "",
-    validTill: "",
-    doctorNotes: "",
-  };
-
-  let schema: ZodType;
-  switch (type) {
-    case "prescribe":
-      schema = z.object({
-        hospital: z.string(),
-        decease: z.string(),
-        medicine: z.string(),
-        validTill: z.string(),
-        doctorNotes: z.string(),
-      });
-      break;
-    case "surgery":
-      schema = z.object({
-        hospital: z.string(),
-        medicine: z.string(),
-        validTill: z.string(),
-        surgeryName: z.string(),
-        doctorNotes: z.string(),
-      });
-      break;
-  }
-  const methods = useForm({ resolver: zodResolver(schema), defaultValues });
-
-  const { setValue, control, handleSubmit, reset } = methods;
-
-  const onSubmit = (data: any) => {
-    console.log(data);
-    reset();
-  };
+  useEffect(() => {
+    if (!state) {
+      return;
+    }
+    if (state.status === "success") {
+      toast.success(state.message);
+    }
+    if (state.status === "error") {
+      toast.error(state.message);
+    }
+  });
 
   const handleClose = () => {
     setOpen(false);
-    reset();
   };
+
+  console.log(state?.errors);
+
   return (
     <Dialog open={open} onClose={handleClose} fullScreen={fullScreen} fullWidth>
-      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <form action={dispatch}>
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
           <Grid
             container
-            spacing={2}
+            spacing={1}
             justifyContent="space-between"
             sx={{ mb: 2 }}
           >
-            <Grid item>Dr. {name}</Grid>
-            <Grid item>Date: {date}</Grid>
+            <Grid item>
+              <TextField name="name" size="small" value={name} disabled />
+            </Grid>
+            <Grid item>Time : {date}</Grid>
           </Grid>
           <Stack spacing={2}>
-            <RHFTextField name="hospital" label="Hospital" required fullWidth />
+            <TextField
+              name="hospital"
+              label="Hospital"
+              size="small"
+              required
+              fullWidth
+              error={!!state?.errors?.hospital ? true : false}
+              helperText={state?.errors?.hospital?.[0]}
+            />
             {type === "prescribe" && (
-              <RHFTextField name="decease" label="Decease" required fullWidth />
+              <TextField
+                name="disease"
+                label="Disease"
+                size="small"
+                required
+                fullWidth
+                error={!!state?.errors?.disease ? true : false}
+                helperText={state?.errors?.disease?.[0]}
+              />
             )}
-            <RHFTextField
+            <TextField
               name="medicine"
               label="Medicine"
+              size="small"
               required
               fullWidth
               multiline
               rows={5}
+              error={!!state?.errors?.medicine ? true : false}
+              helperText={state?.errors?.medicine?.[0]}
             />
-            <RHFTextField name="validTill" type="date" required fullWidth />
+            <TextField
+              name="validTill"
+              type="date"
+              size="small"
+              required
+              fullWidth
+              error={!!state?.errors?.validTill ? true : false}
+              helperText={state?.errors?.validTill?.[0]}
+            />
             {type === "surgery" && (
-              <RHFTextField
+              <TextField
                 name="surgeryName"
                 label="Surgery Name"
+                size="small"
                 required
                 fullWidth
               />
             )}
-            <RHFTextField
+            <TextField
               name="doctorNotes"
               label="Doctor Notes"
+              size="small"
               required
               fullWidth
               multiline
               rows={3}
+              error={!!state?.errors?.doctorNote ? true : false}
+              helperText={state?.errors?.doctorNote?.[0]}
             />
           </Stack>
         </DialogContent>
@@ -145,7 +145,7 @@ export const Prescribe = ({
           </Button>
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>
-      </FormProvider>
+      </form>
     </Dialog>
   );
 };

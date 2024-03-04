@@ -29,7 +29,6 @@ export const Profile = () => {
           "Content-Type": "application/json",
           accept: "application/json",
         },
-        next: { tags: ["profile"] },
       });
       const data = await res.json();
       setProfile(data.data);

@@ -1,13 +1,10 @@
-"use client";
-
-import { useState } from "react";
+import { auth } from "@/auth";
 import { Card } from "@/components/dashboard/card";
-import { Prescribe } from "@/components/dashboard/precribe";
+import { ProfileModel } from "@/components/dashboard/profile-model";
 import { Button, Grid } from "@mui/material";
 
-export default function Page() {
-  const [openPrescribe, setOpenPrescribe] = useState(false);
-  const [openSurgery, setOpenSurgery] = useState(false);
+export default async function Home() {
+  const session = await auth();
   const column = [
     { field: "id", headerName: "ID", width: 100 },
     { field: "date", headerName: "Date", width: 200 },
@@ -36,23 +33,11 @@ export default function Page() {
         >
           View lab reports
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setOpenPrescribe(true)}
-          sx={{ m: 1 }}
-        >
-          Prescribe Medication
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setOpenSurgery(true)}
-          sx={{ m: 1 }}
-        >
-          Add Surgery Data
-        </Button>
+        {session?.user?.type === "doctor" && (
+          <ProfileModel name={session?.user?.name!} />
+        )}
       </Grid>
+
       <Grid item xs={12} md={6}>
         <Card
           title="Prescribed Medications"
@@ -78,23 +63,6 @@ export default function Page() {
           href={"/dashboard/surgical-history"}
         />
       </Grid>
-
-      <Prescribe
-        open={openPrescribe}
-        setOpen={setOpenPrescribe}
-        title="Prescribe Medication"
-        date={new Date().toDateString()}
-        name="John Doe"
-        type="prescribe"
-      />
-      <Prescribe
-        open={openSurgery}
-        setOpen={setOpenSurgery}
-        title="Add Surgery Data"
-        date={new Date().toDateString()}
-        name="John Doe"
-        type="surgery"
-      />
     </Grid>
   );
 }
