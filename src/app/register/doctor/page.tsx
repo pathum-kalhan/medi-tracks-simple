@@ -86,24 +86,7 @@ export default function Home() {
 
   const { handleSubmit, reset } = methods;
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const response = await fetch("/api/user/doctor", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const result = await response.json();
-    if (response.ok) {
-      toast.success(
-        "Great! You have successfully registered. Please sign in to continue."
-      );
-    } else {
-      toast.error(result.message);
-    }
-    reset();
-  };
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {};
   return (
     <main>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>

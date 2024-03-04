@@ -25,7 +25,7 @@ import Logo from "../../../logo.png";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Image from "next/image";
 import { Profile } from "./profile";
-import { signOut } from "../../auth";
+//import { signOut } from "../../auth";
 
 const drawerWidth = 240;
 
@@ -98,7 +98,13 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-export function NavBar({ children }: { children: React.ReactNode }) {
+export function NavBar({
+  drawer,
+  children,
+}: {
+  drawer: React.ReactNode;
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
 
   const theme = useTheme();
@@ -110,64 +116,6 @@ export function NavBar({ children }: { children: React.ReactNode }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-  const drawer = (
-    <div>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 2,
-          height: 135,
-        }}
-      >
-        <Image src={Logo} alt="MediTracks Pro" width={160} height={100} />
-      </Box>
-
-      <List>
-        {routes.map((route) => (
-          <ListItem key={route.path} disablePadding>
-            <ListItemButton href={route.path}>
-              <ListItemIcon>{route.icon}</ListItemIcon>
-              <ListItemText primary={route.name} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 2,
-          height: 135,
-        }}
-      >
-        <Typography variant="caption" align="center">
-          AD
-        </Typography>
-      </Box>
-      <Divider />
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={async () => {
-              await signOut({
-                redirectTo: "/",
-              });
-            }}
-          >
-            <ListItemIcon>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </div>
-  );
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -219,7 +167,7 @@ export function NavBar({ children }: { children: React.ReactNode }) {
             {children}
           </Grid>
           <Grid item xs={12} md={2}>
-            <Profile name="Name" gender="Male" age={24} mobile={767079234} />
+            <Profile />
           </Grid>
         </Grid>
       </Main>

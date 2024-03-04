@@ -31,14 +31,6 @@ const doctorSchema = new Schema(
 
 const prescriptionSchema = new Schema(
   {
-    doctorName: {
-      type: String,
-      required: true,
-    },
-    date: {
-      type: Date,
-      required: true,
-    },
     hospital: {
       type: String,
       required: true,
@@ -54,6 +46,14 @@ const prescriptionSchema = new Schema(
     validTill: {
       type: Date,
       required: true,
+    },
+    patient: {
+      type: Schema.Types.ObjectId,
+      ref: "Patient",
+    },
+    doctor: {
+      type: Schema.Types.ObjectId,
+      ref: "Doctor",
     },
     doctorNotes: String,
   },

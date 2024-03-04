@@ -2,7 +2,7 @@
 import { Pharmacist } from "@/models/pharmacist";
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
-import { connect } from "@/lib/db";
+import { connect } from "@/lib/mongo";
 import { z } from "zod";
 import { User } from "@/models/user";
 

@@ -2,7 +2,7 @@
 import { Patient } from "@/models/patient";
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
-import { connect } from "@/lib/db";
+import { connect } from "@/lib/mongo";
 import { User } from "@/models/user";
 
 export async function POST(req: Request) {

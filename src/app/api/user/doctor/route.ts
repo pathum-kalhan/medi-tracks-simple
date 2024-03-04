@@ -2,7 +2,7 @@ import { Doctor } from "@/models/doctor";
 import { User } from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
-import { connect } from "@/lib/db";
+import { connect } from "@/lib/mongo";
 import { Schema } from "mongoose";
 
 export async function POST(req: Request) {

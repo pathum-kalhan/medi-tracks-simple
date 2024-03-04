@@ -1,22 +1,40 @@
 "use client";
 
-import RHFTextField from "@/Forms/RHFTextField";
 import { Box, Button, Stack, TextField } from "@mui/material";
-import { FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ZodType, z } from "zod";
 import toast, { Toaster } from "react-hot-toast";
-import { updatePassword, State } from "@/actions/profile/update-password";
+import { updateProfile, State } from "@/actions/profile/update-profile";
 import { useFormState } from "react-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type FormValue = {
   oldPassword: string;
   newPassword: string;
 };
 
+type Profile = {
+  name: string;
+  phone: string;
+};
+
 export default function Home() {
-  const [state, dispatch] = useFormState<State, FormData>(updatePassword, null);
+  const [state, dispatch] = useFormState<State, FormData>(updateProfile, null);
+
+  const [profile, setProfile] = useState<Profile>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch("http://localhost:3000/api/profile", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      });
+      const data = await res.json();
+      setProfile(data.data);
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (!state) {
@@ -29,6 +47,7 @@ export default function Home() {
       toast.error(state.message);
     }
   });
+  console.log(state?.errors);
 
   return (
     <form action={dispatch}>
@@ -46,20 +65,18 @@ export default function Home() {
       >
         <Stack spacing={2}>
           <TextField
-            name="oldPassword"
-            label="Old Password"
-            type="password"
+            name="name"
             size="small"
-            error={state?.errors?.oldPassword ? true : false}
-            helperText={state?.errors?.oldPassword}
+            defaultValue={profile?.name}
+            error={state?.errors?.name ? true : false}
+            helperText={state?.errors?.name}
           />
           <TextField
-            name="newPassword"
-            label="New Password"
-            type="password"
+            name="phone"
             size="small"
-            error={state?.errors?.newPassword ? true : false}
-            helperText={state?.errors?.newPassword}
+            defaultValue={profile?.phone}
+            error={state?.errors?.phone ? true : false}
+            helperText={state?.errors?.phone}
           />
           <Button type="submit" variant="contained">
             Submit

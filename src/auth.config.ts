@@ -1,4 +1,7 @@
+import CredentialsProvider from "next-auth/providers/credentials";
+
 import type { NextAuthConfig } from "next-auth";
+
 export const authConfig = {
   pages: {
     signIn: "/",
@@ -11,7 +14,7 @@ export const authConfig = {
         if (isLoggedIn) return true;
         return false;
       } else if (isLoggedIn) {
-        return Response.redirect(new URL("/dashboard", nextUrl));
+        //return Response.redirect(new URL("/dashboard", nextUrl.origin));
       }
       return true;
     },

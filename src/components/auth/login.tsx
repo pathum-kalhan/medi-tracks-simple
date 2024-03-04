@@ -5,7 +5,6 @@ import RHFTextField from "@/Forms/RHFTextField";
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { signIn } from "../../auth";
 
 import {
   Button,
@@ -20,6 +19,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { AuthError } from "next-auth";
 import toast, { Toaster } from "react-hot-toast";
+// import { signIn } from "@/auth";
 
 type Props = {
   role: "patient" | "doctor" | "laboratory" | "pharmacist";
@@ -62,16 +62,11 @@ export function Login({ role }: Props) {
   const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<any> = async (data) => {
-    try {
-      await signIn("credentials", data, role).then(() => {
-        router.push("/dashboard");
-      });
-    } catch (error) {
-      const err = error as AuthError;
-      if (err.stack?.includes("CredentialsSignin")) {
-        toast.error("Please check your login credentials, and try again.");
-      }
-    }
+    // const loginData = {
+    //   ...data,
+    //   role: role,
+    // };
+    // const res = await signIn("credentials", loginData);
   };
 
   return (
