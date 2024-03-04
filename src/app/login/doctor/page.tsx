@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 
 export default function Page() {
   const initialState = { message: null };
+  // @ts-ignore
   const [state, dispatch] = useFormState(logIn, initialState);
 
   if (state) {

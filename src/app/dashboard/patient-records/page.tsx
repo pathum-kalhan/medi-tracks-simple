@@ -34,7 +34,7 @@ export default async function Home() {
           View lab reports
         </Button>
         {session?.user?.type === "doctor" && (
-          <ProfileModel name={session?.user?.name!} />
+          <ProfileModel name={session?.user?.name} />
         )}
       </Grid>
 

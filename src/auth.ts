@@ -6,6 +6,20 @@ import clientPromise from "./lib/db";
 
 import { authConfig } from "./auth.config";
 
+declare module "next-auth" {
+  interface User {
+    _id: string;
+    userType: string;
+  }
+  interface Session {
+    user: {
+      id: string;
+      name: string;
+      type: string;
+    };
+  }
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   adapter: MongoDBAdapter(clientPromise),
@@ -47,9 +61,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         return {
           ...token,
-          // @ts-ignore
+
           id: user._id,
-          // @ts-ignore
+
           userType: user.userType,
         };
       }
