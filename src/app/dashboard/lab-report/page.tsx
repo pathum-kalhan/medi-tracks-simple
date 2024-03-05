@@ -30,7 +30,6 @@ export default function Home() {
         <Button
           variant="contained"
           size="small"
-          color="green"
           href="/files/dummy.pdf"
           target="_blank"
           download={true}
