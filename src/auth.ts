@@ -36,7 +36,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
         const response = await fetch(
-          new URL("/api/public", "http://localhost:3000"),
+          new URL("/api/public", process.env.NEXT_PUBLIC_API_URL as string),
           {
             method: "POST",
             headers: {

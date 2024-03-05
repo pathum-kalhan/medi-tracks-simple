@@ -23,13 +23,16 @@ export const Profile = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch("http://localhost:3000/api/profile", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-      });
+      const res = await fetch(
+        new URL("api/profile", process.env.NEXT_PUBLIC_API_URL as string),
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        }
+      );
       const data = await res.json();
       setProfile(data.data);
     };

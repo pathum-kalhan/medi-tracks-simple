@@ -19,7 +19,10 @@ export default function Page({
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(
-        `http://localhost:3000/api/search-patient?nic=${searchParams.nic}`,
+        new URL(
+          `/api/search-patient?nic=${searchParams.nic}`,
+          process.env.NEXT_PUBLIC_API_URL as string
+        ),
         {
           method: "GET",
           headers: {
