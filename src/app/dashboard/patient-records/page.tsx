@@ -5,7 +5,10 @@ import { Button, Grid } from "@mui/material";
 
 async function getPatientData(nic: string) {
   const res = await fetch(
-    `http://localhost:3000/api/search-patient?nic=${nic}`,
+    new URL(
+      `/api/search-patient?nic=${nic}`,
+      process.env.NEXT_PUBLIC_API_URL as string
+    ),
     {
       method: "GET",
       headers: {
@@ -26,7 +29,10 @@ export default async function Page({
   const session = await auth();
   const nic = searchParams.nic!;
   const res = await fetch(
-    `http://localhost:3000/api/search-patient?nic=${nic}`,
+    new URL(
+      `/api/search-patient?nic=${nic}`,
+      process.env.NEXT_PUBLIC_API_URL as string
+    ),
     {
       method: "GET",
       headers: {

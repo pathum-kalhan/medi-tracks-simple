@@ -3,7 +3,10 @@ import { connect } from "@/lib/mongo";
 import { Patient } from "@/models/patient";
 
 export const GET = auth(async (req) => {
-  const { searchParams } = new URL(req.url, "http://localhost:3000");
+  const { searchParams } = new URL(
+    req.url,
+    process.env.NEXT_PUBLIC_API_URL as string
+  );
   const nic = searchParams.get("nic");
   if (!nic) {
     return Response.json({ data: [], error: "NIC is required" });
