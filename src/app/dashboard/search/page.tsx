@@ -5,20 +5,35 @@ import { User } from "@/components/dashboard/user-card";
 import { LabReportUpload } from "@/components/dashboard/view";
 import { Button, Grid, Pagination } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Home() {
-  const [open, setOpen] = useState(false);
+export default function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   const [postsPerPage, setPostsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchResults, setSearchResults] = useState([]);
 
-  const searchResults = new Array(20).fill(0).map((_, index) => {
-    return {
-      name: `John Doe ${index}`,
-      gender: index % 2 === 0 ? "Male" : "Female",
-      age: index + 20,
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch(
+        `http://localhost:3000/api/search-patient?nic=${searchParams.nic}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      setSearchResults(data.data);
     };
-  });
+    fetchData();
+  }, [searchParams.nic]);
+  console.log(searchResults);
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -36,7 +51,7 @@ export default function Home() {
           <Grid container spacing={2} direction="row">
             {currentPosts.map((result, index) => (
               <Grid key={index} item xs={12}>
-                <User setOpen={setOpen} results={result} />
+                <User results={result} />
               </Grid>
             ))}
           </Grid>
@@ -53,7 +68,6 @@ export default function Home() {
           />
         </Grid>
       </Grid>
-      <LabReportUpload open={open} setOpen={setOpen} />
     </div>
   );
 }

@@ -3,8 +3,41 @@ import { Card } from "@/components/dashboard/card";
 import { ProfileModel } from "@/components/dashboard/profile-model";
 import { Button, Grid } from "@mui/material";
 
-export default async function Home() {
+async function getPatientData(nic: string) {
+  const res = await fetch(
+    `http://localhost:3000/api/search-patient?nic=${nic}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+  const data = await res.json();
+  return data;
+}
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
   const session = await auth();
+  const nic = searchParams.nic!;
+  const res = await fetch(
+    `http://localhost:3000/api/search-patient?nic=${nic}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+  const data = await res.json();
+
+  console.log(data, "data");
   const column = [
     { field: "id", headerName: "ID", width: 100 },
     { field: "date", headerName: "Date", width: 200 },
