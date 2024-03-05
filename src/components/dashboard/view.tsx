@@ -42,7 +42,7 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-export const ViewPatient = ({ setOpen, open }: Props) => {
+export const LabReportUpload = ({ setOpen, open }: Props) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -132,7 +132,7 @@ export const ViewPatient = ({ setOpen, open }: Props) => {
         </DialogContent>
         <DialogActions>
           <Button variant="contained" type="submit" sx={{ borderRadius: 15 }}>
-            Create
+            Create lab report
           </Button>
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>

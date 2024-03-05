@@ -2,7 +2,7 @@
 
 import { PaginationPage } from "@/components/common/pagination";
 import { User } from "@/components/dashboard/user-card";
-import { ViewPatient } from "@/components/dashboard/view";
+import { LabReportUpload } from "@/components/dashboard/view";
 import { Button, Grid, Pagination } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
@@ -53,7 +53,7 @@ export default function Home() {
           />
         </Grid>
       </Grid>
-      <ViewPatient open={open} setOpen={setOpen} />
+      <LabReportUpload open={open} setOpen={setOpen} />
     </div>
   );
 }
