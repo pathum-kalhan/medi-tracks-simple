@@ -19,10 +19,7 @@ import { CreatePatient } from "./create";
 import { useRouter } from "next/navigation";
 
 type FormValues = {
-  id: string;
   nic: string;
-  name: string;
-  mobile: string | number;
 };
 
 type Props = {
@@ -34,22 +31,13 @@ export default function FormDialog({ open, setOpen }: Props) {
   const [openCreate, setOpenCreate] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const router = useRouter()
+  const router = useRouter();
 
   const defaultValues = {
-    id: "",
     nic: "",
-    name: "",
-    mobile: "",
   };
 
   const LoginSchema: ZodType<FormValues> = z.object({
-    id: z
-      .string({
-        required_error: "required field",
-        invalid_type_error: "ID is required",
-      })
-      .min(6, "ID must be at least 6 characters"),
     nic: z
       .string({
         required_error: "required field",
@@ -59,33 +47,18 @@ export default function FormDialog({ open, setOpen }: Props) {
         (value) => /^(?:\d{12}|\d{9}V)$/.test(value),
         "Please enter a valid NIC number ex: 123456789012 or 123456789V"
       ),
-    name: z
-      .string({
-        required_error: "required field",
-        invalid_type_error: "Name is required",
-      })
-      .min(3, "Name must be at least 3 characters"),
-    mobile: z
-      .string({
-        required_error: "required field",
-        invalid_type_error: "Mobile is required",
-      })
-      .refine(
-        (value) => /^[0-9]{10}$/.test(value),
-        "Please enter a valid mobile number ex: 0771234567"
-      ),
   });
 
   const methods = useForm<FormValues>({
     defaultValues,
-    // resolver: zodResolver(LoginSchema),
+    resolver: zodResolver(LoginSchema),
   });
 
   const { handleSubmit, reset } = methods;
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
-    router.push('/dashboard/search')
+    router.push(`/dashboard/search?nic=${data.nic}`);
     reset();
   };
 
@@ -118,7 +91,6 @@ export default function FormDialog({ open, setOpen }: Props) {
           </DialogTitle>
           <DialogContent>
             <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-              <RHFTextField name="id" label="Patient ID" fullWidth />
               <RHFTextField name="nic" label="NIC" fullWidth />
               <RHFTextField name="name" label="Patient Name" fullWidth />
               <RHFTextField

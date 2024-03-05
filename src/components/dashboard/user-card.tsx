@@ -13,15 +13,16 @@ import Link from "next/link";
 import MessageIcon from "@mui/icons-material/Message";
 
 type Props = {
-  setOpen: (value: boolean) => void;
   results: {
+    nic: string;
     name: string;
-    gender: string;
-    age: number;
+    gender?: string;
+    age?: number;
+    phone?: string;
   };
 };
 
-export function User({ setOpen, results }: Props) {
+export function User({ results }: Props) {
   const [applicationStatus, setApplicationStatus] = React.useState("");
 
   const handleChangeApplicationStatus = (event: SelectChangeEvent) => {
@@ -57,11 +58,14 @@ export function User({ setOpen, results }: Props) {
                 <Typography sx={{ textAlign: "left" }}>
                   <b>Name :</b> {results.name}
                 </Typography>
-                <Typography sx={{ textAlign: "left" }}>
+                {/* <Typography sx={{ textAlign: "left" }}>
                   <b>Gender :</b> {results.gender}
                 </Typography>
                 <Typography sx={{ textAlign: "left" }}>
                   <b>Age :</b> {results.age}
+                </Typography> */}
+                <Typography sx={{ textAlign: "left" }}>
+                  <b>Phone :</b> {results.phone}
                 </Typography>
               </Stack>
             </Grid>
@@ -86,7 +90,7 @@ export function User({ setOpen, results }: Props) {
               <Button
                 size="large"
                 variant="contained"
-                onClick={() => setOpen(true)}
+                href={`/dashboard/patient-records?nic=${results.nic}`}
                 sx={{ borderRadius: 2 }}
               >
                 View
