@@ -16,103 +16,28 @@ import {
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
-
-type FormValues = {
-  name: string;
-  nic: string;
-  mobileNumber: string | number;
-  password: string;
-  confirmPassword: string;
-};
+import { useFormState } from "react-dom";
+import { patient, State } from "@/actions/register/patient";
+import { useEffect } from "react";
 
 export default function Home() {
-  const defaultValues = {
-    name: "",
-    nic: "",
-    mobileNumber: "",
-    password: "",
-    confirmPassword: "",
-  };
+  const [state, dispatch] = useFormState<State, FormData>(patient, null);
 
-  const RegisterSchema: ZodType<FormValues> = z
-    .object({
-      name: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Name is required",
-        })
-        .min(3, "Name must be at least 3 characters"),
-      nic: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "NIC is required",
-        })
-        .refine(
-          (value) => /^(?:\d{12}|\d{9}V)$/.test(value),
-          "Please enter a valid NIC number ex: 123456789012 or 123456789V"
-        ),
-      mobileNumber: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Mobile number is required",
-        })
-        .refine(
-          (value) => /^(?:\d{10})$/.test(value),
-          "Please enter a valid mobile number ex: 0771234568"
-        )
-        .transform((data) => Number(data)),
-      password: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Password is required",
-        })
-        .min(6, "Password must be at least 6 characters"),
-      confirmPassword: z.string({
-        required_error: "required field",
-        invalid_type_error: "Confirm Password is required",
-      }),
-    })
-    .superRefine(({ confirmPassword, password }, ctx) => {
-      if (confirmPassword !== password) {
-        ctx.addIssue({
-          code: "custom",
-          message: "The passwords did not match",
-          path: ["confirmPassword"],
-        });
-      }
-    });
-
-  const methods = useForm<FormValues>({
-    defaultValues,
-    resolver: zodResolver(RegisterSchema),
-  });
-
-  const { handleSubmit, reset } = methods;
-
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log(data, "data");
-    const response = await fetch("/api/user/patient", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const result = await response.json();
-    console.log(result, "result");
-    if (response.ok) {
-      toast.success(
-        "Great! You have successfully registered. Please sign in to continue."
-      );
-    } else {
-      toast.error(result.message);
+  useEffect(() => {
+    if (!state) {
+      return;
     }
-    reset();
-  };
+    if (state.status === "success") {
+      toast.success(state.message);
+    }
+    if (state.status === "error") {
+      toast.error(state.message);
+    }
+  });
 
   return (
     <main>
-      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <form action={dispatch}>
         <Card
           sx={{
             top: "50%",
@@ -137,20 +62,56 @@ export default function Home() {
             Patients Register
           </Typography>
           <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-            <RHFTextField name="name" label="Patient Name" />
-            <RHFTextField name="nic" label="NIC" />
-
-            <RHFTextField
-              name="mobileNumber"
-              label="Mobile Number"
-              type="number"
+            <TextField
+              name="name"
+              label="Patient Name"
+              size="small"
+              error={state?.errors?.name ? true : false}
+              helperText={state?.errors?.name ? state.errors.name[0] : ""}
+              fullWidth
+            />
+            <TextField
+              name="nic"
+              label="NIC"
+              size="small"
+              error={state?.errors?.nic ? true : false}
+              helperText={state?.errors?.nic ? state.errors.nic[0] : ""}
+              fullWidth
             />
 
-            <RHFTextField name="password" label="Password" type="password" />
-            <RHFTextField
+            <TextField
+              name="phone"
+              label="Mobile Number"
+              type="number"
+              size="small"
+              error={state?.errors?.phone ? true : false}
+              helperText={state?.errors?.phone ? state.errors.phone[0] : ""}
+              fullWidth
+            />
+
+            <TextField
+              name="password"
+              label="Password"
+              type="password"
+              size="small"
+              error={state?.errors?.password ? true : false}
+              helperText={
+                state?.errors?.password ? state.errors.password[0] : ""
+              }
+              fullWidth
+            />
+            <TextField
               name="confirmPassword"
               label="Confirm Password"
               type="password"
+              size="small"
+              error={state?.errors?.confirmPassword ? true : false}
+              helperText={
+                state?.errors?.confirmPassword
+                  ? state.errors.confirmPassword[0]
+                  : ""
+              }
+              fullWidth
             />
             <Button
               type="submit"
@@ -170,7 +131,7 @@ export default function Home() {
             </Button>
           </Stack>
         </Card>
-      </FormProvider>
+      </form>
       <Toaster />
     </main>
   );

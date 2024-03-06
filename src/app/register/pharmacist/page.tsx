@@ -16,114 +16,28 @@ import {
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
-
-type FormValues = {
-  pharmacyName: string;
-  pharmacyRegNo: string;
-  pharmacyLocation: string;
-  contactNo: string | number;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+import { useFormState } from "react-dom";
+import { pharmacist, State } from "@/actions/register/pharmacist";
+import { useEffect } from "react";
 
 export default function Home() {
-  const defaultValues = {
-    pharmacyName: "",
-    pharmacyRegNo: "",
-    pharmacyLocation: "",
-    contactNo: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  };
+  const [state, dispatch] = useFormState<State, FormData>(pharmacist, null);
 
-  const RegisterSchema: ZodType<FormValues> = z
-    .object({
-      pharmacyName: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Pharmacy Name is required",
-        })
-        .min(3, "Pharmacy Name must be at least 3 characters"),
-      pharmacyRegNo: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Pharmacy Registration Number is required",
-        })
-        .min(3, "Pharmacy Registration Number must be at least 3 characters"),
-      pharmacyLocation: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Pharmacy Location is required",
-        })
-        .min(3, "Pharmacy Location must be at least 3 characters"),
-      contactNo: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Mobile number is required",
-        })
-        .refine(
-          (value) => /^(?:\d{10})$/.test(value),
-          "Please enter a valid mobile number ex: 0771234568"
-        )
-        .transform((data) => Number(data)),
-      email: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Email is required",
-        })
-        .email("Please enter a valid email"),
-      password: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Password is required",
-        })
-        .min(6, "Password must be at least 6 characters"),
-      confirmPassword: z.string({
-        required_error: "required field",
-        invalid_type_error: "Confirm Password is required",
-      }),
-    })
-    .superRefine(({ confirmPassword, password }, ctx) => {
-      if (confirmPassword !== password) {
-        ctx.addIssue({
-          code: "custom",
-          message: "The passwords did not match",
-          path: ["confirmPassword"],
-        });
-      }
-    });
-
-  const methods = useForm<FormValues>({
-    defaultValues,
-    resolver: zodResolver(RegisterSchema),
-  });
-
-  const { handleSubmit, reset } = methods;
-
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const response = await fetch("/api/user/pharmacist", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const result = await response.json();
-    if (response.ok) {
-      toast.success(
-        "Great! You have successfully registered. Please sign in to continue."
-      );
-    } else {
-      toast.error(result.message);
+  useEffect(() => {
+    if (!state) {
+      return;
     }
-    reset();
-  };
+    if (state.status === "success") {
+      toast.success(state.message);
+    }
+    if (state.status === "error") {
+      toast.error(state.message);
+    }
+  });
 
   return (
     <main>
-      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <form action={dispatch}>
         <Card
           sx={{
             top: "50%",
@@ -148,25 +62,67 @@ export default function Home() {
             Pharmacy Register
           </Typography>
           <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-            <RHFTextField name="pharmacyName" label="Pharmacy Name" />
-            <RHFTextField
-              name="pharmacyRegNo"
-              label="Pharmacy Registration Number"
+            <TextField
+              name="name"
+              label="Pharmacy Name"
+              size="small"
+              error={state?.errors?.name ? true : false}
+              helperText={state?.errors?.name}
+              fullWidth
             />
-            <RHFTextField name="pharmacyLocation" label="Pharmacy Location" />
-            <RHFTextField
-              name="contactNo"
+            <TextField
+              name="regNo"
+              label="Pharmacy Registration Number"
+              size="small"
+              error={state?.errors?.regNo ? true : false}
+              helperText={state?.errors?.regNo}
+              fullWidth
+            />
+            <TextField
+              name="location"
+              label="Pharmacy Location"
+              size="small"
+              error={state?.errors?.location ? true : false}
+              helperText={state?.errors?.location}
+              fullWidth
+            />
+            <TextField
+              name="phone"
               label="Contact Number"
               type="number"
+              size="small"
+              error={state?.errors?.phone ? true : false}
+              helperText={state?.errors?.phone}
+              fullWidth
             />
 
-            <RHFTextField name="email" label="Email" type="email" />
+            <TextField
+              name="email"
+              label="Email"
+              type="email"
+              size="small"
+              error={state?.errors?.email ? true : false}
+              helperText={state?.errors?.email}
+              fullWidth
+            />
 
-            <RHFTextField name="password" label="Password" type="password" />
-            <RHFTextField
+            <TextField
+              name="password"
+              label="Password"
+              type="password"
+              size="small"
+              error={state?.errors?.password ? true : false}
+              helperText={state?.errors?.password}
+              fullWidth
+            />
+            <TextField
               name="confirmPassword"
               label="Confirm Password"
               type="password"
+              size="small"
+              error={state?.errors?.confirmPassword ? true : false}
+              helperText={state?.errors?.confirmPassword}
+              fullWidth
             />
             <Button
               type="submit"
@@ -186,7 +142,7 @@ export default function Home() {
             </Button>
           </Stack>
         </Card>
-      </FormProvider>
+      </form>
       <Toaster />
     </main>
   );
