@@ -50,7 +50,6 @@ export default function Home() {
       toast.error(state.message);
     }
   });
-  console.log(state?.errors);
 
   return (
     <form action={dispatch}>

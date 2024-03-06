@@ -1,10 +1,5 @@
 "use client";
 
-import FormProvider from "@/Forms/FormProvider";
-import RHFTextField from "@/Forms/RHFTextField";
-import { z, ZodType } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-
 import {
   Button,
   Card,
@@ -13,83 +8,29 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Link from "next/link";
-import { useForm, SubmitHandler } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
-
-type FormValues = {
-  name: string;
-  slmcNo: string;
-  phone: string | number;
-  password: string;
-  confirmPassword: string;
-};
+import { useFormState } from "react-dom";
+import { doctor, State } from "@/actions/register/doctor";
+import { useEffect } from "react";
 
 export default function Home() {
-  const defaultValues = {
-    name: "",
-    slmcNo: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-  };
+  const [state, dispatch] = useFormState<State, FormData>(doctor, null);
 
-  const RegisterSchema: ZodType<FormValues> = z
-    .object({
-      name: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Name is required",
-        })
-        .min(3, "Name must be at least 3 characters"),
-      slmcNo: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "NIC is required",
-        })
-        .min(3, "SLMCC No. must be at least 3 characters"),
-      phone: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Mobile number is required",
-        })
-        .refine(
-          (value) => /^(?:\d{10})$/.test(value),
-          "Please enter a valid mobile number ex: 0771234568"
-        )
-        .transform((data) => Number(data)),
-      password: z
-        .string({
-          required_error: "required field",
-          invalid_type_error: "Password is required",
-        })
-        .min(6, "Password must be at least 6 characters"),
-      confirmPassword: z.string({
-        required_error: "required field",
-        invalid_type_error: "Confirm Password is required",
-      }),
-    })
-    .superRefine(({ confirmPassword, password }, ctx) => {
-      if (confirmPassword !== password) {
-        ctx.addIssue({
-          code: "custom",
-          message: "The passwords did not match",
-          path: ["confirmPassword"],
-        });
-      }
-    });
-
-  const methods = useForm<FormValues>({
-    defaultValues,
-    resolver: zodResolver(RegisterSchema),
+  useEffect(() => {
+    if (!state) {
+      return;
+    }
+    if (state.status === "success") {
+      toast.success(state.message);
+    }
+    if (state.status === "error") {
+      toast.error(state.message);
+    }
   });
 
-  const { handleSubmit, reset } = methods;
-
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {};
   return (
     <main>
-      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <form action={dispatch}>
         <Card
           sx={{
             top: "50%",
@@ -114,16 +55,50 @@ export default function Home() {
             Doctor Register
           </Typography>
           <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-            <RHFTextField name="name" label="Full Name" />
-            <RHFTextField name="slmcNo" label="SLMC No." />
+            <TextField
+              name="name"
+              label="Full Name"
+              size="small"
+              fullWidth
+              error={state?.errors?.name ? true : false}
+              helperText={state?.errors?.name}
+            />
+            <TextField
+              name="slmcNo"
+              label="SLMC No."
+              size="small"
+              fullWidth
+              error={state?.errors?.slmcNo ? true : false}
+              helperText={state?.errors?.slmcNo}
+            />
 
-            <RHFTextField name="phone" label="Phone" type="number" />
+            <TextField
+              name="phone"
+              label="Phone"
+              type="number"
+              size="small"
+              fullWidth
+              error={state?.errors?.phone ? true : false}
+              helperText={state?.errors?.phone}
+            />
 
-            <RHFTextField name="password" label="Password" type="password" />
-            <RHFTextField
+            <TextField
+              name="password"
+              label="Password"
+              type="password"
+              size="small"
+              fullWidth
+              error={state?.errors?.password ? true : false}
+              helperText={state?.errors?.password}
+            />
+            <TextField
               name="confirmPassword"
               label="Confirm Password"
               type="password"
+              size="small"
+              fullWidth
+              error={state?.errors?.confirmPassword ? true : false}
+              helperText={state?.errors?.confirmPassword}
             />
             <Button
               type="submit"
@@ -143,7 +118,7 @@ export default function Home() {
             </Button>
           </Stack>
         </Card>
-      </FormProvider>
+      </form>
       <Toaster />
     </main>
   );

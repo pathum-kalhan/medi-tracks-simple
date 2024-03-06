@@ -31,9 +31,8 @@ export const POST = auth(async (req) => {
     let fetchUser;
 
     if (user === "doctor") {
-      const { slmc } = body;
-      const doctor = await Doctor.findOne({ slmcNo: slmc }).populate("user");
-
+      const { slmcNo } = body;
+      const doctor = await Doctor.findOne({ slmcNo }).populate("user");
       if (!doctor) {
         return Response.json({ message: "Doctor not found" }, { status: 404 });
       }
