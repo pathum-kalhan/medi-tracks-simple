@@ -101,7 +101,7 @@ export async function patient(
     name,
     phone,
     password: hashedPassword,
-    userType: "doctor",
+    userType: "patient",
   });
   console.log(newUser._id, "newUser._id");
   const newPatient = await Patient.create({
