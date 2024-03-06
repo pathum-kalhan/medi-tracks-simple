@@ -116,7 +116,7 @@ export async function laboratory(
     name,
     phone,
     password: hashedPassword,
-    userType: "doctor",
+    userType: "laboratory",
   });
   console.log(newUser._id, "newUser._id");
   const newLaboratory = await Laboratory.create({

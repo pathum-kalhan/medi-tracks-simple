@@ -11,14 +11,14 @@ export const GET = auth(async (req) => {
   if (!nic) {
     return Response.json({ data: [], error: "NIC is required" });
   }
-  //   console.log(req.cookies, "cookies");
-  //   if (
-  //     !(
-  //       req.auth?.user?.type === "doctor" || req.auth?.user?.type === "pharmacist"
-  //     )
-  //   ) {
-  //     return Response.json({ data: [], error: "Unauthorized" });
-  //   }
+  console.log(req.cookies, "cookies");
+  if (
+    !(
+      req.auth?.user?.type === "doctor" || req.auth?.user?.type === "pharmacist"
+    )
+  ) {
+    return Response.json({ data: [], error: "Unauthorized" });
+  }
 
   await connect();
   const patient = await Patient.findOne({ nic: nic }).populate("user");
