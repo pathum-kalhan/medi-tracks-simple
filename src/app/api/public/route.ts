@@ -1,13 +1,12 @@
-import { User } from "@/models/user";
 import { auth } from "@/auth";
 import { connect } from "@/lib/mongo";
+import { User } from "@/models/user";
 import { Doctor } from "@/models/doctor";
 import { compare } from "bcryptjs";
 import toast from "react-hot-toast";
 import { Patient } from "@/models/patient";
 import { Laboratory } from "@/models/laboratory";
 import { Pharmacist } from "@/models/pharmacist";
-
 export const GET = auth(async (req) => {
   await connect();
   const u = await User.findById("65e0b866ab7fcc16787b3324");
@@ -22,6 +21,7 @@ export const GET = auth(async (req) => {
 }) as any; // TODO: Fix `auth()` return type
 
 export const POST = auth(async (req) => {
+  console.log("route");
   try {
     await connect();
     const body = await req.json();
