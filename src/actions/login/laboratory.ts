@@ -1,6 +1,7 @@
 "use server";
 import { signIn } from "@/auth";
 import { connect } from "@/lib/mongo";
+import { User } from "@/models/user";
 import { Doctor } from "@/models/doctor";
 import { Laboratory } from "@/models/laboratory";
 import { Patient } from "@/models/patient";
