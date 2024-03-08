@@ -84,12 +84,14 @@ export async function fileUpload(
   const session = await auth();
   const id = session?.user?.id;
 
+  const laboratory = await Laboratory.findOne({ user: id });
+
   const labReport = await LabReport.create({
     name,
     testType,
     url,
     patient: isPatientExist.user._id,
-    laboratory: id,
+    laboratory: laboratory._id,
   });
 
   if (!labReport) {

@@ -45,6 +45,7 @@ export default function Page({
         console.error("Failed to fetch patient data");
       }
       const data = await res.json();
+
       setRows(data.data);
     };
     fetchData();
@@ -78,7 +79,22 @@ export default function Page({
     {
       field: "doctor",
       headerName: "Doctor",
-      width: 200,
+      width: 100,
+    },
+    {
+      field: "disease",
+      headerName: "Disease",
+      width: 150,
+    },
+    {
+      field: "hospital",
+      headerName: "Hospital",
+      width: 150,
+    },
+    {
+      field: "medicine",
+      headerName: "Medicine",
+      width: 100,
     },
     {
       field: "valid",

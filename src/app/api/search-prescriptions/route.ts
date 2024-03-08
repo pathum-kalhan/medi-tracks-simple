@@ -52,6 +52,8 @@ export const GET = auth(async (req) => {
     return Response.json({ data: res });
   }
 
+  console.log(patient);
+
   patient.prescriptions.forEach((prescription: any) => {
     res.push({
       _id: prescription._id,
@@ -59,6 +61,9 @@ export const GET = auth(async (req) => {
       doctor: prescription.doctor.user.name,
       valid: prescription.validTill,
       notes: prescription.doctorNotes,
+      disease: prescription.disease,
+      medicine: prescription.medicine,
+      hospital: prescription.hospital,
     });
   });
 

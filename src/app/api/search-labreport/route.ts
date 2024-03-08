@@ -3,6 +3,7 @@ import { connect } from "@/lib/mongo";
 import { LabReport, Laboratory } from "@/models/laboratory";
 import { Patient } from "@/models/patient";
 import { User } from "@/models/user";
+import { create } from "domain";
 
 export const GET = auth(async (req) => {
   const { searchParams } = new URL(
@@ -34,10 +35,27 @@ export const GET = auth(async (req) => {
       },
     },
   });
+
   console.log(patient);
+
   if (!patient) {
     return Response.json({ data: [], error: "Patient not found" });
   }
 
-  return Response.json({ data: patient.labReports });
+  let data: any = [];
+
+  patient.labReports.forEach((labReport: any) => {
+    data.push({
+      _id: labReport._id,
+      name: labReport.name,
+      testType: labReport.testType,
+      url: labReport.url,
+      createdAt: labReport.createdAt,
+      laboratory: labReport.laboratory.user.name,
+    });
+  });
+
+  console.log(data);
+
+  return Response.json({ data: data });
 });
