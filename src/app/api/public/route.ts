@@ -21,7 +21,7 @@ export const GET = auth(async (req) => {
 }) as any; // TODO: Fix `auth()` return type
 
 export const POST = auth(async (req) => {
-  console.log("route");
+  console.log("in the route handler");
   try {
     await connect();
     const body = await req.json();

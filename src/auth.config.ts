@@ -17,7 +17,7 @@ export const authConfig = {
       } else if (isLoggedIn) {
         if (isOnApiRoute) return true;
         return Response.redirect(
-          new URL("/dashboard", process.env.NEXT_PUBLIC_APP_URL as string)
+          new URL("/dashboard", process.env.NEXT_PUBLIC_API_URL as string)
         );
       }
       return true;

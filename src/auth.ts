@@ -35,6 +35,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
+        console.log("authorized function");
         const response = await fetch(
           new URL("/api/public", process.env.NEXT_PUBLIC_API_URL as string),
           {
@@ -45,7 +46,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             body: JSON.stringify(credentials),
           }
         );
-
+        console.log("after user fetch");
         const user = await response.json();
 
         if (!user.user) {
