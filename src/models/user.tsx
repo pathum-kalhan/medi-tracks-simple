@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import { Schema, models, model } from "mongoose";
 import { Doctor } from "@/models/doctor";
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   name: { type: String, required: true },
   phone: { type: String, required: true },
   password: { type: String },
@@ -12,4 +12,4 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-export const User = mongoose.models.User || mongoose.model("User", userSchema);
+export const User = models.User || model("User", userSchema);
