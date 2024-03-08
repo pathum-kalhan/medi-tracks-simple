@@ -36,6 +36,8 @@ export async function logIn(
   prevState: State | null,
   formData: FormData
 ): Promise<State> {
+  console.log("im in the lab server action 1");
+
   const validationResult = formSchema.safeParse({
     regNo: formData.get("regNo"),
     password: formData.get("password"),
@@ -54,6 +56,7 @@ export async function logIn(
   if (!user) {
     return { status: "error", message: "Laboratory not found" };
   }
+  console.log("im in the lab server action 2");
   const isPasswordMatch = await compare(password, user.user.password);
   if (!isPasswordMatch) {
     return { status: "error", message: "Password is incorrect" };
