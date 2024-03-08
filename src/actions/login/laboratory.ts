@@ -52,9 +52,12 @@ export async function logIn(
   }
   console.log("before connect");
   await connect();
-  console.log("after connect");
 
   const { regNo, password } = validationResult.data;
+  console.log(regNo, password, "after connect");
+  const results = await Laboratory.findOne({ regNo });
+  console.log(results, "results");
+
   const user = await Laboratory.findOne({ regNo }).populate("user");
   console.log(user, "user");
   if (!user) {
