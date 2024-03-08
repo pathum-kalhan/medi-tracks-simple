@@ -1,7 +1,7 @@
 "use server";
 import { auth } from "@/auth";
 import { connect } from "@/lib/mongo";
-import { Doctor, Prescription } from "@/models/doctor";
+import { Doctor, Prescription, Surgery } from "@/models/doctor";
 import { Patient } from "@/models/patient";
 import { User } from "@/models/user";
 import { revalidateTag } from "next/cache";
@@ -16,16 +16,21 @@ export type State = {
     medicine?: string[];
     doctorNote?: string[];
     validTill?: string[];
+    nic?: string[];
+    surgeryName?: string[];
+    type?: string[];
   };
 } | null;
 
 const formSchema = z.object({
   hospital: z.string(),
-  disease: z.string(),
+  disease: z.string(z.string()),
   medicine: z.string(),
   validTill: z.string(),
   doctorNotes: z.string(),
   nic: z.string({}),
+  surgeryName: z.optional(z.string()),
+  type: z.string(),
 });
 
 export async function createPrescription(
@@ -37,12 +42,12 @@ export async function createPrescription(
     return { status: "error", message: "Please login first" };
   }
   const userId = session.user?.id;
-  const type = session.user?.type;
+  const userType = session.user?.type;
   if (!userId) {
     return { status: "error", message: "Please login first" };
   }
 
-  if (!(type === "doctor")) {
+  if (!(userType === "doctor")) {
     return {
       status: "error",
       message: "You are not authorized to prescribe medication",
@@ -51,11 +56,13 @@ export async function createPrescription(
 
   const validationResult = formSchema.safeParse({
     hospital: formData.get("hospital"),
-    disease: formData.get("disease"),
+    disease: formData.get("disease") ?? "",
     medicine: formData.get("medicine"),
     validTill: formData.get("validTill"),
     doctorNotes: formData.get("doctorNotes"),
+    surgeryName: formData.get("surgeryName") ?? "",
     nic: formData.get("nic"),
+    type: formData.get("type"),
   });
 
   if (!validationResult.success) {
@@ -65,14 +72,47 @@ export async function createPrescription(
       errors: validationResult.error.flatten().fieldErrors,
     };
   }
-  const { hospital, disease, medicine, validTill, doctorNotes, nic } =
-    validationResult.data;
+  const {
+    hospital,
+    disease,
+    medicine,
+    validTill,
+    doctorNotes,
+    nic,
+    surgeryName,
+    type,
+  } = validationResult.data;
   await connect();
 
   const user = await User.findById(userId);
   const doctor = await Doctor.findOne({ user: user?._id });
 
   const patient = await Patient.findOne({ nic: nic });
+
+  if (!patient) {
+    return { status: "error", message: "Patient not found" };
+  }
+
+  if (type === "surgery") {
+    const surgery = await Surgery.create({
+      hospital,
+      surgeryName,
+      medicine,
+      validTill,
+      doctorNotes,
+      doctor,
+      patient,
+    });
+
+    await doctor.surgeries.push(surgery);
+    await doctor.save();
+
+    await patient.surgeries.push(surgery);
+    await patient.save();
+
+    await revalidateTag("surgery");
+    return { status: "success", message: "Surgery added successfully" };
+  }
 
   const prescription = await Prescription.create({
     hospital,
