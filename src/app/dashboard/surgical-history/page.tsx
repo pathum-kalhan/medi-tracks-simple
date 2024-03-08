@@ -85,6 +85,7 @@ export default function Home() {
         title={"Surgery"}
         date="2024.1.1"
         type="surgery"
+        nic="123456789V"
       />
       <Notes
         open={openNotes}
