@@ -23,19 +23,24 @@ if (!cached) {
 }
 
 export async function connect() {
-  if (cached.conn) {
+  try {
+    if (cached.conn) {
+      return cached.conn;
+    }
+
+    if (!cached.promise) {
+      const opts = {
+        bufferCommands: false,
+      };
+
+      cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+        return mongoose;
+      });
+    }
+    cached.conn = await cached.promise;
     return cached.conn;
+  } catch (error) {
+    console.log("error in connect function");
+    console.error(error);
   }
-
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
-  }
-  cached.conn = await cached.promise;
-  return cached.conn;
 }
