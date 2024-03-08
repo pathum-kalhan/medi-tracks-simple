@@ -24,6 +24,7 @@ type Props = {
   name: string;
   date: string;
   title: string;
+  nic: string;
   type: "prescribe" | "surgery";
 };
 
@@ -34,6 +35,7 @@ export const Prescribe = ({
   date,
   title,
   type,
+  nic,
 }: Props) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -73,6 +75,7 @@ export const Prescribe = ({
           >
             <Grid item>
               <TextField name="name" size="small" value={name} disabled />
+              <TextField name="nic" value={nic} type="hidden" />
             </Grid>
             <Grid item>Time : {date}</Grid>
           </Grid>

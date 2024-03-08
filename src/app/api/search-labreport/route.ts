@@ -1,6 +1,8 @@
 import { auth } from "@/auth";
 import { connect } from "@/lib/mongo";
+import { LabReport, Laboratory } from "@/models/laboratory";
 import { Patient } from "@/models/patient";
+import { User } from "@/models/user";
 
 export const GET = auth(async (req) => {
   const { searchParams } = new URL(
@@ -9,7 +11,7 @@ export const GET = auth(async (req) => {
   );
   const nic = searchParams.get("nic");
   if (!nic) {
-    return Response.json({ data: [], error: "NIC is required" });
+    return Response.json({ data: [], error: "Patient nic is required" });
   }
 
   // if (
@@ -21,19 +23,21 @@ export const GET = auth(async (req) => {
   // }
 
   await connect();
-  const patient = await Patient.findOne({ nic: nic }).populate("user");
+  const patient = await Patient.findOne({ nic }).populate({
+    path: "labReports",
+    populate: {
+      path: "laboratory",
+      model: Laboratory,
+      populate: {
+        path: "user",
+        model: User,
+      },
+    },
+  });
+  console.log(patient);
   if (!patient) {
     return Response.json({ data: [], error: "Patient not found" });
   }
 
-  const patientData = [
-    {
-      nic: patient.nic,
-      name: patient.user.name,
-      phone: patient.user.phone,
-      labReports: patient.labReports,
-      prescriptions: patient.prescriptions,
-    },
-  ];
-  return Response.json({ data: patientData });
+  return Response.json({ data: patient.labReports });
 });

@@ -35,11 +35,7 @@ const laboratorySchema = new Schema(
 
 const labReportSchema = new Schema(
   {
-    patientNIC: {
-      type: String,
-      required: true,
-    },
-    patientName: {
+    name: {
       type: String,
       required: true,
     },
@@ -47,9 +43,17 @@ const labReportSchema = new Schema(
       type: String,
       required: true,
     },
-    uploadedDocument: {
+    url: {
       type: String,
       required: true,
+    },
+    patient: {
+      type: Schema.Types.ObjectId,
+      ref: "Patient",
+    },
+    laboratory: {
+      type: Schema.Types.ObjectId,
+      ref: "Laboratory",
     },
   },
   { timestamps: true }

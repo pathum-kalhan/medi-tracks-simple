@@ -1,3 +1,4 @@
+"use client";
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
@@ -17,6 +18,7 @@ export default function DataTable({
   return (
     <Box sx={{ height: "100%" }}>
       <DataGrid
+        getRowId={(row) => row._id}
         sx={{ m: 2 }}
         rows={rows}
         columns={columns}

@@ -5,7 +5,7 @@ import { Prescribe } from "@/components/dashboard/precribe";
 
 import { Button } from "@mui/material";
 
-export function ProfileModel({ name }: { name: string }) {
+export function ProfileModel({ name, nic }: { name: string; nic: string }) {
   const [openPrescribe, setOpenPrescribe] = useState(false);
   const [openSurgery, setOpenSurgery] = useState(false);
   return (
@@ -32,6 +32,7 @@ export function ProfileModel({ name }: { name: string }) {
         title="Prescribe Medication"
         date={new Date().toDateString()}
         name={name}
+        nic={nic}
         type="prescribe"
       />
       <Prescribe
@@ -40,6 +41,7 @@ export function ProfileModel({ name }: { name: string }) {
         title="Add Surgery Data"
         date={new Date().toDateString()}
         name="John Doe"
+        nic={nic}
         type="surgery"
       />
     </>

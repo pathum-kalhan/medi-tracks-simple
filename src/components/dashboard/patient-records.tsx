@@ -12,14 +12,14 @@ export default async function PatientRecords() {
   ];
 
   const row = [
-    { id: 1, date: "2021-10-01", doctor: "Dr. John Doe" },
-    { id: 2, date: "2021-10-02", doctor: "Dr. Jane Doe" },
-    { id: 3, date: "2021-10-03", doctor: "Dr. John Doe" },
-    { id: 4, date: "2021-10-04", doctor: "Dr. Jane Doe" },
-    { id: 5, date: "2021-10-05", doctor: "Dr. John Doe" },
-    { id: 6, date: "2021-10-06", doctor: "Dr. Jane Doe" },
-    { id: 7, date: "2021-10-07", doctor: "Dr. John Doe" },
-    { id: 8, date: "2021-10-08", doctor: "Dr. Jane Doe" },
+    { _id: 1, date: "2021-10-01", doctor: "Dr. John Doe" },
+    { _id: 2, date: "2021-10-02", doctor: "Dr. Jane Doe" },
+    { _id: 3, date: "2021-10-03", doctor: "Dr. John Doe" },
+    { _id: 4, date: "2021-10-04", doctor: "Dr. Jane Doe" },
+    { _id: 5, date: "2021-10-05", doctor: "Dr. John Doe" },
+    { _id: 6, date: "2021-10-06", doctor: "Dr. Jane Doe" },
+    { _id: 7, date: "2021-10-07", doctor: "Dr. John Doe" },
+    { _id: 8, date: "2021-10-08", doctor: "Dr. Jane Doe" },
   ];
   return (
     <Grid container spacing={2}>
@@ -34,7 +34,7 @@ export default async function PatientRecords() {
           View lab reports
         </Button>
         {session?.user?.type === "doctor" && (
-          <ProfileModel name={session?.user?.name} />
+          <ProfileModel name={session?.user?.name} nic="199735702" />
         )}
       </Grid>
 
