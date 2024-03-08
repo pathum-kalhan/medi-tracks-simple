@@ -50,9 +50,13 @@ export async function logIn(
       errors: validationResult.error.flatten().fieldErrors,
     };
   }
+  console.log("before connect");
   await connect();
+  console.log("after connect");
+
   const { regNo, password } = validationResult.data;
   const user = await Laboratory.findOne({ regNo }).populate("user");
+  console.log(user, "user");
   if (!user) {
     return { status: "error", message: "Laboratory not found" };
   }
