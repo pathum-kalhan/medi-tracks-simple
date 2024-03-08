@@ -31,11 +31,11 @@ const drawerWidth = 240;
 
 const routes = [
   { path: "/dashboard", name: "Dashboard", icon: <DashboardIcon /> },
-  {
-    path: "/dashboard/patient-records",
-    name: "Patient Records",
-    icon: <ArticleIcon />,
-  },
+  // {
+  //   path: "/dashboard/patient-records",
+  //   name: "Patient Records",
+  //   icon: <ArticleIcon />,
+  // },
   {
     path: "/dashboard/lab-report",
     name: "Lab Reports",

@@ -25,6 +25,28 @@ async function getPrescriptions(nic: string) {
   return data;
 }
 
+async function getSurgery(nic: string) {
+  const res = await fetch(
+    new URL(
+      `/api/search-surgery?nic=${nic}&place=dashboard`,
+      process.env.NEXT_PUBLIC_API_URL as string
+    ),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+
+  if (!res.ok) {
+    console.error("Failed to fetch patient data");
+  }
+  const data = await res.json();
+  return data;
+}
+
 export default async function Page({
   searchParams,
 }: {
@@ -33,8 +55,12 @@ export default async function Page({
   const session = await auth();
   const nic = searchParams.nic!;
   const prescriptions = await getPrescriptions(nic);
+  const surgery = await getSurgery(nic);
+
+  console.log(surgery);
 
   const column = [
+    { field: "_id", headerName: "ID", width: 150 },
     { field: "date", headerName: "Date", width: 200 },
     { field: "doctor", headerName: "Doctor", width: 150 },
   ];
@@ -70,9 +96,9 @@ export default async function Page({
       <Grid item xs={12} md={6}>
         <Card
           title="Surgical History"
-          row={row}
+          row={surgery.data}
           column={column}
-          href={"/dashboard/surgical-history"}
+          href={`/dashboard/surgical-history?nic=${nic}&name=${session?.user?.name}`}
         />
       </Grid>
     </Grid>

@@ -20,25 +20,29 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import Logo from "../../../logo.png";
-import { signOut } from "@/auth";
+import { signOut, auth } from "@/auth";
+import { SessionProvider } from "next-auth/react";
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+  const userType = session?.user?.type!;
   const routes = [
     { path: "/dashboard", name: "Dashboard", icon: <DashboardIcon /> },
-    {
-      path: "/dashboard/patient-records",
-      name: "Patient Records",
-      icon: <ArticleIcon />,
-    },
-    {
-      path: "/dashboard/lab-report",
-      name: "Lab Reports",
-      icon: <AssessmentIcon />,
-    },
+    // {
+    //   path: "/dashboard/patient-records",
+    //   name: "Patient Records",
+    //   icon: <ArticleIcon />,
+    // },
+
+    // {
+    //   path: "/dashboard/lab-report",
+    //   name: "Lab Reports",
+    //   icon: <AssessmentIcon />,
+    // },
     { path: "/help", name: "Help & Support", icon: <HelpCenterIcon /> },
     {
       path: "/dashboard/settings",
@@ -103,5 +107,9 @@ export default async function RootLayout({
     </div>
   );
 
-  return <NavBar drawer={drawer}>{children}</NavBar>;
+  return (
+    <NavBar drawer={drawer}>
+      <SessionProvider session={session}>{children}</SessionProvider>
+    </NavBar>
+  );
 }

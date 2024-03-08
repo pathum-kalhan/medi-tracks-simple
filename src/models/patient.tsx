@@ -22,6 +22,12 @@ const patientSchema = new Schema(
         ref: "Prescription",
       },
     ],
+    surgeries: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Surgery",
+      },
+    ],
     chatMessages: [ChatMessage.schema],
     user: {
       type: Schema.Types.ObjectId,

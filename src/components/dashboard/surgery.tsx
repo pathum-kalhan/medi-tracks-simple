@@ -28,7 +28,7 @@ type Props = {
   type: "prescribe" | "surgery";
 };
 
-export const Prescribe = ({
+export const Surgery = ({
   open,
   setOpen,
   name,
@@ -75,7 +75,7 @@ export const Prescribe = ({
           >
             <Grid item>
               <TextField name="name" size="small" value={name} disabled />
-              <input name="nic" value={nic} type="hidden" />
+              <TextField name="nic" value={nic} type="hidden" />
             </Grid>
             <Grid item>Time : {date}</Grid>
           </Grid>
@@ -140,7 +140,6 @@ export const Prescribe = ({
               error={!!state?.errors?.doctorNote ? true : false}
               helperText={state?.errors?.doctorNote?.[0]}
             />
-            <input type="hidden" name="type" value={type} />
           </Stack>
         </DialogContent>
         <DialogActions>

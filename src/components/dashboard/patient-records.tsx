@@ -1,25 +1,68 @@
 import { auth } from "@/auth";
 import { Card } from "@/components/dashboard/card";
 import { ProfileModel } from "@/components/dashboard/profile-model";
+import { Patient } from "@/models/patient";
 import { Button, Grid } from "@mui/material";
+
+async function getPrescriptions(nic: string) {
+  const res = await fetch(
+    new URL(
+      `/api/search-prescriptions?nic=${nic}&place=dashboard`,
+      process.env.NEXT_PUBLIC_API_URL as string
+    ),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+
+  if (!res.ok) {
+    console.error("Failed to fetch patient data");
+  }
+  const data = await res.json();
+  return data;
+}
+
+async function getSurgery(nic: string) {
+  const res = await fetch(
+    new URL(
+      `/api/search-surgery?nic=${nic}&place=dashboard`,
+      process.env.NEXT_PUBLIC_API_URL as string
+    ),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+
+  if (!res.ok) {
+    console.error("Failed to fetch patient data");
+  }
+  const data = await res.json();
+  return data;
+}
 
 export default async function PatientRecords() {
   const session = await auth();
+  const patient = await Patient.findOne({ user: session?.user?.id });
+  const prescriptions = await getPrescriptions(patient.nic);
+  const surgery = await getSurgery(patient.nic);
   const column = [
-    { field: "id", headerName: "ID", width: 100 },
+    { field: "_id", headerName: "ID", width: 100 },
     { field: "date", headerName: "Date", width: 200 },
     { field: "doctor", headerName: "Doctor", width: 150 },
   ];
 
   const row = [
-    { _id: 1, date: "2021-10-01", doctor: "Dr. John Doe" },
-    { _id: 2, date: "2021-10-02", doctor: "Dr. Jane Doe" },
-    { _id: 3, date: "2021-10-03", doctor: "Dr. John Doe" },
-    { _id: 4, date: "2021-10-04", doctor: "Dr. Jane Doe" },
-    { _id: 5, date: "2021-10-05", doctor: "Dr. John Doe" },
-    { _id: 6, date: "2021-10-06", doctor: "Dr. Jane Doe" },
-    { _id: 7, date: "2021-10-07", doctor: "Dr. John Doe" },
-    { _id: 8, date: "2021-10-08", doctor: "Dr. Jane Doe" },
+    { _id: "1", date: "2021-10-10", doctor: "Dr. John Doe" },
+    { _id: "2", date: "2021-10-10", doctor: "Dr. John Doe" },
+    { _id: "3", date: "2021-10-10", doctor: "Dr. John Doe" },
   ];
   return (
     <Grid container spacing={2}>
@@ -27,23 +70,22 @@ export default async function PatientRecords() {
         <Button
           variant="contained"
           color="primary"
-          href="/files/dummy.pdf"
-          target="_blank"
+          href={`/dashboard/lab-report?nic=${patient.nic}`}
           sx={{ m: 1 }}
         >
           View lab reports
         </Button>
         {session?.user?.type === "doctor" && (
-          <ProfileModel name={session?.user?.name} nic="199735702" />
+          <ProfileModel name={session?.user?.name} nic={patient.nic} />
         )}
       </Grid>
 
       <Grid item xs={12} md={6}>
         <Card
           title="Prescribed Medications"
-          row={row}
+          row={prescriptions.data}
           column={column}
-          href={"/dashboard/prescribe-medication"}
+          href={`/dashboard/prescribe-medication?nic=${patient.nic}&name=${session?.user?.name}`}
         />
       </Grid>
       <Grid item xs={12} md={6}>
@@ -58,9 +100,9 @@ export default async function PatientRecords() {
       <Grid item xs={12} md={6}>
         <Card
           title="Surgical History"
-          row={row}
+          row={surgery.data}
           column={column}
-          href={"/dashboard/surgical-history"}
+          href={`/dashboard/surgical-history?nic=${patient.nic}&name=${session?.user?.name}`}
         />
       </Grid>
     </Grid>

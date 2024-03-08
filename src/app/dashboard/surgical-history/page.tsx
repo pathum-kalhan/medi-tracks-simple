@@ -3,11 +3,52 @@ import { Notes } from "@/components/dashboard/notes";
 import { Prescribe } from "@/components/dashboard/precribe";
 import { Button, Grid, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
 
-export default function Home() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
   const [open, setOpen] = useState(false);
   const [openNotes, setOpenNotes] = useState(false);
+  const [rows, setRows] = useState([]);
+  const [notes, setNotes] = useState({
+    date: "",
+    doctorName: "",
+    validTill: "",
+    notes: "",
+  });
+
+  const nic = searchParams.nic!;
+  const name = searchParams.name!;
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch(
+        new URL(
+          `/api/search-surgery?nic=${nic}&place=surgical-history`,
+          process.env.NEXT_PUBLIC_API_URL as string
+        ),
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        }
+      );
+
+      if (!res.ok) {
+        console.error("Failed to fetch patient data");
+      }
+      const data = await res.json();
+      setRows(data.data);
+    };
+    fetchData();
+  }, [nic]);
 
   const handleDoctorNotes = (params: any) => {
     return (
@@ -16,6 +57,12 @@ export default function Home() {
         color="primary"
         onClick={() => {
           setOpenNotes(true);
+          setNotes({
+            date: params.date,
+            doctorName: params.doctor,
+            validTill: params.valid,
+            notes: params.notes,
+          });
         }}
       >
         View
@@ -23,15 +70,26 @@ export default function Home() {
     );
   };
   const columns: GridColDef[] = [
+    { field: "_id", headerName: "ID", width: 200 },
     {
       field: "date",
       headerName: "Date",
       width: 200,
     },
     {
-      field: "surgeon",
+      field: "doctor",
       headerName: "Surgeon",
-      width: 200,
+      width: 100,
+    },
+    {
+      field: "medicine",
+      headerName: "Medicine",
+      width: 100,
+    },
+    {
+      field: "valid",
+      headerName: "Valid Till",
+      width: 100,
     },
     {
       field: "hospital",
@@ -41,17 +99,8 @@ export default function Home() {
     {
       field: "action",
       headerName: "Doctor Notes",
-      renderCell: handleDoctorNotes,
+      renderCell: (params) => handleDoctorNotes(params.row),
       width: 200,
-    },
-  ];
-
-  const rows = [
-    {
-      id: 1,
-      date: "2021-08-01",
-      surgeon: "Dr. John Doe",
-      hospital: "General Hospital",
     },
   ];
 
@@ -69,34 +118,38 @@ export default function Home() {
             </Typography>
           </Grid>
           <Grid item xs={6} sm={6} md={6}>
-            <Button variant="contained" color="primary" onClick={addMedication}>
-              Add
-            </Button>
+            {session?.user?.type === "doctor" && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={addMedication}
+              >
+                Add
+              </Button>
+            )}
           </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        <DataGrid rows={rows} columns={columns} />
+        <DataGrid rows={rows} columns={columns} getRowId={(row) => row._id} />
       </Grid>
       <Prescribe
         open={open}
         setOpen={setOpen}
-        name="XXX"
+        name={name}
         title={"Surgery"}
-        date="2024.1.1"
+        date={new Date().toDateString()}
         type="surgery"
-        nic="123456789V"
+        nic={nic}
       />
       <Notes
         open={openNotes}
         setOpen={setOpenNotes}
-        date="2024.1.1"
-        doctorName="Herath"
+        notes={notes.notes}
         title="Doctor Notes"
-        validTill="2024.5.1"
-        notes={
-          "Take medicine 3 times a day after meals. Drink water after taking medicine. Do not take medicine on an empty stomach. Take medicine for 3 days. If the condition worsens, consult a doctor."
-        }
+        date={notes.date}
+        doctorName={notes.doctorName}
+        validTill={notes.validTill}
       />
     </Grid>
   );

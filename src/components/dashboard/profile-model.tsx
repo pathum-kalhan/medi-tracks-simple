@@ -40,7 +40,7 @@ export function ProfileModel({ name, nic }: { name: string; nic: string }) {
         setOpen={setOpenSurgery}
         title="Add Surgery Data"
         date={new Date().toDateString()}
-        name="John Doe"
+        name={name}
         nic={nic}
         type="surgery"
       />

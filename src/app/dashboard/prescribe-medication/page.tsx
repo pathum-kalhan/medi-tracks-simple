@@ -4,6 +4,7 @@ import { Prescribe } from "@/components/dashboard/precribe";
 import { Button, Grid, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function Page({
   searchParams,
@@ -22,6 +23,7 @@ export default function Page({
 
   const nic = searchParams.nic!;
   const name = searchParams.name!;
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,9 +109,15 @@ export default function Page({
             </Typography>
           </Grid>
           <Grid item xs={6} sm={6} md={6}>
-            <Button variant="contained" color="primary" onClick={addMedication}>
-              Add Prescription
-            </Button>
+            {session?.user?.type === "doctor" && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={addMedication}
+              >
+                Add Prescription
+              </Button>
+            )}
           </Grid>
         </Grid>
       </Grid>
