@@ -2,37 +2,67 @@
 import DataTable from "@/components/dashboard/table";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { GridColDef, GridRowParams } from "@mui/x-data-grid";
+import { useEffect, useState } from "react";
 
-export default function Home() {
-  type RowProps = {
-    row: (typeof rows)[0];
-  };
-  const ViewButton = (row: RowProps) => {
-    const handleView = () => {};
+async function labReportData(nic: string) {
+  const res = await fetch(
+    new URL(
+      `/api/search-labreport?nic=${nic}`,
+      process.env.NEXT_PUBLIC_API_URL as string
+    ),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
 
+  if (!res.ok) {
+    console.error("Failed to fetch lab report data");
+  }
+  const data = await res.json();
+  return data;
+}
+
+export default function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
+  const [labReports, setLabReports] = useState([]);
+  const nic = searchParams.nic!;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await labReportData(nic);
+      setLabReports(res.data);
+    };
+
+    fetchData();
+  }, [nic]);
+
+  console.log(labReports);
+  const ViewButton = (row: any) => {
     return (
       <>
-        <Button
-          variant="contained"
-          size="small"
-          href="/files/dummy.pdf"
-          target="_blank"
-        >
+        <Button variant="contained" size="small" href={row.url} target="_blank">
           View PDF
         </Button>
       </>
     );
   };
 
-  const DownloadButton = () => {
+  const DownloadButton = (row: any) => {
     return (
       <>
         <Button
           variant="contained"
           size="small"
-          href="/files/dummy.pdf"
+          href={row.url}
           target="_blank"
-          download={true}
+          download
         >
           Download PDF
         </Button>
@@ -40,40 +70,36 @@ export default function Home() {
     );
   };
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 150 },
-    { field: "name", headerName: "Report Name", width: 200 },
+    { field: "testType", headerName: "Report Name", width: 200 },
     {
       field: "laboratory",
       headerName: "Laboratory",
-      width: 100,
+      width: 200,
     },
     {
-      field: "date",
+      field: "createdAt",
+      // valueFormatter: (params) => {
+      //   params.value.toString();
+      // },
       headerName: "Date",
-      width: 100,
+      width: 130,
     },
     {
       field: "view",
       headerName: "View",
-      renderCell: ViewButton,
+      renderCell: (row) => ViewButton(row.row),
       sortable: false,
       disableColumnMenu: true,
-      width: 150,
+      width: 200,
     },
     {
       field: "download",
       headerName: "Download",
-      renderCell: DownloadButton,
+      renderCell: (row) => DownloadButton(row.row),
       sortable: false,
       disableColumnMenu: true,
-      width: 150,
+      width: 200,
     },
-  ];
-
-  const rows = [
-    { id: 1, name: "Blood Report", laboratory: "Asiri", date: "2022-10-10" },
-    { id: 2, name: "Urine Report", laboratory: "Asiri", date: "2022-10-10" },
-    { id: 3, name: "X-Ray", laboratory: "Asiri", date: "2022-10-10" },
   ];
 
   return (
@@ -83,7 +109,7 @@ export default function Home() {
           Patients Lab Reports
         </Typography>
         <Divider />
-        <DataTable columns={columns} rows={rows} pageSize={5} />
+        <DataTable columns={columns} rows={labReports} pageSize={5} />
       </Box>
     </main>
   );

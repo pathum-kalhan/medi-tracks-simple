@@ -11,7 +11,6 @@ import { Pharmacist } from "@/models/pharmacist";
 export const GET = auth(async (req) => {
   await connect();
   const u = await User.findById("65e0b866ab7fcc16787b3324");
-  console.log(u);
   if (req.auth) {
     return Response.json({ data: "Protected data", auth: req.auth });
   }

@@ -3,7 +3,6 @@ import { connect } from "@/lib/mongo";
 import { User } from "@/models/user";
 
 export const GET = auth(async (req) => {
-  console.log(req);
   const userId = req.auth?.user?.id;
   await connect();
   const user = await User.findById(userId);

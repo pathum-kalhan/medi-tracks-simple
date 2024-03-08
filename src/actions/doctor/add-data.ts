@@ -25,6 +25,7 @@ const formSchema = z.object({
   medicine: z.string(),
   validTill: z.string(),
   doctorNotes: z.string(),
+  nic: z.string({}),
 });
 
 export async function createPrescription(
@@ -54,6 +55,7 @@ export async function createPrescription(
     medicine: formData.get("medicine"),
     validTill: formData.get("validTill"),
     doctorNotes: formData.get("doctorNotes"),
+    nic: formData.get("nic"),
   });
 
   if (!validationResult.success) {
@@ -63,15 +65,14 @@ export async function createPrescription(
       errors: validationResult.error.flatten().fieldErrors,
     };
   }
-  const { hospital, disease, medicine, validTill, doctorNotes } =
+  const { hospital, disease, medicine, validTill, doctorNotes, nic } =
     validationResult.data;
   await connect();
 
   const user = await User.findById(userId);
   const doctor = await Doctor.findOne({ user: user?._id });
 
-  //fix this after finished with patient search
-  const patient = await Patient.findById("65e1bc0a396315d377aa8953");
+  const patient = await Patient.findOne({ nic: nic });
 
   const prescription = await Prescription.create({
     hospital,

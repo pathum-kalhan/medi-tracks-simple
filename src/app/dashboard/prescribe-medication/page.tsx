@@ -3,19 +3,64 @@ import { Notes } from "@/components/dashboard/notes";
 import { Prescribe } from "@/components/dashboard/precribe";
 import { Button, Grid, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Home() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
   const [open, setOpen] = useState(false);
   const [openNotes, setOpenNotes] = useState(false);
+  const [rows, setRows] = useState([]);
+  const [notes, setNotes] = useState({
+    date: "",
+    doctorName: "",
+    validTill: "",
+    notes: "",
+  });
 
-  const handleDoctorNotes = (params: any) => {
+  const nic = searchParams.nic!;
+  const name = searchParams.name!;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch(
+        new URL(
+          `/api/search-prescriptions?nic=${nic}&place=prescribe-medication`,
+          process.env.NEXT_PUBLIC_API_URL as string
+        ),
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        }
+      );
+
+      if (!res.ok) {
+        console.error("Failed to fetch patient data");
+      }
+      const data = await res.json();
+      setRows(data.data);
+    };
+    fetchData();
+  }, [nic]);
+
+  const handleDoctorNotes = (row: any) => {
     return (
       <Button
         variant="contained"
         color="primary"
         onClick={() => {
           setOpenNotes(true);
+          setNotes({
+            date: row.date,
+            doctorName: row.doctor,
+            validTill: row.valid,
+            notes: row.notes,
+          });
         }}
       >
         View
@@ -23,11 +68,6 @@ export default function Home() {
     );
   };
   const columns: GridColDef[] = [
-    {
-      field: "prescriptionId",
-      headerName: "Prescription ID",
-      width: 200,
-    },
     {
       field: "date",
       headerName: "Date",
@@ -46,38 +86,16 @@ export default function Home() {
     {
       field: "action",
       headerName: "Doctor Notes",
-      renderCell: handleDoctorNotes,
+      renderCell: (params) => handleDoctorNotes(params.row),
       width: 200,
-    },
-  ];
-
-  const rows = [
-    {
-      id: 1,
-      prescriptionId: "1",
-      date: "2021-08-01",
-      doctor: "Dr. John Doe",
-      valid: "2021-08-31",
-    },
-    {
-      id: 2,
-      prescriptionId: "2",
-      date: "2021-08-01",
-      doctor: "Dr. John Doe",
-      valid: "2021-08-31",
-    },
-    {
-      id: 3,
-      prescriptionId: "3",
-      date: "2021-08-01",
-      doctor: "Dr. John Doe",
-      valid: "2021-08-31",
     },
   ];
 
   const addMedication = () => {
     setOpen(true);
   };
+
+  console.log(rows);
 
   return (
     <Grid container spacing={2}>
@@ -96,26 +114,25 @@ export default function Home() {
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        <DataGrid rows={rows} columns={columns} />
+        <DataGrid rows={rows} columns={columns} getRowId={(row) => row._id} />
       </Grid>
       <Prescribe
         open={open}
         setOpen={setOpen}
-        name="XXX"
-        title={"Prescribe"}
-        date="2024.1.1"
+        name={name}
+        title="Prescribe Medication"
+        date={new Date().toDateString()}
         type="prescribe"
+        nic={nic}
       />
       <Notes
         open={openNotes}
         setOpen={setOpenNotes}
-        date="2024.1.1"
-        doctorName="Herath"
         title="Doctor Notes"
-        validTill="2024.5.1"
-        notes={
-          "Take medicine 3 times a day after meals. Drink water after taking medicine. Do not take medicine on an empty stomach. Take medicine for 3 days. If the condition worsens, consult a doctor."
-        }
+        date={notes.date}
+        doctorName={notes.doctorName}
+        validTill={notes.validTill}
+        notes={notes.notes}
       />
     </Grid>
   );

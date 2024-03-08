@@ -54,15 +54,19 @@ export default function Page() {
             name="slmcNo"
             label="SLMC"
             type="text"
+            size="small"
             error={state?.errors?.slmcNo ? true : false}
             helperText={state?.errors?.slmcNo}
+            fullWidth
           />
           <TextField
             name="password"
             label="Password"
             type="password"
+            size="small"
             error={state?.errors?.password ? true : false}
             helperText={state?.errors?.password}
+            fullWidth
           />
           <MUILink href={`/register/doctor`} component={Link}>
             Register as a new doctor
