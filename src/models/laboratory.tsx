@@ -27,7 +27,7 @@ const laboratorySchema = new Schema(
     ],
     user: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "user",
     },
   },
   { timestamps: true }
