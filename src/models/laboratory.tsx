@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import email from "next-auth/providers/email";
+import { User } from "./user";
 
 const laboratorySchema = new Schema(
   {
@@ -26,8 +27,8 @@ const laboratorySchema = new Schema(
       },
     ],
     user: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: User,
     },
   },
   { timestamps: true }
