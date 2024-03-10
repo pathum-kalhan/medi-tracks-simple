@@ -11,26 +11,34 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { useFormState } from "react-dom";
 import { doctor, State } from "@/actions/register/doctor";
-import { useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 export default function Home() {
   const [state, dispatch] = useFormState<State, FormData>(doctor, null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!state) {
       return;
     }
     if (state.status === "success") {
+      setLoading(false);
       toast.success(state.message);
     }
     if (state.status === "error") {
+      setLoading(false);
       toast.error(state.message);
     }
-  });
+  }, [state]);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
+  };
 
   return (
     <main>
-      <form action={dispatch}>
+      <form action={dispatch} onSubmit={handleSubmit}>
         <Card
           sx={{
             top: "50%",
@@ -100,19 +108,18 @@ export default function Home() {
               error={state?.errors?.confirmPassword ? true : false}
               helperText={state?.errors?.confirmPassword}
             />
-            <Button
+            <LoadingButton
               type="submit"
               variant="contained"
-              fullWidth
-              style={{ borderRadius: 20 }}
+              sx={{ borderRadius: 15 }}
+              loading={loading}
             >
               Register
-            </Button>
+            </LoadingButton>
             <Button
               href="/login/doctor"
               variant="contained"
-              fullWidth
-              style={{ borderRadius: 20 }}
+              sx={{ borderRadius: 15 }}
             >
               Have an account? Sign in
             </Button>

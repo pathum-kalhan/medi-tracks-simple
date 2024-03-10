@@ -6,25 +6,33 @@ import { Link as MUILink } from "@mui/material";
 import { logIn, State } from "@/actions/login/laboratory";
 import toast from "react-hot-toast";
 import { useFormState } from "react-dom";
-import { useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 export default function Page() {
   const [state, dispatch] = useFormState<State, FormData>(logIn, null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!state) {
       return;
     }
     if (state.status === "success") {
+      setLoading(false);
       toast.success(state.message);
     }
     if (state.status === "error") {
+      setLoading(false);
       toast.error(state.message);
     }
-  });
+  }, [state]);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
+  };
 
   return (
-    <form action={dispatch}>
+    <form action={dispatch} onSubmit={handleSubmit}>
       <Card
         sx={{
           top: "50%",
@@ -70,9 +78,14 @@ export default function Page() {
           <MUILink href={`/register/laboratory`} component={Link}>
             Register as a new laboratory
           </MUILink>
-          <Button type="submit" variant="contained">
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            sx={{ borderRadius: 15 }}
+            loading={loading}
+          >
             Login
-          </Button>
+          </LoadingButton>
         </Stack>
         <Stack spacing={1} sx={{ alignItems: "center" }}>
           <MUILink href="/login/patient" component={Link}>

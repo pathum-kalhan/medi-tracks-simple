@@ -13,8 +13,9 @@ import {
 } from "@mui/material";
 import { useFormState } from "react-dom";
 import { createPrescription, State } from "@/actions/doctor/add-data";
-import { useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { LoadingButton } from "@mui/lab";
 
 //type form
 
@@ -43,18 +44,21 @@ export const Prescribe = ({
     createPrescription,
     null
   );
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!state) {
       return;
     }
     if (state.status === "success") {
+      setLoading(false);
       toast.success(state.message);
     }
     if (state.status === "error") {
+      setLoading(false);
       toast.error(state.message);
     }
-  });
+  }, [state]);
 
   const handleClose = () => {
     setOpen(false);
@@ -62,9 +66,13 @@ export const Prescribe = ({
 
   console.log(state?.errors);
 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
+  };
+
   return (
     <Dialog open={open} onClose={handleClose} fullScreen={fullScreen} fullWidth>
-      <form action={dispatch}>
+      <form action={dispatch} onSubmit={handleSubmit}>
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
           <Grid
@@ -144,9 +152,14 @@ export const Prescribe = ({
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" type="submit" sx={{ borderRadius: 15 }}>
-            Submit
-          </Button>
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            sx={{ borderRadius: 15 }}
+            loading={loading}
+          >
+            {type === "prescribe" ? "Prescribe" : "Add Surgery"}
+          </LoadingButton>
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>
       </form>

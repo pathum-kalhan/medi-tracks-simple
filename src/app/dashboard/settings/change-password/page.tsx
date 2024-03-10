@@ -8,7 +8,8 @@ import { ZodType, z } from "zod";
 import toast, { Toaster } from "react-hot-toast";
 import { updatePassword, State } from "@/actions/profile/update-password";
 import { useFormState } from "react-dom";
-import { useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 type FormValue = {
   oldPassword: string;
@@ -17,21 +18,28 @@ type FormValue = {
 
 export default function Home() {
   const [state, dispatch] = useFormState<State, FormData>(updatePassword, null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!state) {
       return;
     }
     if (state.status === "success") {
+      setLoading(false);
       toast.success(state.message);
     }
     if (state.status === "error") {
+      setLoading(false);
       toast.error(state.message);
     }
-  });
+  }, [state]);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
+  };
 
   return (
-    <form action={dispatch}>
+    <form action={dispatch} onSubmit={handleSubmit}>
       <Box
         sx={{
           display: "flex",
@@ -61,9 +69,9 @@ export default function Home() {
             error={state?.errors?.newPassword ? true : false}
             helperText={state?.errors?.newPassword}
           />
-          <Button type="submit" variant="contained">
-            Submit
-          </Button>
+          <LoadingButton type="submit" variant="contained" loading={loading}>
+            Update Password
+          </LoadingButton>
         </Stack>
         <Toaster />
       </Box>

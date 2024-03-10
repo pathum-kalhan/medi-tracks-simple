@@ -18,26 +18,34 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { useFormState } from "react-dom";
 import { pharmacist, State } from "@/actions/register/pharmacist";
-import { useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 export default function Home() {
   const [state, dispatch] = useFormState<State, FormData>(pharmacist, null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!state) {
       return;
     }
     if (state.status === "success") {
+      setLoading(false);
       toast.success(state.message);
     }
     if (state.status === "error") {
+      setLoading(false);
       toast.error(state.message);
     }
-  });
+  }, [state]);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    setLoading(true);
+  };
 
   return (
     <main>
-      <form action={dispatch}>
+      <form action={dispatch} onSubmit={handleSubmit}>
         <Card
           sx={{
             top: "50%",
@@ -124,19 +132,18 @@ export default function Home() {
               helperText={state?.errors?.confirmPassword}
               fullWidth
             />
-            <Button
+            <LoadingButton
               type="submit"
               variant="contained"
-              fullWidth
-              style={{ borderRadius: 20 }}
+              sx={{ borderRadius: 15 }}
+              loading={loading}
             >
               Register
-            </Button>
+            </LoadingButton>
             <Button
               href="/login/patient"
               variant="contained"
-              fullWidth
-              style={{ borderRadius: 20 }}
+              sx={{ borderRadius: 15 }}
             >
               Have an account? Sign in
             </Button>

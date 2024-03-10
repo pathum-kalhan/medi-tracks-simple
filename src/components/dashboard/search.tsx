@@ -17,6 +17,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { CreatePatient } from "./create";
 import { useRouter } from "next/navigation";
+import { LoadingButton } from "@mui/lab";
 
 type FormValues = {
   nic: string;
@@ -29,6 +30,7 @@ type Props = {
 
 export default function FormDialog({ open, setOpen }: Props) {
   const [openCreate, setOpenCreate] = useState(false);
+  const [loading, setLoading] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
@@ -57,6 +59,7 @@ export default function FormDialog({ open, setOpen }: Props) {
   const { handleSubmit, reset } = methods;
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
+    setLoading(true);
     console.log(data);
     router.push(`/dashboard/search?nic=${data.nic}`);
     reset();
@@ -102,9 +105,14 @@ export default function FormDialog({ open, setOpen }: Props) {
             </Stack>
           </DialogContent>
           <DialogActions>
-            <Button variant="contained" type="submit" sx={{ borderRadius: 15 }}>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              sx={{ borderRadius: 15 }}
+              loading={loading}
+            >
               Search
-            </Button>
+            </LoadingButton>
             <Button
               variant="contained"
               sx={{ borderRadius: 15 }}
