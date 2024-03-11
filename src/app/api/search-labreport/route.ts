@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { formatDate } from "@/lib/date-format";
 import { connect } from "@/lib/mongo";
 import { LabReport, Laboratory } from "@/models/laboratory";
 import { Patient } from "@/models/patient";
@@ -50,7 +51,7 @@ export const GET = auth(async (req) => {
       name: labReport.name,
       testType: labReport.testType,
       url: labReport.url,
-      createdAt: labReport.createdAt,
+      createdAt: formatDate(labReport.createdAt),
       laboratory: labReport.laboratory.user.name,
     });
   });

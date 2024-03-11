@@ -7,7 +7,17 @@ export interface CustomFile extends File {
 }
 
 export const ImagePreview = ({ src }: { src: CustomFile | string }) => {
-  if (!src) return null;
+  if (!src) {
+    return (
+      <Image
+        src="/files/placeholder.jpg"
+        width={300}
+        height={300}
+        className="rounded-lg border-4 border-white"
+        alt="Image preview"
+      />
+    );
+  }
 
   if (typeof src === "string") {
     return (

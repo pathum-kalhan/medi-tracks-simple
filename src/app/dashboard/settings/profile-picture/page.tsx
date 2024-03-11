@@ -16,6 +16,7 @@ import { FormEvent, ReactNode, useCallback, useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import { useDropzone } from "react-dropzone";
 import { ImagePreview } from "@/components/dashboard/image-preview";
+import { FileRejections } from "@/components/dashboard/file-rejection";
 
 type User = {
   name: string;
@@ -99,6 +100,8 @@ export default function Home() {
     fetchData();
   }, []);
 
+  console.log(files, user?.avatar!);
+
   return (
     <Box
       sx={{
@@ -129,14 +132,14 @@ export default function Home() {
         </div>
         {files.length === 0 && (
           <>
-            <Alert>
+            <Alert severity="info">
               {"Click on the image to select photos from your computer"}
             </Alert>
-            <Alert severity="warning">
+            <Alert severity="info">
               {"After select please wait a for the confirmation"}
             </Alert>
             <Alert severity="error">(Only images will be accepted)</Alert>
-            {/* <FileRejections fileRejections={fileRejections} /> */}
+            <FileRejections fileRejections={fileRejections} />
           </>
         )}
       </Stack>

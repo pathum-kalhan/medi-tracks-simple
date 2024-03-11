@@ -3,6 +3,7 @@ import { connect } from "@/lib/mongo";
 import { Doctor } from "@/models/doctor";
 import { Patient } from "@/models/patient";
 import { User } from "@/models/user";
+import { formatDate } from "@/lib/date-format";
 
 export const GET = auth(async (req) => {
   const { searchParams } = new URL(
@@ -46,7 +47,7 @@ export const GET = auth(async (req) => {
   patient.prescriptions.forEach((prescription: any) => {
     prescriptionData.push({
       _id: prescription._id,
-      createdAt: prescription.createdAt,
+      createdAt: formatDate(prescription.createdAt),
       doctor: prescription.doctor.user.name,
     });
   });
@@ -54,7 +55,7 @@ export const GET = auth(async (req) => {
   patient.surgeries.forEach((surgery: any) => {
     surgeryData.push({
       _id: surgery._id,
-      createdAt: surgery.createdAt,
+      createdAt: formatDate(surgery.createdAt),
       doctor: surgery.doctor.user.name,
     });
   });
@@ -65,7 +66,7 @@ export const GET = auth(async (req) => {
     nic: patient.nic,
   };
 
-  console.log(patientData, "patientData");
+  console.log(patientData, surgeryData, "patientData");
 
   return Response.json({ data: patientData });
 });

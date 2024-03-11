@@ -21,6 +21,7 @@
     "@mui/x-data-grid": "^6.19.4",
     "@uploadthing/react": "^6.3.2",
     "bcryptjs": "^2.4.3",
+    "datejs": "^1.0.0-rc3",
     "install": "^0.13.0",
     "mongodb": "^6.4.0",
     "mongoose": "^8.2.0",

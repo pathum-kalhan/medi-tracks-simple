@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { formatDate } from "@/lib/date-format";
 import { connect } from "@/lib/mongo";
 import { Doctor } from "@/models/doctor";
 import { LabReport, Laboratory } from "@/models/laboratory";
@@ -57,7 +58,7 @@ export const GET = auth(async (req) => {
   patient.prescriptions.forEach((prescription: any) => {
     res.push({
       _id: prescription._id,
-      date: prescription.createdAt,
+      date: formatDate(prescription.createdAt),
       doctor: prescription.doctor.user.name,
       valid: prescription.validTill,
       notes: prescription.doctorNotes,

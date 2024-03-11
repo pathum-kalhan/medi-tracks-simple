@@ -30,7 +30,7 @@ export default async function PatientRecords() {
   const session = await auth();
 
   const data = await getPatientDashboard(session?.user?.id!);
-  const { prescriptions, surgery, nic } = data.data;
+  const { prescriptions, surgeries, nic } = data.data;
   console.log(prescriptions, "prescriptions");
   const column = [
     { field: "_id", headerName: "ID", width: 100 },
@@ -62,16 +62,16 @@ export default async function PatientRecords() {
           <ProfileModel name={session?.user?.name} nic={nic} />
         )}
       </Grid>
-      {prescriptions && prescriptions.length > 0 && (
-        <Grid item xs={12} md={6}>
-          <Card
-            title="Prescribed Medications"
-            row={prescriptions}
-            column={column}
-            href={`/dashboard/prescribe-medication?nic=${nic}&name=${session?.user?.name}`}
-          />
-        </Grid>
-      )}
+
+      <Grid item xs={12} md={6}>
+        <Card
+          title="Prescribed Medications"
+          row={prescriptions}
+          column={column}
+          href={`/dashboard/prescribe-medication?nic=${nic}&name=${session?.user?.name}`}
+        />
+      </Grid>
+
       <Grid item xs={12} md={6}>
         <Card
           title="Consulting History"
@@ -81,16 +81,14 @@ export default async function PatientRecords() {
         />
       </Grid>
 
-      {surgery && surgery.length > 0 && (
-        <Grid item xs={12} md={6}>
-          <Card
-            title="Surgical History"
-            row={surgery}
-            column={column}
-            href={`/dashboard/surgical-history?nic=${nic}&name=${session?.user?.name}`}
-          />
-        </Grid>
-      )}
+      <Grid item xs={12} md={6}>
+        <Card
+          title="Surgical History"
+          row={surgeries}
+          column={column}
+          href={`/dashboard/surgical-history?nic=${nic}&name=${session?.user?.name}`}
+        />
+      </Grid>
     </Grid>
   );
 }

@@ -31,9 +31,7 @@ export default function Home() {
       setNotifications(data.data.notifications);
     };
     fetchNotifications();
-  }, [notifications]);
-
-  console.log(notifications);
+  }, []);
 
   const handleClose = async (_id: string) => {
     const res = await fetch(
@@ -50,6 +48,7 @@ export default function Home() {
     const data = await res.json();
     setNotifications(data.data.notifications);
   };
+  const allRead = notifications?.every((notification) => notification.read);
   return (
     <Box
       sx={{
@@ -80,6 +79,7 @@ export default function Home() {
                 </Alert>
               )
           )}
+        {allRead && <Alert severity="info">No new notifications</Alert>}
       </Stack>
     </Box>
   );

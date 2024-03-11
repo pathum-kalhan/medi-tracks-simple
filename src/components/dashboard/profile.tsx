@@ -57,7 +57,7 @@ export const Profile = () => {
           >
             <Avatar
               alt={profile?.name}
-              src={profile?.avatar}
+              src={profile?.avatar || "/files/placeholder.jpg"}
               sx={{ width: 100, height: 100 }}
             />
           </Box>

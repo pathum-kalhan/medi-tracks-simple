@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { formatDate } from "@/lib/date-format";
 import { connect } from "@/lib/mongo";
 import { Doctor } from "@/models/doctor";
 import { LabReport, Laboratory } from "@/models/laboratory";
@@ -45,7 +46,7 @@ export const GET = auth(async (req) => {
     patient.surgeries.forEach((surgeries: any) => {
       res.push({
         _id: surgeries._id,
-        date: surgeries.createdAt,
+        date: formatDate(surgeries.createdAt),
         doctor: surgeries.doctor.user.name,
       });
     });
@@ -56,7 +57,7 @@ export const GET = auth(async (req) => {
   patient.surgeries.forEach((surgeries: any) => {
     res.push({
       _id: surgeries._id,
-      date: surgeries.createdAt,
+      date: formatDate(surgeries.createdAt),
       doctor: surgeries.doctor.user.name,
       valid: surgeries.validTill,
       notes: surgeries.doctorNotes,
