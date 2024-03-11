@@ -56,7 +56,7 @@ export function User({ results }: Props) {
             <Grid item md={12}>
               <Stack direction="column">
                 <Typography sx={{ textAlign: "left" }}>
-                  <b>Name :</b> {results.name}
+                  <b>Name :</b> {results.name ?? "N/A"}
                 </Typography>
                 {/* <Typography sx={{ textAlign: "left" }}>
                   <b>Gender :</b> {results.gender}
@@ -65,7 +65,7 @@ export function User({ results }: Props) {
                   <b>Age :</b> {results.age}
                 </Typography> */}
                 <Typography sx={{ textAlign: "left" }}>
-                  <b>Phone :</b> {results.phone}
+                  <b>Phone :</b> {results.phone ?? "N/A"}
                 </Typography>
               </Stack>
             </Grid>

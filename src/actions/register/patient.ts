@@ -91,10 +91,11 @@ export async function patient(
   }
   const { name, nic, phone, password } = validationResult.data;
   await connect();
-  const isDoctorExist = await Doctor.findOne({ nic });
-  if (isDoctorExist) {
-    return { status: "error", message: "Doctor already exist" };
+  const isDoctorExist = await Patient.findOne({ nic }).populate("user");
+  if (isDoctorExist.user) {
+    return { status: "error", message: "Patient already exist" };
   }
+
   const hashedPassword = await hash(password, 10);
 
   const newUser = await User.create({
@@ -104,10 +105,17 @@ export async function patient(
     userType: "patient",
   });
   console.log(newUser._id, "newUser._id");
-  const newPatient = await Patient.create({
-    nic,
-    user: newUser._id,
-  });
+
+  if (isDoctorExist && !isDoctorExist.user) {
+    await Patient.findOneAndUpdate({ nic }, { user: newUser._id });
+  }
+
+  if (!isDoctorExist && !isDoctorExist.user) {
+    await Patient.create({
+      nic,
+      user: newUser._id,
+    });
+  }
 
   return { status: "success", message: "Patient created successfully" };
 }

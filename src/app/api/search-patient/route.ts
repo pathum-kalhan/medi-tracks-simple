@@ -24,24 +24,37 @@ export const GET = auth(async (req) => {
   let patient;
   let user: any[] = [];
   let patientData: any[] = [];
+  console.log(params);
   if (params.nic) {
     patient = await Patient.findOne({ nic: params.nic }).populate("user");
     if (!patient) {
       return Response.json({ data: [], error: "Patient not found" });
     }
-    patientData = [
-      {
-        nic: patient.nic,
-        name: patient.user.name,
-        phone: patient.user.phone,
-        labReports: patient.labReports,
-        prescriptions: patient.prescriptions,
-      },
-    ];
+
+    if (!patient.user) {
+      patientData = [
+        {
+          nic: patient.nic,
+          name: "No Name",
+          phone: "No Phone",
+          labReports: patient.labReports,
+          prescriptions: patient.prescriptions,
+        },
+      ];
+    }
+    if (patient.user) {
+      patientData = [
+        {
+          nic: patient.nic,
+          name: patient.user.name,
+          phone: patient.user.phone,
+          labReports: patient.labReports,
+          prescriptions: patient.prescriptions,
+        },
+      ];
+    }
   }
 
-  // find all by either name or phone number
-  console.log(params, "param");
   if (params.name || params.phone) {
     user = await User.find({
       name: new RegExp(params.name as string, "i"),
@@ -65,8 +78,6 @@ export const GET = auth(async (req) => {
       }
     }
   }
-
-  console.log(patientData);
 
   return Response.json({ data: patientData });
 });

@@ -46,7 +46,7 @@ export const GET = auth(async (req) => {
     patient.prescriptions.forEach((prescription: any) => {
       res.push({
         _id: prescription._id,
-        date: prescription.createdAt,
+        date: formatDate(prescription.createdAt),
         doctor: prescription.doctor.user.name,
       });
     });

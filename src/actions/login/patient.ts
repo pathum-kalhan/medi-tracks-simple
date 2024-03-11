@@ -55,6 +55,10 @@ export async function logIn(
   if (!user) {
     return { status: "error", message: "Patient not found" };
   }
+  console.log(user, "user");
+  if (!user.user) {
+    return { status: "error", message: "Please register first " };
+  }
   const isPasswordMatch = await compare(password, user.user.password);
   if (!isPasswordMatch) {
     return { status: "error", message: "Password is incorrect" };

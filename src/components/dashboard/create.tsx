@@ -19,6 +19,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useFormState } from "react-dom";
 import { createPatient, State } from "@/actions/doctor/create-patient";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type FormValues = {
   nic: string;
@@ -34,19 +35,21 @@ type Props = {
 export const CreatePatient = ({ setOpen, open }: Props) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const [state, dispatch] = useFormState<State, FormData>(createPatient, null);
+  // const [state, dispatch] = useFormState<State, FormData>(createPatient, null);
+  // const router = useRouter();
 
-  useEffect(() => {
-    if (!state) {
-      return;
-    }
-    if (state.status === "success") {
-      toast.success(state.message);
-    }
-    if (state.status === "error") {
-      toast.error(state.message);
-    }
-  });
+  // useEffect(() => {
+  //   if (!state) {
+  //     return;
+  //   }
+  //   if (state.status === "success") {
+  //     console.log("here", state);
+  //     router.push(`/patient-records?nic=${state.message}`);
+  //   }
+  //   if (state.status === "error") {
+  //     toast.error(state.message);
+  //   }
+  // }, [router, state]);
 
   const handleClose = () => {
     setOpen(false);
@@ -54,25 +57,16 @@ export const CreatePatient = ({ setOpen, open }: Props) => {
 
   return (
     <Dialog open={open} onClose={handleClose} fullScreen={fullScreen}>
-      <form action={dispatch}>
+      <form action={createPatient} onSubmit={handleClose}>
         <DialogTitle>Create Patient Record</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-            <TextField
-              name="nic"
-              label="NIC"
-              size="small"
-              fullWidth
-              error={state?.errors?.nic ? true : false}
-              helperText={state?.errors?.nic}
-            />
+            <TextField name="nic" label="NIC" size="small" fullWidth />
             <TextField
               name="name"
               label="Patient Name"
               size="small"
               fullWidth
-              error={state?.errors?.name ? true : false}
-              helperText={state?.errors?.name}
             />
             <TextField
               name="phone"
@@ -80,8 +74,6 @@ export const CreatePatient = ({ setOpen, open }: Props) => {
               size="small"
               fullWidth
               type="number"
-              error={state?.errors?.phone ? true : false}
-              helperText={state?.errors?.phone}
             />
           </Stack>
         </DialogContent>
