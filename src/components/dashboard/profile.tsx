@@ -15,6 +15,7 @@ type Props = {
 type Profile = {
   name: string;
   phone: string;
+  avatar: string;
 };
 
 export const Profile = () => {
@@ -54,9 +55,11 @@ export const Profile = () => {
               height: 135,
             }}
           >
-            <Avatar alt={profile?.name} sx={{ width: 100, height: 100 }}>
-              {profile?.name.charAt(0)}
-            </Avatar>
+            <Avatar
+              alt={profile?.name}
+              src={profile?.avatar}
+              sx={{ width: 100, height: 100 }}
+            />
           </Box>
         </Grid>
         <Grid item md={12}>
@@ -81,7 +84,10 @@ export const Profile = () => {
               </MUILink>
             </Grid>
             <Grid item xs={12}>
-              <MUILink href={"#"} component={Link}>
+              <MUILink
+                href={"/dashboard/settings/profile-picture"}
+                component={Link}
+              >
                 Upload Profile Picture
               </MUILink>
             </Grid>

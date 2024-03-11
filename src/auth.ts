@@ -10,12 +10,14 @@ declare module "next-auth" {
   interface User {
     _id: string;
     userType: string;
+    avatar: string;
   }
   interface Session {
     user: {
       id: string;
       name: string;
       type: string;
+      avatar: string;
     };
   }
 }
@@ -66,6 +68,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user._id,
 
           userType: user.userType,
+          avatar: user.avatar,
         };
       }
       return token;
@@ -78,6 +81,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           ...session.user,
           id: token.id,
           type: token.userType,
+          avatar: token.avatar,
         },
       };
     },

@@ -10,6 +10,7 @@ const userSchema = new Schema({
     enum: ["doctor", "patient", "laboratory", "pharmacist"],
     required: true,
   },
+  avatar: { type: String },
 });
 
 export const User = models.User || model("User", userSchema);

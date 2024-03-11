@@ -13,6 +13,7 @@ export const GET = auth(async (req) => {
   const resUser = {
     name: user.name,
     phone: user.phone,
+    avatar: user.avatar,
   };
   return Response.json({ data: resUser });
 }) as any; // TODO: Fix `auth()` return type
