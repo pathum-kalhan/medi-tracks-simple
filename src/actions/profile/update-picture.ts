@@ -68,5 +68,6 @@ export async function updatePicture(
   }
   user.avatar = url;
   await user.save();
+  console.log("worked");
   return { status: "success", message: "Profile picture updated successfully" };
 }
