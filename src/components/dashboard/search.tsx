@@ -86,7 +86,12 @@ export default function FormDialog({ open, setOpen }: Props) {
             <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
               <RHFTextField name="nic" label="NIC" fullWidth />
               <RHFTextField name="name" label="Patient Name" fullWidth />
-              <RHFTextField name="phone" label="Mobile No" fullWidth />
+              <RHFTextField
+                name="phone"
+                label="Mobile No"
+                type="number"
+                fullWidth
+              />
             </Stack>
           </DialogContent>
           <DialogActions>
