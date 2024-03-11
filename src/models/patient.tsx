@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { ChatMessage } from "./chat";
+import { User } from "./user";
 
 const { Schema } = mongoose;
 
@@ -30,8 +31,8 @@ const patientSchema = new Schema(
     ],
     chatMessages: [ChatMessage.schema],
     user: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: User,
     },
   },
   { timestamps: true }

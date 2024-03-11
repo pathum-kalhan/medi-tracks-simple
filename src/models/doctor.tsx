@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { User } from "./user";
 
 const { Schema } = mongoose;
 
@@ -22,8 +23,8 @@ const doctorSchema = new Schema(
       },
     ],
     user: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: User,
     },
   },
   { timestamps: true }
