@@ -84,7 +84,7 @@ export async function fileUpload(
   const session = await auth();
   const id = session?.user?.id;
 
-  const laboratory = await Laboratory.findOne({ user: id });
+  const laboratory = await Laboratory.findOne({ user: id }).populate("user");
 
   const labReport = await LabReport.create({
     name,
@@ -101,9 +101,19 @@ export async function fileUpload(
   isPatientExist.labReports.push(labReport._id);
   await isPatientExist.save();
 
-  const lab = await Laboratory.findOne({ user: id });
-  lab.labReports.push(labReport._id);
-  await lab.save();
+  laboratory.labReports.push(labReport._id);
+  await laboratory.save();
+
+  const laboratoryName = laboratory.user.name;
+
+  const user = isPatientExist.user;
+  const notification = {
+    message: `Lab report uploaded by ${laboratoryName}`,
+    read: false,
+  };
+
+  user.notifications.push(notification);
+  await user.save();
 
   return { status: "success", message: "Lab report uploaded successfully" };
 }

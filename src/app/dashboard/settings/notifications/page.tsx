@@ -3,13 +3,52 @@
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Stack } from "@mui/material";
+
+type Notifications = {
+  _id: string;
+  message: string;
+  read: boolean;
+}[];
 
 export default function Home() {
-  const [open, setOpen] = useState(true);
+  const [notifications, setNotifications] = useState<Notifications>();
 
-  const handleClose = () => {
-    setOpen(false);
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const response = await fetch(
+        new URL("/api/profile", process.env.NEXT_PUBLIC_API_URL as string),
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      setNotifications(data.data.notifications);
+    };
+    fetchNotifications();
+  }, [notifications]);
+
+  console.log(notifications);
+
+  const handleClose = async (_id: string) => {
+    const res = await fetch(
+      new URL("/api/profile", process.env.NEXT_PUBLIC_API_URL as string),
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        body: JSON.stringify({ read: true, _id }),
+      }
+    );
+    const data = await res.json();
+    setNotifications(data.data.notifications);
   };
   return (
     <Box
@@ -24,15 +63,24 @@ export default function Home() {
         p: 3,
       }}
     >
-      {open && (
-        <Alert
-          icon={<CheckIcon fontSize="inherit" />}
-          severity="success"
-          onClose={handleClose}
-        >
-          Asiri laboratory is submitted your reports and there ready to view
-        </Alert>
-      )}
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        {notifications &&
+          notifications?.length > 0 &&
+          notifications?.map(
+            (notification) =>
+              !notification.read && (
+                <Alert
+                  key={notification._id}
+                  icon={<CheckIcon fontSize="inherit" />}
+                  severity="success"
+                  sx={{ width: "100%" }}
+                  onClose={() => handleClose(notification._id)}
+                >
+                  {notification.message}
+                </Alert>
+              )
+          )}
+      </Stack>
     </Box>
   );
 }

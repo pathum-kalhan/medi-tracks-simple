@@ -11,6 +11,12 @@ const userSchema = new Schema({
     required: true,
   },
   avatar: { type: String },
+  notifications: [
+    {
+      message: { type: String },
+      read: { type: Boolean, default: false },
+    },
+  ],
 });
 
 export const User = models.User || model("User", userSchema);
