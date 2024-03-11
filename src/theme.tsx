@@ -2,7 +2,7 @@
 import { Roboto } from "next/font/google";
 import Button from "@mui/material/Button";
 import { createTheme } from "@mui/material/styles";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ColorModeContext } from "./context";
 import { ThemeProvider } from "@mui/material/styles";
 
@@ -31,19 +31,19 @@ declare module "@mui/material/Button" {
 }
 
 export function ToggleColorMode({ children }: { children: React.ReactNode }) {
-  let localTheme;
-  let localFont;
-  if (typeof window !== "undefined") {
-    localTheme = localStorage.getItem("theme") ?? "light";
-  }
-  if (typeof window !== "undefined") {
-    localFont = parseInt(localStorage.getItem("font") ?? "16");
-  }
-  const [mode, setMode] = useState<"light" | "dark">(
-    localTheme as "light" | "dark"
-  );
+  const [mode, setMode] = useState<"light" | "dark">("light");
+  const [font, setFont] = useState(16);
 
-  const [font, setFont] = useState(localFont as number);
+  useEffect(() => {
+    const localTheme = localStorage.getItem("theme");
+    const localFont = localStorage.getItem("font");
+    if (localTheme) {
+      setMode(localTheme === "light" ? "light" : "dark");
+    }
+    if (localFont) {
+      setFont(parseInt(localFont));
+    }
+  }, []);
 
   const colorMode = useMemo(
     () => ({
