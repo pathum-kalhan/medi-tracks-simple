@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { ChatMessage } from "./chat";
 import { User } from "./user";
+import { LabReport } from "./laboratory";
+import { Prescription } from "./doctor";
 
 const { Schema } = mongoose;
 
@@ -13,14 +15,14 @@ const patientSchema = new Schema(
     },
     labReports: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "LabReport",
+        type: mongoose.Schema.Types.ObjectId,
+        ref: LabReport,
       },
     ],
     prescriptions: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Prescription",
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Prescription,
       },
     ],
     surgeries: [

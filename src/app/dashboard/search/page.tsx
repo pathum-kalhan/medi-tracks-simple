@@ -6,6 +6,7 @@ import { LabReportUpload } from "@/components/dashboard/view";
 import { Button, Grid, Pagination } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
+import queryString from "query-string";
 
 export default function Page({
   searchParams,
@@ -15,12 +16,13 @@ export default function Page({
   const [postsPerPage, setPostsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchResults, setSearchResults] = useState([]);
+  const query = queryString.stringify(searchParams);
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(
         new URL(
-          `/api/search-patient?nic=${searchParams.nic}`,
+          `/api/search-patient?${query}`,
           process.env.NEXT_PUBLIC_API_URL as string
         ),
         {
@@ -35,7 +37,7 @@ export default function Page({
       setSearchResults(data.data);
     };
     fetchData();
-  }, [searchParams.nic]);
+  }, [query]);
   console.log(searchResults);
 
   const indexOfLastPost = currentPage * postsPerPage;
@@ -57,6 +59,11 @@ export default function Page({
                 <User results={result} />
               </Grid>
             ))}
+            {searchResults.length === 0 && (
+              <Grid item xs={12}>
+                <h2>No Results Found</h2>
+              </Grid>
+            )}
           </Grid>
         </Grid>
         <Grid

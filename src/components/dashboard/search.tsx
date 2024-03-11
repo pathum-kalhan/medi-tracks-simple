@@ -18,9 +18,12 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { CreatePatient } from "./create";
 import { useRouter } from "next/navigation";
 import { LoadingButton } from "@mui/lab";
+import queryString from "query-string";
 
 type FormValues = {
   nic: string;
+  name: string;
+  phone: string;
 };
 
 type Props = {
@@ -37,32 +40,19 @@ export default function FormDialog({ open, setOpen }: Props) {
 
   const defaultValues = {
     nic: "",
+    name: "",
+    phone: "",
   };
 
-  const LoginSchema: ZodType<FormValues> = z.object({
-    nic: z
-      .string({
-        required_error: "required field",
-        invalid_type_error: "NIC is required",
-      })
-      .refine(
-        (value) => /^(?:\d{12}|\d{9}V)$/.test(value),
-        "Please enter a valid NIC number ex: 123456789012 or 123456789V"
-      ),
-  });
-
-  const methods = useForm<FormValues>({
-    defaultValues,
-    resolver: zodResolver(LoginSchema),
-  });
+  const methods = useForm<FormValues>();
 
   const { handleSubmit, reset } = methods;
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    setLoading(true);
-    console.log(data);
-    router.push(`/dashboard/search?nic=${data.nic}`);
-    reset();
+  const onSubmit = (data: FormValues) => {
+    const query = queryString.stringify(data);
+    if (query) {
+      router.push(`/dashboard/search?${query}`);
+    }
   };
 
   const handleClickOpen = () => {
@@ -96,12 +86,7 @@ export default function FormDialog({ open, setOpen }: Props) {
             <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
               <RHFTextField name="nic" label="NIC" fullWidth />
               <RHFTextField name="name" label="Patient Name" fullWidth />
-              <RHFTextField
-                name="mobile"
-                label="Mobile No"
-                fullWidth
-                type="number"
-              />
+              <RHFTextField name="phone" label="Mobile No" fullWidth />
             </Stack>
           </DialogContent>
           <DialogActions>
