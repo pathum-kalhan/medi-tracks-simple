@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { connect } from "@/lib/mongo";
 import { User } from "@/models/user";
+import { revalidateTag } from "next/cache";
 
 export const GET = auth(async (req) => {
   const userId = req.auth?.user?.id;
@@ -16,6 +17,7 @@ export const GET = auth(async (req) => {
     avatar: user.avatar,
     notifications: user.notifications,
   };
+  revalidateTag("picture");
   return Response.json({ data: resUser });
 }) as any; // TODO: Fix `auth()` return type
 

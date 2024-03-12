@@ -3,7 +3,8 @@ import { Avatar, Box, Grid, Typography } from "@mui/material";
 import { usePathname } from "next/navigation";
 import { Link as MUILink } from "@mui/material";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { MyContext } from "@/app/store/AvatarContext";
 
 type Props = {
   name: string;
@@ -21,6 +22,7 @@ type Profile = {
 export const Profile = () => {
   const pathname = usePathname();
   const [profile, setProfile] = useState<Profile>();
+  const { state } = useContext(MyContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,8 +34,10 @@ export const Profile = () => {
             "Content-Type": "application/json",
             accept: "application/json",
           },
+          next: { tags: ["picture"] },
         }
       );
+
       const data = await res.json();
       setProfile(data.data);
     };
@@ -57,7 +61,7 @@ export const Profile = () => {
           >
             <Avatar
               alt={profile?.name}
-              src={profile?.avatar || "/files/placeholder.jpg"}
+              src={(state as string) || "/files/placeholder.jpg"}
               sx={{ width: 100, height: 100 }}
             />
           </Box>

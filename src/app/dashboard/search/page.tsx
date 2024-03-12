@@ -3,7 +3,13 @@
 import { PaginationPage } from "@/components/common/pagination";
 import { User } from "@/components/dashboard/user-card";
 import { LabReportUpload } from "@/components/dashboard/view";
-import { Button, Grid, Pagination } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  Pagination,
+  Typography,
+} from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import queryString from "query-string";
@@ -16,10 +22,13 @@ export default function Page({
   const [postsPerPage, setPostsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const query = queryString.stringify(searchParams);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       const res = await fetch(
         new URL(
           `/api/search-patient?${query}`,
@@ -35,6 +44,7 @@ export default function Page({
       );
       const data = await res.json();
       setSearchResults(data.data);
+      setIsLoading(false);
     };
     fetchData();
   }, [query]);
@@ -54,14 +64,27 @@ export default function Page({
       <Grid container spacing={2} direction="column">
         <Grid item xs={12}>
           <Grid container spacing={2} direction="row">
+            {isLoading && (
+              <Grid
+                item
+                xs={12}
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <CircularProgress />
+              </Grid>
+            )}
             {currentPosts.map((result, index) => (
               <Grid key={index} item xs={12}>
                 <User results={result} />
               </Grid>
             ))}
-            {searchResults.length === 0 && (
-              <Grid item xs={12}>
-                <h2>No Results Found</h2>
+            {!isLoading && searchResults.length === 0 && (
+              <Grid
+                item
+                xs={12}
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <Typography variant="h6">No results found</Typography>
               </Grid>
             )}
           </Grid>

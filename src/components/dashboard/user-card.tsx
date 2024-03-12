@@ -56,6 +56,9 @@ export function User({ results }: Props) {
             <Grid item md={12}>
               <Stack direction="column">
                 <Typography sx={{ textAlign: "left" }}>
+                  <b>NIC :</b> {results.nic}
+                </Typography>
+                <Typography sx={{ textAlign: "left" }}>
                   <b>Name :</b> {results.name ?? "N/A"}
                 </Typography>
                 {/* <Typography sx={{ textAlign: "left" }}>

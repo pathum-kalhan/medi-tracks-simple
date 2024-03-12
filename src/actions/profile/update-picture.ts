@@ -9,6 +9,7 @@ import { z } from "zod";
 export type State = {
   status: "success" | "error";
   message: string;
+  avatar?: string;
   errors?: {
     avatar?: string[];
   };
@@ -69,5 +70,9 @@ export async function updatePicture(
   user.avatar = url;
   await user.save();
   console.log("worked");
-  return { status: "success", message: "Profile picture updated successfully" };
+  return {
+    status: "success",
+    avatar: `${url}`,
+    message: "Profile picture updated successfully",
+  };
 }

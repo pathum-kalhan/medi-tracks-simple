@@ -25,6 +25,7 @@ import Logo from "../../../logo.png";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Image from "next/image";
 import { Profile } from "./profile";
+import { Provider } from "@/app/store/AvatarContext";
 //import { signOut } from "../../auth";
 
 const drawerWidth = 240;
@@ -162,14 +163,16 @@ export function NavBar({
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={10}>
-            {children}
+        <Provider>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={10}>
+              {children}
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Profile />
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={2}>
-            <Profile />
-          </Grid>
-        </Grid>
+        </Provider>
       </Main>
     </Box>
   );

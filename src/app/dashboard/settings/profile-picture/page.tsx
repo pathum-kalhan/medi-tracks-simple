@@ -12,11 +12,19 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { updatePicture, State } from "@/actions/profile/update-picture";
 import { useFormState } from "react-dom";
-import { FormEvent, ReactNode, useCallback, useEffect, useState } from "react";
+import {
+  FormEvent,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { LoadingButton } from "@mui/lab";
 import { useDropzone } from "react-dropzone";
 import { ImagePreview } from "@/components/dashboard/image-preview";
 import { FileRejections } from "@/components/dashboard/file-rejection";
+import { MyContext } from "@/app/store/AvatarContext";
 
 type User = {
   name: string;
@@ -34,10 +42,12 @@ type Props = {
   maxSize: number;
 };
 
-export default function Home() {
+export default function Page() {
   const [user, setUser] = useState<User>();
   const [state, dispatch] = useFormState<State, FormData>(updatePicture, null);
   const [files, setFiles] = useState<File[]>([]);
+  const context = useContext(MyContext);
+  const { state: avatar, updateState } = context;
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
@@ -66,11 +76,12 @@ export default function Home() {
     }
     if (state.status === "success") {
       toast.success(state.message);
+      updateState(state.avatar!);
     }
     if (state.status === "error") {
       toast.error(state.message);
     }
-  }, [state]);
+  }, [state, updateState]);
 
   useEffect(() => {
     const form = new FormData();
@@ -92,13 +103,15 @@ export default function Home() {
             "Content-Type": "application/json",
             accept: "application/json",
           },
+          next: { tags: ["picture"] },
         }
       );
       const data = await res.json();
       setUser(data.data);
+      updateState(data.data.avatar);
     };
     fetchData();
-  }, []);
+  }, [updateState]);
 
   console.log(files, user?.avatar!);
 
