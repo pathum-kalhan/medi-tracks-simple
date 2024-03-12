@@ -53,7 +53,7 @@ export default async function PatientRecords() {
         <Button
           variant="contained"
           color="primary"
-          href={`/dashboard/lab-report?nic=${nic}`}
+          href={`/dashboard/patient/lab-reports?nic=${nic}`}
           sx={{ m: 1 }}
         >
           View lab reports
