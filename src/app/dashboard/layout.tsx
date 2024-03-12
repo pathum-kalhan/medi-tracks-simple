@@ -19,9 +19,32 @@ import HelpCenterIcon from "@mui/icons-material/HelpCenter";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Logo from "../../../logo.png";
 import { signOut, auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
+
+async function getPatientDashboard(id: string) {
+  const res = await fetch(
+    new URL(
+      `/api/patient-dashboard?id=${id}&place=dashboard`,
+      process.env.NEXT_PUBLIC_API_URL as string
+    ),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+
+  if (!res.ok) {
+    console.error("Failed to fetch patient data");
+  }
+  const data = await res.json();
+  return data;
+}
 
 export default async function RootLayout({
   children,
@@ -30,23 +53,57 @@ export default async function RootLayout({
 }) {
   const session = await auth();
   const userType = session?.user?.type!;
+  const data = await getPatientDashboard(session?.user?.id!);
+  const { nic } = data.data;
+
   const routes = [
-    { path: "/dashboard", name: "Dashboard", icon: <DashboardIcon /> },
+    {
+      path: "/dashboard",
+      name: "Dashboard",
+      icon: <DashboardIcon />,
+      userType: ["doctor", "patient", "laboratory", "pharmacy"],
+    },
+    {
+      path: "/dashboard/patient-records",
+      name: "Patient Records",
+      icon: <ArticleIcon />,
+      userType: [""],
+    },
+    {
+      path: `/dashboard/prescribe-medication?nic=${nic}`,
+      name: "Prescriptions",
+      icon: <ArticleIcon />,
+      userType: ["patient"],
+    },
     // {
-    //   path: "/dashboard/patient-records",
-    //   name: "Patient Records",
-    //   icon: <ArticleIcon />,
+    //   path: '/dashboard/patients',
+    //   name: "Patients",
+    //   icon: <AccountCircleIcon />,
+    //   userType: ["doctor"],
     // },
-    // {
-    //   path: "/dashboard/lab-report",
-    //   name: "Lab Reports",
-    //   icon: <AssessmentIcon />,
-    // },
-    { path: "/help", name: "Help & Support", icon: <HelpCenterIcon /> },
+    {
+      path: `/dashboard/surgical-history?nic=${nic}`,
+      name: "Surgeries",
+      icon: <ArticleIcon />,
+      userType: ["patient"],
+    },
+    {
+      path: "/dashboard/lab-report",
+      name: "Lab Reports",
+      icon: <AssessmentIcon />,
+      userType: ["laboratory"],
+    },
+    {
+      path: "/help",
+      name: "Help & Support",
+      icon: <HelpCenterIcon />,
+      userType: ["doctor", "patient", "laboratory", "pharmacy"],
+    },
     {
       path: "/dashboard/settings",
       name: "Account Settings",
       icon: <SettingsIcon />,
+      userType: ["doctor", "patient", "laboratory", "pharmacy"],
     },
   ];
   const drawer = (
@@ -64,14 +121,16 @@ export default async function RootLayout({
       </Box>
 
       <List>
-        {routes.map((route) => (
-          <ListItem key={route.path} disablePadding>
-            <ListItemButton href={route.path}>
-              <ListItemIcon>{route.icon}</ListItemIcon>
-              <ListItemText primary={route.name} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {routes.map((route, index) => {
+          if (route.userType?.includes(userType)) {
+            return (
+              <ListItemButton key={index} component="a" href={route.path}>
+                <ListItemIcon>{route.icon}</ListItemIcon>
+                <ListItemText primary={route.name} />
+              </ListItemButton>
+            );
+          }
+        })}
       </List>
       <Divider />
       <Box

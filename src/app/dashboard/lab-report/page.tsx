@@ -6,10 +6,7 @@ import { useEffect, useState } from "react";
 
 async function labReportData(nic: string) {
   const res = await fetch(
-    new URL(
-      `/api/search-labreport?nic=${nic}`,
-      process.env.NEXT_PUBLIC_API_URL as string
-    ),
+    new URL(`/api/all-labreport`, process.env.NEXT_PUBLIC_API_URL as string),
     {
       method: "GET",
       headers: {
@@ -72,17 +69,12 @@ export default function Page({
   const columns: GridColDef[] = [
     { field: "testType", headerName: "Report Name", width: 200 },
     {
-      field: "laboratory",
-      headerName: "Laboratory",
-      width: 200,
-    },
-    {
       field: "createdAt",
       // valueFormatter: (params) => {
       //   params.value.toString();
       // },
       headerName: "Date",
-      width: 130,
+      width: 200,
     },
     {
       field: "view",

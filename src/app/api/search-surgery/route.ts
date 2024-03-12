@@ -35,9 +35,6 @@ export const GET = auth(async (req) => {
   const doctor = await Doctor.findOne({ user: doctorId });
   const patient = await Patient.findOne({ nic }).populate({
     path: "surgeries",
-    match: {
-      doctor: userType === "doctor" ? doctor?._id : doctorId,
-    },
     populate: {
       path: "doctor",
       model: Doctor,
@@ -49,6 +46,12 @@ export const GET = auth(async (req) => {
   });
   if (!patient) {
     return Response.json({ data: [], error: "Patient not found" });
+  }
+
+  if (userType != "patient") {
+    patient.surgeries = patient.surgeries.filter(
+      (surgery: any) => surgery.doctor._id.toString() == doctor._id
+    );
   }
 
   let res: any = [];

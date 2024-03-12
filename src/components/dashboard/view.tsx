@@ -47,6 +47,7 @@ export const LabReportUpload = ({ setOpen, open }: Props) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [state, dispatch] = useFormState<State, FormData>(fileUpload, null);
   const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
 
   useEffect(() => {
     if (!state) {
@@ -57,6 +58,7 @@ export const LabReportUpload = ({ setOpen, open }: Props) => {
       toast.success(state.message);
     }
     if (state.status === "error") {
+      setLoading(false);
       toast.error(state.message);
     }
   }, [state]);
@@ -100,6 +102,7 @@ export const LabReportUpload = ({ setOpen, open }: Props) => {
               helperText={state?.errors?.testType}
               fullWidth
             />
+            {name && <p>{name}</p>}
             <Button
               component="label"
               role={undefined}
@@ -107,7 +110,14 @@ export const LabReportUpload = ({ setOpen, open }: Props) => {
               tabIndex={-1}
             >
               Upload file
-              <VisuallyHiddenInput required type="file" name="files" />
+              <VisuallyHiddenInput
+                required
+                type="file"
+                name="files"
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setName(e.target.files![0].name);
+                }}
+              />
             </Button>
             {state?.errors?.files && (
               <Alert severity="error">{state?.errors?.files}</Alert>

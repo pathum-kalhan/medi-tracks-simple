@@ -19,8 +19,6 @@ export const GET = auth(async (req) => {
   const userType = req.auth?.user?.type ?? type;
   const doctorId = req.auth?.user?.id ?? id;
 
-  console.log(userType, doctorId, "userType");
-
   if (!nic) {
     return Response.json({ data: [], error: "Patient nic is required" });
   }
@@ -32,13 +30,21 @@ export const GET = auth(async (req) => {
   // ) {
   //   return Response.json({ data: [], error: "Unauthorized" });
   // }
+  let matcher;
   await connect();
   const doctor = await Doctor.findOne({ user: doctorId });
+
+  switch (userType) {
+    case "doctor":
+      matcher = doctor?._id ?? doctorId;
+      break;
+    case "patient":
+      matcher = undefined;
+      break;
+  }
+
   const patient = await Patient.findOne({ nic }).populate({
     path: "prescriptions",
-    match: {
-      doctor: userType === "doctor" ? doctor?._id : doctorId,
-    },
     populate: {
       path: "doctor",
       model: Doctor,
@@ -51,7 +57,15 @@ export const GET = auth(async (req) => {
   if (!patient) {
     return Response.json({ data: [], error: "Patient not found" });
   }
-  console.log(patient, "patient");
+
+  if (userType !== "patient") {
+    patient.prescriptions = patient.prescriptions.filter(
+      (prescription: any) => {
+        return prescription.doctor._id.toString() === doctorId;
+      }
+    );
+  }
+
   let res: any = [];
   if (place === "dashboard") {
     patient.prescriptions.forEach((prescription: any) => {
