@@ -91,30 +91,38 @@ export async function patient(
   }
   const { name, nic, phone, password } = validationResult.data;
   await connect();
-  const isDoctorExist = await Patient.findOne({ nic }).populate("user");
-  if (isDoctorExist.user) {
+  const isPatientExist = await Patient.findOne({ nic });
+  const isUserExist = await User.findById(isPatientExist?.user);
+  if (isPatientExist && isUserExist) {
     return { status: "error", message: "Patient already exist" };
   }
 
   const hashedPassword = await hash(password, 10);
 
-  const newUser = await User.create({
-    name,
-    phone,
-    password: hashedPassword,
-    userType: "patient",
-  });
-  console.log(newUser._id, "newUser._id");
+  if (!isPatientExist && !isUserExist) {
+    const newUser = await User.create({
+      name,
+      phone,
+      password: hashedPassword,
+      userType: "patient",
+    });
 
-  if (isDoctorExist && !isDoctorExist.user) {
-    await Patient.findOneAndUpdate({ nic }, { user: newUser._id });
-  }
-
-  if (!isDoctorExist && !isDoctorExist.user) {
-    await Patient.create({
+    const newPatient = await Patient.create({
       nic,
       user: newUser._id,
     });
+  }
+
+  if (isPatientExist && !isUserExist) {
+    const newUser = await User.create({
+      name,
+      phone,
+      password: hashedPassword,
+      userType: "patient",
+    });
+
+    isPatientExist.user = newUser._id;
+    await isPatientExist.save();
   }
 
   return { status: "success", message: "Patient created successfully" };

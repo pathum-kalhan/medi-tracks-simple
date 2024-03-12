@@ -3,10 +3,10 @@ import { Card } from "@/components/dashboard/card";
 import { ProfileModel } from "@/components/dashboard/profile-model";
 import { Button, Grid } from "@mui/material";
 
-async function getPrescriptions(nic: string) {
+async function getPrescriptions(nic: string, doctorId: string) {
   const res = await fetch(
     new URL(
-      `/api/search-prescriptions?nic=${nic}&place=dashboard`,
+      `/api/search-prescriptions?nic=${nic}&place=dashboard&doctorId=${doctorId}&type=doctor`,
       process.env.NEXT_PUBLIC_API_URL as string
     ),
     {
@@ -25,10 +25,10 @@ async function getPrescriptions(nic: string) {
   return data;
 }
 
-async function getSurgery(nic: string) {
+async function getSurgery(nic: string, doctorId: string) {
   const res = await fetch(
     new URL(
-      `/api/search-surgery?nic=${nic}&place=dashboard`,
+      `/api/search-surgery?nic=${nic}&place=dashboard&doctorId=${doctorId}&type=doctor`,
       process.env.NEXT_PUBLIC_API_URL as string
     ),
     {
@@ -54,10 +54,10 @@ export default async function Page({
 }) {
   const session = await auth();
   const nic = searchParams.nic!;
-  const prescriptions = await getPrescriptions(nic);
-  const surgery = await getSurgery(nic);
+  const prescriptions = await getPrescriptions(nic, session?.user?.id!);
+  const surgery = await getSurgery(nic, session?.user?.id!);
 
-  console.log(surgery);
+  console.log(prescriptions, "prescriptions");
 
   const column = [
     { field: "_id", headerName: "ID", width: 150 },

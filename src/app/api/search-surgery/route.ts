@@ -13,6 +13,12 @@ export const GET = auth(async (req) => {
   );
   const nic = searchParams.get("nic");
   const place = searchParams.get("place");
+  const id = searchParams.get("doctorId");
+  const type = searchParams.get("type");
+
+  const userType = req.auth?.user?.type ?? type;
+  const doctorId = req.auth?.user?.id ?? id;
+
   if (!nic) {
     return Response.json({ data: [], error: "Patient nic is required" });
   }
@@ -26,8 +32,12 @@ export const GET = auth(async (req) => {
   // }
 
   await connect();
+  const doctor = await Doctor.findOne({ user: doctorId });
   const patient = await Patient.findOne({ nic }).populate({
     path: "surgeries",
+    match: {
+      doctor: userType === "doctor" ? doctor?._id : doctorId,
+    },
     populate: {
       path: "doctor",
       model: Doctor,

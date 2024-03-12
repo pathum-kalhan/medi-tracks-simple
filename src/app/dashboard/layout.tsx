@@ -37,7 +37,6 @@ export default async function RootLayout({
     //   name: "Patient Records",
     //   icon: <ArticleIcon />,
     // },
-
     // {
     //   path: "/dashboard/lab-report",
     //   name: "Lab Reports",

@@ -8,13 +8,13 @@ import { NextRequest } from "next/server";
 
 async function generateInitialData() {
   try {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 10; i++) {
       const hospital = faker.company.name();
       const disease = faker.lorem.words();
       const medicine = faker.commerce.productName();
       const validTill = faker.date.future();
-      const patient = "65eaf6f3cc51c4a3df063448";
-      const doctor = "65eaf695cc51c4a3df06343e"; // Use as constructor
+      const patient = "65eff3b0fb3a39d135b3e500";
+      const doctor = "65efef05fb3a39d135b3e4ee"; // Use as constructor
       const doctorNotes = faker.lorem.sentence();
       await connect();
       const pr = await Prescription.create({
@@ -26,11 +26,11 @@ async function generateInitialData() {
         doctor,
         doctorNotes,
       });
-      const pt = await Patient.findById("65eaf6f3cc51c4a3df063448");
+      const pt = await Patient.findById("65eff3b0fb3a39d135b3e500");
       pt.prescriptions.push(pr._id);
       pt.save();
 
-      const doc = await Doctor.findById("65eaf695cc51c4a3df06343e");
+      const doc = await Doctor.findById("65efef05fb3a39d135b3e4ee");
       doc.prescriptions.push(pr._id);
       doc.save();
     }
