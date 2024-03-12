@@ -60,7 +60,7 @@ export const GET = auth(async (req) => {
       _id: prescription._id,
       date: formatDate(prescription.createdAt),
       doctor: prescription.doctor.user.name,
-      valid: prescription.validTill,
+      valid: formatDate(prescription.validTill),
       notes: prescription.doctorNotes,
       disease: prescription.disease,
       medicine: prescription.medicine,

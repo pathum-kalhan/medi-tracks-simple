@@ -59,7 +59,7 @@ export const GET = auth(async (req) => {
       _id: surgeries._id,
       date: formatDate(surgeries.createdAt),
       doctor: surgeries.doctor.user.name,
-      valid: surgeries.validTill,
+      valid: formatDate(surgeries.validTill),
       notes: surgeries.doctorNotes,
       medicine: surgeries.medicine,
       hospital: surgeries.hospital,

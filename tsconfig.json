@@ -28,6 +28,6 @@
      ".next/types/**/*.ts", 
     
       "./src/auth/**/*.ts"
-],
+,],
   "exclude": ["node_modules"]
 }
