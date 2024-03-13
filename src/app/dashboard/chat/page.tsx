@@ -1,5 +1,6 @@
 import { Chat } from "@/components/chat/Chat";
 import { auth } from "@/auth";
+import { Grid } from "@mui/material";
 
 async function getAvatarURL(id: string) {
   const res = await fetch(
@@ -27,16 +28,33 @@ export default async function Home() {
 
   if (userType === "doctor") {
     return (
-      <>
-        <Chat forum="Doctor" id={userId} photoURL={avatarURL} name={userName} />
-        <Chat forum="Patient" id={userId} photoURL="" name={userName} />
-      </>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <Chat
+            forum="Doctor"
+            role="doctor"
+            id={userId}
+            photoURL={avatarURL}
+            name={userName}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Chat
+            forum="Patient"
+            role="doctor"
+            id={userId}
+            photoURL={avatarURL}
+            name={userName}
+          />
+        </Grid>
+      </Grid>
     );
   } else if (userType === "patient") {
     return (
       <>
         <Chat
           forum="Patient"
+          role="patient"
           id={userId}
           photoURL={avatarURL}
           name={userName}

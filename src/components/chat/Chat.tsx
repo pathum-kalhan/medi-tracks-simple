@@ -44,11 +44,13 @@ const mediator = new ChatMediator();
 
 export const Chat = ({
   forum,
+  role,
   id,
   name,
   photoURL,
 }: {
   forum: string;
+  role: string;
   id: string;
   name: string;
   photoURL: string;
@@ -57,28 +59,28 @@ export const Chat = ({
 
   useEffect(() => {
     const fetchMessages = async () => {
-      const res = await fetch("/api/chat");
+      const res = await fetch(`/api/chat?forum=${forum.toLowerCase()}`);
       const data = await res.json();
       setMessages(data);
     };
 
     fetchMessages();
-  }, []);
+  }, [forum]);
 
   useEffect(() => {
     const messageCallback = (message: Messages[0]) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     };
 
-    mediator.subscribe(messageCallback);
+    mediator.subscribe(forum, messageCallback);
 
     return () => {
-      mediator.unsubscribe(messageCallback);
+      mediator.unsubscribe(forum, messageCallback);
     };
-  }, []);
+  }, [forum]);
 
   const addMessage = (message: Messages[0]) => {
-    mediator.sendMessage(message);
+    mediator.sendMessage(forum, message);
   };
 
   return (
@@ -117,9 +119,10 @@ export const Chat = ({
         <TextInput
           addMessage={addMessage}
           userId={id}
-          senderRole={forum.toLowerCase()}
-          userName={forum}
+          senderRole={role}
+          userName={name}
           photoURL={photoURL}
+          forum={forum.toLowerCase()}
         />
       </Paper>
     </div>

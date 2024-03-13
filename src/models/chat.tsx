@@ -6,6 +6,11 @@ const chatMessageSchema = new Schema({
     enum: ["patient", "doctor"],
     required: true,
   },
+  forum: {
+    type: String,
+    enum: ["patient", "doctor"],
+    required: true,
+  },
   message: {
     type: String,
     required: true,

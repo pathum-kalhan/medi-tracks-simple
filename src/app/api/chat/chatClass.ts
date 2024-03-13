@@ -9,14 +9,19 @@ type MessageType = {
 };
 
 interface Mediator {
-  sendMessage: (message: MessageType) => void;
-  subscribe: (callback: (message: MessageType) => void) => void;
+  sendMessage: (forum: string, message: MessageType) => void;
+  subscribe: (forum: string, callback: (message: MessageType) => void) => void;
+  unsubscribe: (
+    forum: string,
+    callback: (message: MessageType) => void
+  ) => void;
 }
 
 export class ChatMediator implements Mediator {
-  private subscribers: ((message: MessageType) => void)[] = [];
+  private subscribers: { [key: string]: ((message: MessageType) => void)[] } =
+    {};
 
-  async sendMessage(message: MessageType) {
+  async sendMessage(forum: string, message: MessageType) {
     const send = await fetch("/api/chat", {
       method: "POST",
       body: JSON.stringify(message),
@@ -27,16 +32,25 @@ export class ChatMediator implements Mediator {
     }
     console.log("response", send);
 
-    this.subscribers.forEach((callback) => {
-      callback(message);
-    });
+    if (this.subscribers[forum]) {
+      this.subscribers[forum].forEach((callback) => {
+        callback(message);
+      });
+    }
   }
 
-  subscribe(callback: (message: MessageType) => void): void {
-    this.subscribers.push(callback);
+  subscribe(forum: string, callback: (message: MessageType) => void): void {
+    if (!this.subscribers[forum]) {
+      this.subscribers[forum] = [];
+    }
+    this.subscribers[forum].push(callback);
   }
 
-  unsubscribe(callback: (message: MessageType) => void): void {
-    this.subscribers = this.subscribers.filter((cb) => cb !== callback);
+  unsubscribe(forum: string, callback: (message: MessageType) => void): void {
+    if (this.subscribers[forum]) {
+      this.subscribers[forum] = this.subscribers[forum].filter(
+        (cb) => cb !== callback
+      );
+    }
   }
 }

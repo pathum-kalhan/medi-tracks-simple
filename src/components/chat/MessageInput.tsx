@@ -24,6 +24,7 @@ type Message = {
   displayName: string;
   avatarDisp: boolean;
   photoURL: string;
+  forum: string;
 };
 
 type Props = {
@@ -32,6 +33,7 @@ type Props = {
   senderRole: string;
   userName: string;
   photoURL: string;
+  forum: string;
 };
 
 export const TextInput = ({
@@ -39,6 +41,7 @@ export const TextInput = ({
   userId,
   senderRole,
   userName,
+  forum,
   photoURL,
 }: Props) => {
   const [textValue, setTextValue] = useState("");
@@ -54,6 +57,7 @@ export const TextInput = ({
       displayName: userName,
       avatarDisp: true,
       photoURL,
+      forum,
     };
 
     addMessage(message);
