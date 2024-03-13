@@ -10,6 +10,10 @@ const chatMessageSchema = new Schema({
     type: String,
     required: true,
   },
+  userId: {
+    type: String,
+    required: true,
+  },
   timestamp: {
     type: String,
     required: true,
@@ -22,15 +26,8 @@ const chatMessageSchema = new Schema({
     type: Boolean,
     required: true,
   },
-  sender: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  recipient: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+  photoURL: {
+    type: String,
   },
 });
 

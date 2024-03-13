@@ -5,8 +5,6 @@ import SendIcon from "@mui/icons-material/Send";
 import Button from "@mui/material/Button";
 import { FormEvent, useState } from "react";
 
-const currentUser = "Sasiru";
-
 const WrapForm = styled("form")({
   display: "flex",
   justifyContent: "center",
@@ -19,29 +17,43 @@ const WrapText = styled("div")({
 });
 
 type Message = {
-  type: "left" | "right";
+  userId: string;
+  senderRole: string;
   message: string;
   timestamp: string;
   displayName: string;
   avatarDisp: boolean;
+  photoURL: string;
 };
 
 type Props = {
   addMessage: (message: Message) => void;
+  userId: string;
+  senderRole: string;
+  userName: string;
+  photoURL: string;
 };
 
-export const TextInput = ({ addMessage }: Props) => {
+export const TextInput = ({
+  addMessage,
+  userId,
+  senderRole,
+  userName,
+  photoURL,
+}: Props) => {
   const [textValue, setTextValue] = useState("");
 
   const sendMessage = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!textValue.trim()) return;
     const message: Message = {
-      type: "right",
+      userId,
+      senderRole,
       message: textValue,
       timestamp: new Date().toLocaleString(),
-      displayName: currentUser,
+      displayName: userName,
       avatarDisp: true,
+      photoURL,
     };
 
     addMessage(message);

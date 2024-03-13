@@ -3,7 +3,7 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
-import { deepOrange } from "@mui/material/colors";
+import { blue } from "@mui/material/colors";
 
 const MessageRow = styled("div")({
   display: "flex",
@@ -24,8 +24,8 @@ const MessageBubble = styled("div")(({ theme }) => ({
 }));
 
 const OrangeAvatar = styled(Avatar)(({ theme }) => ({
-  color: theme.palette.getContrastText(deepOrange[500]),
-  backgroundColor: deepOrange[500],
+  color: theme.palette.getContrastText(blue[500]),
+  backgroundColor: blue[500],
   width: theme.spacing(4),
   height: theme.spacing(4),
 }));
@@ -35,10 +35,11 @@ const DisplayName = styled("div")({
 });
 
 export const MessageLeft = (props: any) => {
+  console.log(props, "props in message left");
   const {
     message = "no message",
     timestamp = "",
-    photoURL = "https://www.w3schools.com/howto/img_avatar.png",
+    photoURL,
     displayName = "Avatar",
   } = props;
 

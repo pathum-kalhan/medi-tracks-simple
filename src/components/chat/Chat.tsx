@@ -3,6 +3,8 @@ import Paper from "@mui/material/Paper";
 import { TextInput } from "./MessageInput";
 import { MessageLeft, MessageRight } from "./Message";
 import { use, useEffect, useState } from "react";
+import { ChatMediator } from "@/app/api/chat/chatClass";
+import { Typography } from "@mui/material";
 
 const paperStyles = {
   width: "80vw",
@@ -16,8 +18,6 @@ const paperStyles = {
 };
 
 const containerStyles = {
-  width: "100vw",
-  height: "100vh",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -31,46 +31,65 @@ const messagesBodyStyles = {
 };
 
 type Messages = {
-  type: "left" | "right";
+  userId: string;
+  senderRole: string;
   message: string;
   timestamp: string;
   displayName: string;
   avatarDisp: boolean;
+  photoURL: string;
 }[];
 
-const chatMessages: Messages = [
-  {
-    type: "left",
-    message: "Hi",
-    timestamp: "MM/DD 00:00",
-    displayName: "Sasiru",
-    avatarDisp: true,
-  },
-];
+const mediator = new ChatMediator();
 
-export const Chat = () => {
-  const [messages, setMessages] = useState<Messages>(chatMessages);
+export const Chat = ({
+  forum,
+  id,
+  name,
+  photoURL,
+}: {
+  forum: string;
+  id: string;
+  name: string;
+  photoURL: string;
+}) => {
+  const [messages, setMessages] = useState<Messages>([]);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const res = await fetch("/api/chat");
+      const data = await res.json();
+      setMessages(data);
+    };
+
+    fetchMessages();
+  }, []);
+
+  useEffect(() => {
+    const messageCallback = (message: Messages[0]) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    };
+
+    mediator.subscribe(messageCallback);
+
+    return () => {
+      mediator.unsubscribe(messageCallback);
+    };
+  }, []);
 
   const addMessage = (message: Messages[0]) => {
-    setMessages([...messages, message]);
+    mediator.sendMessage(message);
   };
 
   return (
     <div style={containerStyles}>
       <Paper sx={paperStyles} elevation={2}>
+        <Typography variant="h5" component="h2">
+          {forum} Forum
+        </Typography>
         <Paper sx={messagesBodyStyles}>
           {messages.map((message, index) => {
-            if (message.type === "left") {
-              return (
-                <MessageLeft
-                  key={index}
-                  message={message.message}
-                  timestamp={message.timestamp}
-                  displayName={message.displayName}
-                  avatarDisp={message.avatarDisp}
-                />
-              );
-            } else {
+            if (message.userId === id) {
               return (
                 <MessageRight
                   key={index}
@@ -78,12 +97,30 @@ export const Chat = () => {
                   timestamp={message.timestamp}
                   displayName={message.displayName}
                   avatarDisp={message.avatarDisp}
+                  photoURL={message.photoURL}
+                />
+              );
+            } else {
+              return (
+                <MessageLeft
+                  key={index}
+                  message={message.message}
+                  timestamp={message.timestamp}
+                  displayName={message.displayName}
+                  avatarDisp={message.avatarDisp}
+                  photoURL={message.photoURL}
                 />
               );
             }
           })}
         </Paper>
-        <TextInput addMessage={addMessage} />
+        <TextInput
+          addMessage={addMessage}
+          userId={id}
+          senderRole={forum.toLowerCase()}
+          userName={forum}
+          photoURL={photoURL}
+        />
       </Paper>
     </div>
   );
