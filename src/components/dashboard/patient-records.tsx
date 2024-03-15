@@ -30,8 +30,7 @@ export default async function PatientRecords() {
   const session = await auth();
 
   const data = await getPatientDashboard(session?.user?.id!);
-  const { prescriptions, surgeries, nic } = data.data;
-  console.log(prescriptions, "prescriptions");
+  const { prescriptions, surgeries, consulting, disease, nic } = data.data;
   const column = [
     { field: "_id", headerName: "ID", width: 100 },
     { field: "createdAt", headerName: "Date", width: 200 },
@@ -42,11 +41,39 @@ export default async function PatientRecords() {
     },
   ];
 
-  const row = [
-    { _id: "1", createdAt: "2021-10-10", doctor: "Dr. John Doe" },
-    { _id: "2", createdAt: "2021-10-10", doctor: "Dr. John Doe" },
-    { _id: "3", createdAt: "2021-10-10", doctor: "Dr. John Doe" },
+  const consultingColumn = [
+    { field: "_id", headerName: "ID", width: 100 },
+    { field: "createdAt", headerName: "Date", width: 200 },
+    {
+      field: "doctor",
+      headerName: "Doctor",
+      width: 150,
+    },
+    {
+      field: "hospital",
+      headerName: "Hospital",
+      width: 150,
+    },
   ];
+
+  const diseaseColumn = [
+    {
+      field: "_id",
+      headerName: "ID",
+      width: 100,
+    },
+    {
+      field: "createdAt",
+      headerName: "Date",
+      width: 200,
+    },
+    {
+      field: "disease",
+      headerName: "Disease",
+      width: 150,
+    },
+  ];
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={12} sx={{ textAlign: "center" }}>
@@ -75,9 +102,9 @@ export default async function PatientRecords() {
       <Grid item xs={12} md={6}>
         <Card
           title="Consulting History"
-          row={row}
-          column={column}
-          href={"/dashboard/consulting-history"}
+          row={consulting}
+          column={consultingColumn}
+          href={`/dashboard/consulting-history?nic=${nic}&name=${session?.user?.name}`}
         />
       </Grid>
 
@@ -87,6 +114,14 @@ export default async function PatientRecords() {
           row={surgeries}
           column={column}
           href={`/dashboard/surgical-history?nic=${nic}&name=${session?.user?.name}`}
+        />
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Card
+          title="Disease History"
+          row={disease}
+          column={diseaseColumn}
+          href={`/dashboard/disease-history?nic=${nic}&name=${session?.user?.name}`}
         />
       </Grid>
     </Grid>

@@ -19,6 +19,7 @@ import { CreatePatient } from "./create";
 import { useRouter } from "next/navigation";
 import { LoadingButton } from "@mui/lab";
 import queryString from "query-string";
+import { useSession } from "next-auth/react";
 
 type FormValues = {
   nic: string;
@@ -37,6 +38,8 @@ export default function FormDialog({ open, setOpen }: Props) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
+  const { data: session } = useSession();
+  const userType = session?.user?.type;
 
   const defaultValues = {
     nic: "",
@@ -103,13 +106,15 @@ export default function FormDialog({ open, setOpen }: Props) {
             >
               Search
             </LoadingButton>
-            <Button
-              variant="contained"
-              sx={{ borderRadius: 15 }}
-              onClick={handleCreatePatientRecords}
-            >
-              Create Patient Record
-            </Button>
+            {userType === "doctor" && (
+              <Button
+                variant="contained"
+                sx={{ borderRadius: 15 }}
+                onClick={handleCreatePatientRecords}
+              >
+                Create Patient Record
+              </Button>
+            )}
             <Button onClick={handleClose}>Cancel</Button>
           </DialogActions>
         </FormProvider>

@@ -61,7 +61,13 @@ export default async function RootLayout({
       path: "/dashboard",
       name: "Dashboard",
       icon: <DashboardIcon />,
-      userType: ["doctor", "patient", "laboratory", "pharmacy"],
+      userType: ["doctor", "patient", "laboratory", "pharmacist"],
+    },
+    {
+      path: "/dashboard/pharmacist/all-prescriptions",
+      name: "Prescriptions",
+      icon: <ArticleIcon />,
+      userType: ["pharmacist"],
     },
     {
       path: "/dashboard/patient-records",
@@ -94,16 +100,16 @@ export default async function RootLayout({
       userType: ["laboratory"],
     },
     {
-      path: "/help",
+      path: "/dashboard/support",
       name: "Help & Support",
       icon: <HelpCenterIcon />,
-      userType: ["doctor", "patient", "laboratory", "pharmacy"],
+      userType: ["doctor", "patient", "laboratory", "pharmacist"],
     },
     {
       path: "/dashboard/settings",
       name: "Account Settings",
       icon: <SettingsIcon />,
-      userType: ["doctor", "patient", "laboratory", "pharmacy"],
+      userType: ["doctor", "patient", "laboratory", "pharmacist"],
     },
   ];
   const drawer = (

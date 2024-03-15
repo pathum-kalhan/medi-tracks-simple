@@ -6,11 +6,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-export default function Page({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) {
+export default function Page() {
   const [open, setOpen] = useState(false);
   const [openNotes, setOpenNotes] = useState(false);
   const [rows, setRows] = useState([]);
@@ -21,15 +17,11 @@ export default function Page({
     notes: "",
   });
 
-  const nic = searchParams.nic!;
-  const name = searchParams.name!;
-  const { data: session } = useSession();
-
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(
         new URL(
-          `/api/search-consulting?nic=${nic}&place=prescribe-medication`,
+          `/api/pharmacist/all`,
           process.env.NEXT_PUBLIC_API_URL as string
         ),
         {
@@ -49,8 +41,7 @@ export default function Page({
       setRows(data.data);
     };
     fetchData();
-  }, [nic]);
-
+  }, []);
   const handleDoctorNotes = (row: any) => {
     return (
       <Button
@@ -71,16 +62,34 @@ export default function Page({
     );
   };
   const columns: GridColDef[] = [
-    { field: "_id", headerName: "ID", width: 250 },
-    { field: "createdAt", headerName: "Date", width: 250 },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 200,
+    },
     {
       field: "doctor",
       headerName: "Doctor",
-      width: 200,
+      width: 100,
+    },
+    {
+      field: "disease",
+      headerName: "Disease",
+      width: 150,
     },
     {
       field: "hospital",
       headerName: "Hospital",
+      width: 150,
+    },
+    {
+      field: "medicine",
+      headerName: "Medicine",
+      width: 100,
+    },
+    {
+      field: "valid",
+      headerName: "Valid Till",
       width: 200,
     },
     {
@@ -103,34 +112,14 @@ export default function Page({
         <Grid container justifyContent="space-between">
           <Grid item xs={6} sm={6} md={6}>
             <Typography variant="h4" align="center">
-              Consulting History
+              Prescribe Medication
             </Typography>
-          </Grid>
-          <Grid item xs={6} sm={6} md={6}>
-            {session?.user?.type === "doctor" && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={addMedication}
-              >
-                Add Prescription
-              </Button>
-            )}
           </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12}>
         <DataGrid rows={rows} columns={columns} getRowId={(row) => row._id} />
       </Grid>
-      <Prescribe
-        open={open}
-        setOpen={setOpen}
-        name={name}
-        title="Prescribe Medication"
-        date={new Date().toDateString()}
-        type="prescribe"
-        nic={nic}
-      />
       <Notes
         open={openNotes}
         setOpen={setOpenNotes}

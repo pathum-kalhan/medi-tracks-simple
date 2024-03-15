@@ -54,6 +54,7 @@ export default async function Page({
 }) {
   const session = await auth();
   const nic = searchParams.nic!;
+  const userType = session?.user?.type!;
   const prescriptions = await getPrescriptions(nic, session?.user?.id!);
   const surgery = await getSurgery(nic, session?.user?.id!);
 
@@ -69,20 +70,22 @@ export default async function Page({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={12} sx={{ textAlign: "center" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          href={`/dashboard/lab-report?nic=${nic}`}
-          sx={{ m: 1 }}
-        >
-          View lab reports
-        </Button>
+        {(userType === "doctor" || userType === "patient") && (
+          <Button
+            variant="contained"
+            color="primary"
+            href={`/dashboard/lab-report?nic=${nic}`}
+            sx={{ m: 1 }}
+          >
+            View lab reports
+          </Button>
+        )}
         {session?.user?.type === "doctor" && (
           <ProfileModel name={session?.user?.name} nic={nic} />
         )}
       </Grid>
 
-      {prescriptions.data && (
+      {userType === "doctor" && (
         <Grid item xs={12} md={6}>
           <Card
             title="Prescribed Medications"
@@ -92,15 +95,26 @@ export default async function Page({
           />
         </Grid>
       )}
-
-      <Grid item xs={12} md={6}>
-        <Card
-          title="Surgical History"
-          row={surgery.data}
-          column={column}
-          href={`/dashboard/surgical-history?nic=${nic}&name=${session?.user?.name}`}
-        />
-      </Grid>
+      {userType === "pharmacist" && (
+        <Grid item xs={6}>
+          <Card
+            title="Prescribed Medications"
+            row={prescriptions.data}
+            column={column}
+            href={`/dashboard/pharmacist/patient-prescriptions?nic=${nic}`}
+          />
+        </Grid>
+      )}
+      {userType === "doctor" && (
+        <Grid item xs={12} md={6}>
+          <Card
+            title="Surgical History"
+            row={surgery.data}
+            column={column}
+            href={`/dashboard/surgical-history?nic=${nic}&name=${session?.user?.name}`}
+          />
+        </Grid>
+      )}
     </Grid>
   );
 }

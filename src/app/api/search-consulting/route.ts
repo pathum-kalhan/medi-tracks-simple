@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { formatDate } from "@/lib/date-format";
 import { connect } from "@/lib/mongo";
-import { Doctor, Prescription } from "@/models/doctor";
+import { Doctor } from "@/models/doctor";
 import { LabReport, Laboratory } from "@/models/laboratory";
 import { Patient } from "@/models/patient";
 import { User } from "@/models/user";
@@ -33,29 +33,6 @@ export const GET = auth(async (req) => {
   let matcher;
   await connect();
   const doctor = await Doctor.findOne({ user: doctorId });
-
-  if (!doctor) {
-    const prescription = await Prescription.find({}).populate({
-      path: "doctor",
-      model: Doctor,
-      populate: {
-        path: "user",
-        model: User,
-      },
-    });
-
-    let res: any = [];
-    if (place === "dashboard") {
-      prescription.forEach((prescription: any) => {
-        res.push({
-          _id: prescription._id,
-          date: formatDate(prescription.createdAt),
-          doctor: prescription.doctor.user.name,
-        });
-      });
-    }
-    return Response.json({ data: res });
-  }
 
   switch (userType) {
     case "doctor":
@@ -91,11 +68,12 @@ export const GET = auth(async (req) => {
 
   let res: any = [];
   if (place === "dashboard") {
-    patient.prescriptions.forEach((prescription: any) => {
+    patient.prescriptions.forEach((consulting: any) => {
       res.push({
-        _id: prescription._id,
-        date: formatDate(prescription.createdAt),
-        doctor: prescription.doctor.user.name,
+        _id: consulting._id,
+        createdAt: formatDate(consulting.createdAt),
+        doctor: consulting.doctor.name,
+        disease: consulting.disease,
       });
     });
     return Response.json({ data: res });
@@ -104,13 +82,10 @@ export const GET = auth(async (req) => {
   patient.prescriptions.forEach((prescription: any) => {
     res.push({
       _id: prescription._id,
-      date: formatDate(prescription.createdAt),
+      createdAt: formatDate(prescription.createdAt),
       doctor: prescription.doctor.user.name,
-      valid: formatDate(prescription.validTill),
       notes: prescription.doctorNotes,
       disease: prescription.disease,
-      medicine: prescription.medicine,
-      hospital: prescription.hospital,
     });
   });
 

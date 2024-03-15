@@ -1,6 +1,6 @@
 import { Chat } from "@/components/chat/Chat";
 import { auth } from "@/auth";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 async function getAvatarURL(id: string) {
   const res = await fetch(
@@ -60,6 +60,28 @@ export default async function Home() {
           name={userName}
         />
       </>
+    );
+  } else {
+    return (
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={12} sx={{ textAlign: "center" }}>
+          <Typography variant="h4">For Technical Support</Typography>
+        </Grid>
+
+        <Grid item xs={6}>
+          <Typography variant="h5">Hospital: 0117456456</Typography>
+          <Typography variant="h5">Fax: 0117355355</Typography>
+        </Grid>
+
+        <Grid item xs={6}>
+          <Typography variant="h5">
+            Information: info@meditrackspro.lk
+          </Typography>
+          <Typography variant="h5">
+            Support: support@meditrackspro.lk
+          </Typography>
+        </Grid>
+      </Grid>
     );
   }
 }

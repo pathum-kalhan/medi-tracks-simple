@@ -14,6 +14,8 @@ export const GET = auth(async (req) => {
   if (!id) {
     return Response.json({ data: [], error: "User is required" });
   }
+  await connect();
+
   const patient = await Patient.findOne({ user: id })
     .populate({
       path: "prescriptions",
@@ -43,6 +45,17 @@ export const GET = auth(async (req) => {
 
   let prescriptionData: any = [];
   let surgeryData: any = [];
+  let consultingData: any = [];
+  let diseaseData: any = [];
+
+  patient.prescriptions.forEach((prescription: any) => {
+    consultingData.push({
+      _id: prescription._id,
+      createdAt: formatDate(prescription.createdAt),
+      doctor: prescription.doctor.user.name,
+      hospital: prescription.hospital,
+    });
+  });
 
   patient.prescriptions.forEach((prescription: any) => {
     prescriptionData.push({
@@ -60,13 +73,23 @@ export const GET = auth(async (req) => {
     });
   });
 
+  patient.prescriptions.forEach((disease: any) => {
+    diseaseData.push({
+      _id: disease._id,
+      createdAt: formatDate(disease.createdAt),
+      disease: disease.disease,
+    });
+  });
+
   const patientData = {
     prescriptions: prescriptionData,
     surgeries: surgeryData,
+    consulting: consultingData,
+    disease: diseaseData,
     nic: patient.nic,
   };
 
-  console.log(patientData, surgeryData, "patientData");
+  console.log(diseaseData, "patientData");
 
   return Response.json({ data: patientData });
 });

@@ -3,22 +3,47 @@ import { auth } from "../../auth";
 import PatientRecords from "@/components/dashboard/patient-records";
 
 export default async function Home() {
-  const data = [
-    {
-      left: "Department",
-      right: "Cardiology",
-    },
-    { left: "Hospital", right: "Apollo Hospital" },
-    { left: "Doctor ID No.", right: "123456" },
-  ];
-
   const session = await auth();
   const type = session?.user?.type!;
+  let data;
+
+  if (type === "pharmacist") {
+    const res = await fetch(
+      new URL(
+        `/api/pharmacist/dashboard?userId=${session?.user?.id}`,
+        process.env.NEXT_PUBLIC_API_URL as string
+      ),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    data = await res.json();
+  } else if (type === "doctor") {
+    const res = await fetch(
+      new URL(
+        `/api/doctor/dashboard?userId=${session?.user?.id}`,
+        process.env.NEXT_PUBLIC_API_URL as string
+      ),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    data = await res.json();
+  }
+
   return (
     <main>
-      {(type === "doctor" || type === "pharmacist") && (
-        <Welcome name={session?.user?.name!} data={data} type={type} />
-      )}
+      {(type === "doctor" || type === "pharmacist") &&
+        data.data &&
+        data.data.length > 0 && (
+          <Welcome name={session?.user?.name!} data={data.data} type={type} />
+        )}
       {type === "laboratory" && (
         <Welcome name={session?.user?.name!} type={type} />
       )}
