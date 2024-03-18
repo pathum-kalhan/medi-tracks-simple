@@ -34,7 +34,7 @@ export const GET = auth(async (req) => {
   await connect();
   const doctor = await Doctor.findOne({ user: doctorId });
 
-  if (!doctor) {
+  if (!doctor && userType === "doctor") {
     const prescription = await Prescription.find({}).populate({
       path: "doctor",
       model: Doctor,
@@ -111,6 +111,7 @@ export const GET = auth(async (req) => {
       disease: prescription.disease,
       medicine: prescription.medicine,
       hospital: prescription.hospital,
+      location: prescription.doctor,
     });
   });
 

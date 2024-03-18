@@ -119,7 +119,9 @@ export const Prescribe = ({
               error={!!state?.errors?.medicine ? true : false}
               helperText={state?.errors?.medicine?.[0]}
             />
+            <label htmlFor="validTill">Valid Till</label>
             <TextField
+              id="validTill"
               name="validTill"
               type="date"
               size="small"

@@ -55,6 +55,8 @@ export default function Page({
     fetchData();
   }, [nic]);
 
+  console.log(rows, "rows");
+
   const handleDoctorNotes = (row: any) => {
     return (
       <Button
@@ -116,8 +118,6 @@ export default function Page({
   const addMedication = () => {
     setOpen(true);
   };
-
-  console.log(rows);
 
   return (
     <Grid container spacing={2}>
