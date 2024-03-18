@@ -53,12 +53,13 @@ export const Prescribe = ({
     if (state.status === "success") {
       setLoading(false);
       toast.success(state.message);
+      setOpen(false);
     }
     if (state.status === "error") {
       setLoading(false);
       toast.error(state.message);
     }
-  }, [state]);
+  }, [state, setOpen]);
 
   const handleClose = () => {
     setOpen(false);
