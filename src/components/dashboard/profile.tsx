@@ -22,7 +22,7 @@ type Profile = {
 export const Profile = () => {
   const pathname = usePathname();
   const [profile, setProfile] = useState<Profile>();
-  const { state } = useContext(MyContext);
+  const { state, updateState } = useContext(MyContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,9 +40,12 @@ export const Profile = () => {
 
       const data = await res.json();
       setProfile(data.data);
+      updateState(data.data.avatar);
     };
     fetchData();
-  }, []);
+  }, [updateState]);
+
+  console.log(state, "string");
 
   return (
     <Box sx={{ flexGrow: 1 }}>
