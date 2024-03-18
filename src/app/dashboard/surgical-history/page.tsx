@@ -5,12 +5,16 @@ import { Button, Grid, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import ArrowBack from "@mui/icons-material/ArrowBack";
 
 export default function Page({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
+  const router = useRouter();
+
   const [open, setOpen] = useState(false);
   const [openNotes, setOpenNotes] = useState(false);
   const [rows, setRows] = useState([]);
@@ -114,6 +118,9 @@ export default function Page({
         <Grid container justifyContent="space-between">
           <Grid item xs={6} sm={6} md={6}>
             <Typography variant="h4" align="center">
+              <Button onClick={() => router.back()}>
+                <ArrowBack />
+              </Button>{" "}
               Surgical History
             </Typography>
           </Grid>
