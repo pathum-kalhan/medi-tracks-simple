@@ -71,7 +71,7 @@ export const Profile = () => {
             ) : (
               <Avatar
                 alt={profile?.name}
-                src={state as string}
+                src={(state as string) || "/files/placeholder.jpg"}
                 sx={{ width: 100, height: 100 }}
               />
             )}
