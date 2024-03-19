@@ -99,6 +99,7 @@ export const GET = auth(async (req) => {
         medicine: prescription.medicine,
       });
     });
+    console.log(patient.prescriptions, "string");
     return Response.json({ data: res });
   }
 

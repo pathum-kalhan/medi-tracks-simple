@@ -85,6 +85,7 @@ export const GET = auth(async (req) => {
       createdAt: formatDate(prescription.createdAt),
       doctor: prescription.doctor.user.name,
       notes: prescription.doctorNotes,
+      hospital: prescription.hospital,
       disease: prescription.disease,
     });
   });

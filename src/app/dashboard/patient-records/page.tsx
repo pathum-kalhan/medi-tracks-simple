@@ -3,10 +3,10 @@ import { Card } from "@/components/dashboard/card";
 import { ProfileModel } from "@/components/dashboard/profile-model";
 import { Button, Grid } from "@mui/material";
 
-async function getPrescriptions(nic: string, doctorId: string) {
+async function getPrescriptions(nic: string, doctorId: string, type: string) {
   const res = await fetch(
     new URL(
-      `/api/search-prescriptions?nic=${nic}&place=dashboard&doctorId=${doctorId}&type=doctor`,
+      `/api/search-prescriptions?nic=${nic}&place=dashboard&doctorId=${doctorId}&type=${type}`,
       process.env.NEXT_PUBLIC_API_URL as string
     ),
     {
@@ -77,7 +77,35 @@ export default async function Page({
   const session = await auth();
   const nic = searchParams.nic!;
   const userType = session?.user?.type!;
-  const prescriptions = await getPrescriptions(nic, session?.user?.id!);
+  const prescribeColumn = [
+    { field: "_id", headerName: "ID", width: 150 },
+    { field: "createdAt", headerName: "Date", width: 200 },
+    { field: "doctor", headerName: "Doctor", width: 150 },
+    { field: "medicine", headerName: "Medicine", width: 150 },
+  ];
+  if (userType === "pharmacist") {
+    const prescriptions = await getPrescriptions(
+      nic,
+      session?.user?.id! as string,
+      userType
+    );
+
+    return (
+      <Grid item xs={12}>
+        <Card
+          title="Prescribed Medications"
+          row={prescriptions.data}
+          column={prescribeColumn}
+          href={`/dashboard/pharmacist/patient-prescriptions?nic=${nic}`}
+        />
+      </Grid>
+    );
+  }
+  const prescriptions = await getPrescriptions(
+    nic,
+    session?.user?.id! as string,
+    userType
+  );
   const surgery = await getSurgery(nic, session?.user?.id!);
 
   const patientData = await getPatientDashboard(nic, session?.user?.id!);
@@ -87,13 +115,6 @@ export default async function Page({
     { field: "_id", headerName: "ID", width: 150 },
     { field: "createdAt", headerName: "Date", width: 200 },
     { field: "doctor", headerName: "Doctor", width: 150 },
-  ];
-
-  const prescribeColumn = [
-    { field: "_id", headerName: "ID", width: 150 },
-    { field: "createdAt", headerName: "Date", width: 200 },
-    { field: "doctor", headerName: "Doctor", width: 150 },
-    { field: "medicine", headerName: "Medicine", width: 150 },
   ];
 
   const consultingColumn = [
@@ -159,7 +180,7 @@ export default async function Page({
         </Grid>
       )}
       {userType === "pharmacist" && (
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <Card
             title="Prescribed Medications"
             row={prescriptions.data}
