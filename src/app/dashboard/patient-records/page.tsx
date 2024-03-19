@@ -47,6 +47,28 @@ async function getSurgery(nic: string, doctorId: string) {
   return data;
 }
 
+async function getPatientDashboard(nic: string, doctorId: string) {
+  const res = await fetch(
+    new URL(
+      `/api/doctor/patient-records?nic=${nic}&place=dashboard&doctorId=${doctorId}`,
+      process.env.NEXT_PUBLIC_API_URL as string
+    ),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+
+  if (!res.ok) {
+    console.error("Failed to fetch patient data");
+  }
+  const data = await res.json();
+  return data;
+}
+
 export default async function Page({
   searchParams,
 }: {
@@ -58,12 +80,53 @@ export default async function Page({
   const prescriptions = await getPrescriptions(nic, session?.user?.id!);
   const surgery = await getSurgery(nic, session?.user?.id!);
 
-  console.log(prescriptions, "prescriptions");
+  const patientData = await getPatientDashboard(nic, session?.user?.id!);
+  const { consulting, disease } = patientData.data;
 
   const column = [
     { field: "_id", headerName: "ID", width: 150 },
-    { field: "date", headerName: "Date", width: 200 },
+    { field: "createdAt", headerName: "Date", width: 200 },
     { field: "doctor", headerName: "Doctor", width: 150 },
+  ];
+
+  const prescribeColumn = [
+    { field: "_id", headerName: "ID", width: 150 },
+    { field: "createdAt", headerName: "Date", width: 200 },
+    { field: "doctor", headerName: "Doctor", width: 150 },
+    { field: "medicine", headerName: "Medicine", width: 150 },
+  ];
+
+  const consultingColumn = [
+    { field: "_id", headerName: "ID", width: 100 },
+    { field: "createdAt", headerName: "Date", width: 200 },
+    {
+      field: "doctor",
+      headerName: "Doctor",
+      width: 150,
+    },
+    {
+      field: "hospital",
+      headerName: "Hospital",
+      width: 150,
+    },
+  ];
+
+  const diseaseColumn = [
+    {
+      field: "_id",
+      headerName: "ID",
+      width: 100,
+    },
+    {
+      field: "createdAt",
+      headerName: "Date",
+      width: 200,
+    },
+    {
+      field: "disease",
+      headerName: "Disease",
+      width: 150,
+    },
   ];
 
   const row = [{ _id: 1, date: "2021-10-01", doctor: "Dr. John Doe" }];
@@ -90,7 +153,7 @@ export default async function Page({
           <Card
             title="Prescribed Medications"
             row={prescriptions.data}
-            column={column}
+            column={prescribeColumn}
             href={`/dashboard/prescribe-medication?nic=${nic}&name=${session?.user?.name}`}
           />
         </Grid>
@@ -100,20 +163,38 @@ export default async function Page({
           <Card
             title="Prescribed Medications"
             row={prescriptions.data}
-            column={column}
+            column={prescribeColumn}
             href={`/dashboard/pharmacist/patient-prescriptions?nic=${nic}`}
           />
         </Grid>
       )}
       {userType === "doctor" && (
-        <Grid item xs={12} md={6}>
-          <Card
-            title="Surgical History"
-            row={surgery.data}
-            column={column}
-            href={`/dashboard/surgical-history?nic=${nic}&name=${session?.user?.name}`}
-          />
-        </Grid>
+        <>
+          <Grid item xs={12} md={6}>
+            <Card
+              title="Consulting History"
+              row={consulting}
+              column={consultingColumn}
+              href={`/dashboard/consulting-history?nic=${nic}&name=${session?.user?.name}`}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Card
+              title="Surgical History"
+              row={surgery.data}
+              column={column}
+              href={`/dashboard/surgical-history?nic=${nic}&name=${session?.user?.name}`}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Card
+              title="Disease History"
+              row={disease}
+              column={diseaseColumn}
+              href={`/dashboard/disease-history?nic=${nic}&name=${session?.user?.name}`}
+            />
+          </Grid>
+        </>
       )}
     </Grid>
   );

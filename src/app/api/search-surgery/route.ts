@@ -59,7 +59,7 @@ export const GET = auth(async (req) => {
     patient.surgeries.forEach((surgeries: any) => {
       res.push({
         _id: surgeries._id,
-        date: formatDate(surgeries.createdAt),
+        createdAt: formatDate(surgeries.createdAt),
         doctor: surgeries.doctor.user.name,
       });
     });

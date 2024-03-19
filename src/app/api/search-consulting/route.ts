@@ -58,13 +58,13 @@ export const GET = auth(async (req) => {
     return Response.json({ data: [], error: "Patient not found" });
   }
 
-  if (userType !== "patient") {
-    patient.prescriptions = patient.prescriptions.filter(
-      (prescription: any) => {
-        return prescription.doctor._id.toString() === doctorId;
-      }
-    );
-  }
+  // if (userType === "doctor") {
+  //   patient.prescriptions = patient.prescriptions.filter(
+  //     (prescription: any) => {
+  //       return prescription.doctor._id.toString() === doctorId;
+  //     }
+  //   );
+  // }
 
   let res: any = [];
   if (place === "dashboard") {
@@ -88,6 +88,7 @@ export const GET = auth(async (req) => {
       disease: prescription.disease,
     });
   });
+  console.log(patient.prescriptions, "om here");
 
   return Response.json({ data: res });
 });

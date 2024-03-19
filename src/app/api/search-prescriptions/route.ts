@@ -81,21 +81,22 @@ export const GET = auth(async (req) => {
     return Response.json({ data: [], error: "Patient not found" });
   }
 
-  if (userType !== "patient") {
-    patient.prescriptions = patient.prescriptions.filter(
-      (prescription: any) => {
-        return prescription.doctor._id.toString() === doctorId;
-      }
-    );
-  }
+  // if (userType !== "patient") {
+  //   patient.prescriptions = patient.prescriptions.filter(
+  //     (prescription: any) => {
+  //       return prescription.doctor._id.toString() == doctor._id;
+  //     }
+  //   );
+  // }
 
   let res: any = [];
   if (place === "dashboard") {
     patient.prescriptions.forEach((prescription: any) => {
       res.push({
         _id: prescription._id,
-        date: formatDate(prescription.createdAt),
+        createdAt: formatDate(prescription.createdAt),
         doctor: prescription.doctor.user.name,
+        medicine: prescription.medicine,
       });
     });
     return Response.json({ data: res });

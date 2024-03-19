@@ -28,6 +28,7 @@ export default function DataTable({
           pagination: {
             paginationModel: { page: 0, pageSize: pageSize },
           },
+          sorting: { sortModel: [{ field: "createdAt", sort: "desc" }] },
         }}
         pageSizeOptions={[5, 10]}
         {...other}
