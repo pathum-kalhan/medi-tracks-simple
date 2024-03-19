@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, Box, Grid, Typography } from "@mui/material";
+import { Avatar, Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { usePathname } from "next/navigation";
 import { Link as MUILink } from "@mui/material";
 import Link from "next/link";
@@ -22,10 +22,13 @@ type Profile = {
 export const Profile = () => {
   const pathname = usePathname();
   const [profile, setProfile] = useState<Profile>();
+  const [loading, setLoading] = useState(false);
+
   const { state, updateState } = useContext(MyContext);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       const res = await fetch(
         new URL("api/profile", process.env.NEXT_PUBLIC_API_URL as string),
         {
@@ -41,6 +44,7 @@ export const Profile = () => {
       const data = await res.json();
       setProfile(data.data);
       updateState(data.data.avatar);
+      setLoading(false);
     };
     fetchData();
   }, [updateState]);
@@ -62,11 +66,15 @@ export const Profile = () => {
               height: 135,
             }}
           >
-            <Avatar
-              alt={profile?.name}
-              src={(state as string) || "/files/placeholder.jpg"}
-              sx={{ width: 100, height: 100 }}
-            />
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <Avatar
+                alt={profile?.name}
+                src={state as string}
+                sx={{ width: 100, height: 100 }}
+              />
+            )}
           </Box>
         </Grid>
         <Grid item md={12}>

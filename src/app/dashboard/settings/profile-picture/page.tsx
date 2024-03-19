@@ -5,6 +5,7 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Stack,
   TextField,
   styled,
@@ -46,6 +47,8 @@ export default function Page() {
   const [user, setUser] = useState<User>();
   const [state, dispatch] = useFormState<State, FormData>(updatePicture, null);
   const [files, setFiles] = useState<File[]>([]);
+  const [loading, setLoading] = useState(false);
+
   const context = useContext(MyContext);
   const { state: avatar, updateState } = context;
 
@@ -77,9 +80,11 @@ export default function Page() {
     if (state.status === "success") {
       toast.success(state.message);
       updateState(state.avatar!);
+      setLoading(false);
     }
     if (state.status === "error") {
       toast.error(state.message);
+      setLoading(false);
     }
   }, [state, updateState]);
 
@@ -91,10 +96,12 @@ export default function Page() {
 
     form.append("avatar", files[0]);
     dispatch(form);
+    setLoading(true);
   }, [files, dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       const res = await fetch(
         new URL("/api/profile", process.env.NEXT_PUBLIC_API_URL as string),
         {
@@ -109,6 +116,7 @@ export default function Page() {
       const data = await res.json();
       setUser(data.data);
       updateState(data.data.avatar);
+      setLoading(false);
     };
     fetchData();
   }, [updateState]);
@@ -129,20 +137,23 @@ export default function Page() {
       }}
     >
       <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-        <div>
+        {loading ? (
+          <CircularProgress />
+        ) : (
           <div>
-            {files.length > 0 && <button onClick={removeImage}>X</button>}
+            <div>
+              {files.length > 0 && <button onClick={removeImage}>X</button>}
+            </div>
+            <div {...getRootProps()}>
+              <input {...getInputProps()} />
+              {files.length > 0 ? (
+                <ImagePreview src={files[0]} />
+              ) : (
+                <ImagePreview src={user?.avatar!} />
+              )}
+            </div>
           </div>
-
-          <div {...getRootProps()}>
-            <input {...getInputProps()} />
-            {files.length > 0 ? (
-              <ImagePreview src={files[0]} />
-            ) : (
-              <ImagePreview src={user?.avatar!} />
-            )}
-          </div>
-        </div>
+        )}
         {files.length === 0 && (
           <>
             <Alert severity="info">
