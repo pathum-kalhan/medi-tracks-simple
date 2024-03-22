@@ -15,6 +15,7 @@ const paperStyles = {
   alignItems: "center",
   flexDirection: "column",
   position: "relative",
+  padding: "10px",
 };
 
 const containerStyles = {

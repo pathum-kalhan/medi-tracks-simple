@@ -4,17 +4,19 @@ import { TextInput } from "./ChatMessageInput";
 import { MessageLeft, MessageRight } from "./Message";
 import { use, useEffect, useState } from "react";
 import { ChatMediator } from "@/app/api/chat/chatClass";
-import { Typography } from "@mui/material";
+import { Select, SelectChangeEvent, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 const paperStyles = {
   width: "100vw",
-  height: "80vh",
+  height: "85vh",
   maxWidth: "1000px",
   maxHeight: "700px",
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
   position: "relative",
+  padding: "10px",
 };
 
 const containerStyles = {
@@ -27,7 +29,7 @@ const messagesBodyStyles = {
   width: "calc(100% - 20px)",
   margin: 10,
   overflowY: "scroll",
-  height: "calc(100% - 80px)",
+  height: "calc(100% - 20px)",
 };
 
 type Messages = {
@@ -44,16 +46,22 @@ const mediator = new ChatMediator();
 
 export const Chat = ({
   senderId,
-  receiverId,
   name,
   photoURL,
+  patients,
 }: {
   senderId: string;
-  receiverId: string;
   name: string;
   photoURL: string;
+  patients: { id: string; name: string }[];
 }) => {
   const [messages, setMessages] = useState<Messages>([]);
+  const [loading, setLoading] = useState(false);
+
+  const [selectedPatient, setSelectedPatient] = useState("");
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    setSelectedPatient(event.target.value);
+  };
 
   const handleNewMessage = (message: Messages[0]) => {
     setMessages((prevMessages) => [...prevMessages, message]);
@@ -64,10 +72,23 @@ export const Chat = ({
     return () => mediator.unsubscribe(handleNewMessage);
   }, []);
 
+  const fetchMessages = async () => {
+    setLoading(true);
+    const response = await fetch(
+      `/api/chat?senderId=${senderId}&receiverId=${selectedPatient}`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch messages");
+    }
+    const messages = await response.json();
+    setMessages(messages);
+    setLoading(false);
+  };
+
   useEffect(() => {
     const fetchMessages = async () => {
       const response = await fetch(
-        `/api/chat?senderId=${senderId}&receiverId=${receiverId}`
+        `/api/chat?senderId=${senderId}&receiverId=${selectedPatient}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch messages");
@@ -75,9 +96,8 @@ export const Chat = ({
       const messages = await response.json();
       setMessages(messages);
     };
-
     fetchMessages();
-  }, [receiverId, senderId]);
+  }, [senderId, selectedPatient]);
 
   const addMessage = (message: Messages[0]): void => {
     mediator.sendMessage(message);
@@ -116,10 +136,31 @@ export const Chat = ({
             }
           })}
         </Paper>
+        <Paper>
+          <Typography variant="h5" component="h2">
+            Select Patient
+          </Typography>
+          <Select onChange={handleChange} fullWidth>
+            {patients &&
+              patients.map((patient) => (
+                <option key={patient.id} value={patient.id}>
+                  {patient.name}
+                </option>
+              ))}
+          </Select>
+          <LoadingButton
+            variant="contained"
+            onClick={() => fetchMessages()}
+            loading={loading}
+            sx={{ marginLeft: "70px", marginTop: "10px" }}
+          >
+            Refetch
+          </LoadingButton>
+        </Paper>
         <TextInput
           addMessage={addMessage}
           senderId={senderId}
-          receiverId={receiverId}
+          receiverId={selectedPatient}
           userName={name}
           photoURL={photoURL}
         />

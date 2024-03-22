@@ -50,7 +50,10 @@ export const GET = async (req: NextRequest) => {
     receiverId: senderId,
   });
 
-  const messages = [...senderMessage, ...receiverMessage];
+  const messages = senderMessage.concat(receiverMessage).sort((a, b) => {
+    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+  });
+
   console.log(messages, senderId, receiverId, "m");
 
   return Response.json(messages);

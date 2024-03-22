@@ -24,21 +24,12 @@ export const SelectPatient = ({
   const handleChange = (event: SelectChangeEvent<string>) => {
     setSelectedPatient(event.target.value);
   };
-  console.log(selectedPatient);
 
   return (
     <>
-      <Select onChange={handleChange} fullWidth>
-        {patients &&
-          patients.map((patient) => (
-            <option key={patient.id} value={patient.id}>
-              {patient.name}
-            </option>
-          ))}
-      </Select>
       <Chat
+        patients={patients}
         senderId={senderId}
-        receiverId={selectedPatient}
         name={name}
         photoURL={photoURL}
       />
