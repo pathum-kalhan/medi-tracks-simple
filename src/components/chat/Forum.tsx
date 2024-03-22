@@ -1,14 +1,14 @@
 "use client";
 import Paper from "@mui/material/Paper";
-import { TextInput } from "./ChatMessageInput";
+import { TextInput } from "./MessageInput";
 import { MessageLeft, MessageRight } from "./Message";
 import { use, useEffect, useState } from "react";
-import { ChatMediator } from "@/app/api/chat/chatClass";
+import { ChatMediator } from "@/app/api/forum/chatClass";
 import { Typography } from "@mui/material";
 
 const paperStyles = {
   width: "100vw",
-  height: "80vh",
+  height: "85vh",
   maxWidth: "1000px",
   maxHeight: "700px",
   display: "flex",
@@ -31,8 +31,8 @@ const messagesBodyStyles = {
 };
 
 type Messages = {
-  senderId: string;
-  receiverId: string;
+  userId: string;
+  senderRole: string;
   message: string;
   timestamp: string;
   displayName: string;
@@ -42,56 +42,56 @@ type Messages = {
 
 const mediator = new ChatMediator();
 
-export const Chat = ({
-  senderId,
-  receiverId,
+export const Forum = ({
+  forum,
+  role,
+  id,
   name,
   photoURL,
 }: {
-  senderId: string;
-  receiverId: string;
+  forum: string;
+  role: string;
+  id: string;
   name: string;
   photoURL: string;
 }) => {
   const [messages, setMessages] = useState<Messages>([]);
 
-  const handleNewMessage = (message: Messages[0]) => {
-    setMessages((prevMessages) => [...prevMessages, message]);
-  };
-
-  useEffect(() => {
-    mediator.subscribe(handleNewMessage);
-    return () => mediator.unsubscribe(handleNewMessage);
-  }, []);
-
   useEffect(() => {
     const fetchMessages = async () => {
-      const response = await fetch(
-        `/api/chat?senderId=${senderId}&receiverId=${receiverId}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch messages");
-      }
-      const messages = await response.json();
-      setMessages(messages);
+      const res = await fetch(`/api/forum?forum=${forum.toLowerCase()}`);
+      const data = await res.json();
+      setMessages(data);
     };
 
     fetchMessages();
-  }, [receiverId, senderId]);
+  }, [forum]);
 
-  const addMessage = (message: Messages[0]): void => {
-    mediator.sendMessage(message);
+  useEffect(() => {
+    const messageCallback = (message: Messages[0]) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    };
+
+    mediator.subscribe(forum, messageCallback);
+
+    return () => {
+      mediator.unsubscribe(forum, messageCallback);
+    };
+  }, [forum]);
+
+  const addMessage = (message: Messages[0]) => {
+    mediator.sendMessage(forum, message);
   };
 
   return (
     <div style={containerStyles}>
       <Paper sx={paperStyles} elevation={2}>
         <Typography variant="h5" component="h2">
-          Chat
+          {forum} Forum
         </Typography>
         <Paper sx={messagesBodyStyles}>
           {messages.map((message, index) => {
-            if (message.senderId === senderId) {
+            if (message.userId === id) {
               return (
                 <MessageRight
                   key={index}
@@ -118,10 +118,11 @@ export const Chat = ({
         </Paper>
         <TextInput
           addMessage={addMessage}
-          senderId={senderId}
-          receiverId={receiverId}
+          userId={id}
+          senderRole={role}
           userName={name}
           photoURL={photoURL}
+          forum={forum.toLowerCase()}
         />
       </Paper>
     </div>

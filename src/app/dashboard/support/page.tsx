@@ -1,10 +1,43 @@
-import { Chat } from "@/components/chat/Chat";
+import { Forum } from "@/components/chat/Forum";
 import { auth } from "@/auth";
-import { Grid, Typography } from "@mui/material";
+import { Button, Grid, Select, Typography } from "@mui/material";
+import { SelectPatient } from "./Select";
 
 async function getAvatarURL(id: string) {
   const res = await fetch(
     new URL(`/api/avatar?id=${id}`, process.env.NEXT_PUBLIC_API_URL as string),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+  const data = await res.json();
+
+  return data.data;
+}
+
+async function getPatients() {
+  const res = await fetch(
+    new URL(`/api/patient/all`, process.env.NEXT_PUBLIC_API_URL as string),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+  const data = await res.json();
+
+  return data.data;
+}
+
+async function getDoctors() {
+  const res = await fetch(
+    new URL(`/api/doctor/all`, process.env.NEXT_PUBLIC_API_URL as string),
     {
       method: "GET",
       headers: {
@@ -27,39 +60,42 @@ export default async function Home() {
   const avatarURL = await getAvatarURL(userId);
 
   if (userType === "doctor") {
+    const patients = await getPatients();
+
     return (
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Chat
-            forum="Doctor"
-            role="doctor"
-            id={userId}
-            photoURL={avatarURL}
+        <Grid item xs={12} sm={12}>
+          <SelectPatient
+            patients={patients}
+            senderId={userId}
             name={userName}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Chat
-            forum="Patient"
-            role="doctor"
-            id={userId}
             photoURL={avatarURL}
-            name={userName}
           />
         </Grid>
       </Grid>
     );
   } else if (userType === "patient") {
+    const doctors = await getDoctors();
     return (
-      <>
-        <Chat
-          forum="Patient"
-          role="patient"
-          id={userId}
-          photoURL={avatarURL}
-          name={userName}
-        />
-      </>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <Forum
+            forum="Patient"
+            role="patient"
+            id={userId}
+            photoURL={avatarURL}
+            name={userName}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <SelectPatient
+            patients={doctors}
+            senderId={userId}
+            name={userName}
+            photoURL={avatarURL}
+          />
+        </Grid>
+      </Grid>
     );
   } else {
     return (

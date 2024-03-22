@@ -1,15 +1,21 @@
 import mongoose, { Schema, mongo } from "mongoose";
 
-const ChatSchema = new Schema({
+const ForumSchema = new Schema({
+  senderRole: {
+    type: String,
+    enum: ["patient", "doctor"],
+    required: true,
+  },
+  forum: {
+    type: String,
+    enum: ["patient", "doctor"],
+    required: true,
+  },
   message: {
     type: String,
     required: true,
   },
-  senderId: {
-    type: String,
-    required: true,
-  },
-  receiverId: {
+  userId: {
     type: String,
     required: true,
   },
@@ -30,4 +36,5 @@ const ChatSchema = new Schema({
   },
 });
 
-export const Chat = mongoose.models.Chat || mongoose.model("Chat", ChatSchema);
+export const Forum =
+  mongoose.models.Forum || mongoose.model("Forum", ForumSchema);

@@ -1,6 +1,6 @@
 type MessageType = {
-  userId: string;
-  senderRole: string;
+  senderId: string;
+  receiverId: string;
   message: string;
   timestamp: string;
   displayName: string;
@@ -9,19 +9,15 @@ type MessageType = {
 };
 
 interface Mediator {
-  sendMessage: (forum: string, message: MessageType) => void;
-  subscribe: (forum: string, callback: (message: MessageType) => void) => void;
-  unsubscribe: (
-    forum: string,
-    callback: (message: MessageType) => void
-  ) => void;
+  sendMessage: (message: MessageType) => void;
+  subscribe: (callback: (message: MessageType) => void) => void;
+  unsubscribe: (callback: (message: MessageType) => void) => void;
 }
 
 export class ChatMediator implements Mediator {
-  private subscribers: { [key: string]: ((message: MessageType) => void)[] } =
-    {};
+  private subscribers: ((message: MessageType) => void)[] = [];
 
-  async sendMessage(forum: string, message: MessageType) {
+  async sendMessage(message: MessageType) {
     const send = await fetch("/api/chat", {
       method: "POST",
       body: JSON.stringify(message),
@@ -32,25 +28,16 @@ export class ChatMediator implements Mediator {
     }
     console.log("response", send);
 
-    if (this.subscribers[forum]) {
-      this.subscribers[forum].forEach((callback) => {
-        callback(message);
-      });
-    }
+    this.subscribers.forEach((callback) => {
+      callback(message);
+    });
   }
 
-  subscribe(forum: string, callback: (message: MessageType) => void): void {
-    if (!this.subscribers[forum]) {
-      this.subscribers[forum] = [];
-    }
-    this.subscribers[forum].push(callback);
+  subscribe(callback: (message: MessageType) => void): void {
+    this.subscribers.push(callback);
   }
 
-  unsubscribe(forum: string, callback: (message: MessageType) => void): void {
-    if (this.subscribers[forum]) {
-      this.subscribers[forum] = this.subscribers[forum].filter(
-        (cb) => cb !== callback
-      );
-    }
+  unsubscribe(callback: (message: MessageType) => void): void {
+    this.subscribers = this.subscribers.filter((cb) => cb !== callback);
   }
 }

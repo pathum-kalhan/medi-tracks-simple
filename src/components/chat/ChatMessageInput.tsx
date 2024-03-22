@@ -18,31 +18,28 @@ const WrapText = styled("div")({
 });
 
 type Message = {
-  userId: string;
-  senderRole: string;
+  senderId: string;
+  receiverId: string;
   message: string;
   timestamp: string;
   displayName: string;
   avatarDisp: boolean;
   photoURL: string;
-  forum: string;
 };
 
 type Props = {
   addMessage: (message: Message) => void;
-  userId: string;
-  senderRole: string;
+  senderId: string;
+  receiverId: string;
   userName: string;
   photoURL: string;
-  forum: string;
 };
 
 export const TextInput = ({
   addMessage,
-  userId,
-  senderRole,
+  senderId,
+  receiverId,
   userName,
-  forum,
   photoURL,
 }: Props) => {
   const [textValue, setTextValue] = useState("");
@@ -51,14 +48,13 @@ export const TextInput = ({
     e.preventDefault();
     if (!textValue.trim()) return;
     const message: Message = {
-      userId,
-      senderRole,
+      senderId,
+      receiverId,
       message: textValue,
       timestamp: new Date().toLocaleString(),
       displayName: userName,
       avatarDisp: true,
       photoURL,
-      forum,
     };
 
     addMessage(message);
@@ -71,9 +67,10 @@ export const TextInput = ({
         <WrapText>
           <TextField
             id="standard-text"
-            label="Send a message to forum"
+            label="Send a message"
             fullWidth
             value={textValue}
+            disabled={receiverId === "" ? true : false}
             onChange={(e) => setTextValue(e.target.value)}
           />
         </WrapText>

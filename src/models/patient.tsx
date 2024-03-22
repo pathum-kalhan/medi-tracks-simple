@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ChatMessage } from "./chat";
+import { Forum } from "./forum";
 import { User } from "./user";
 import { LabReport } from "./laboratory";
 import { Prescription } from "./doctor";
@@ -31,7 +31,7 @@ const patientSchema = new Schema(
         ref: "Surgery",
       },
     ],
-    chatMessages: [ChatMessage.schema],
+    chatMessages: [Forum.schema],
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: User,

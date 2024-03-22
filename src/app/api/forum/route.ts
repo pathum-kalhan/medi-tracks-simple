@@ -1,29 +1,31 @@
 import { connect } from "@/lib/mongo";
-import { Chat } from "@/models/chat";
+import { Forum } from "@/models/forum";
 import { NextRequest } from "next/server";
 
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
   const {
-    senderId,
-    receiverId,
+    userId,
+    senderRole,
     message,
     timestamp,
     displayName,
     avatarDisp,
     photoURL,
+    forum,
   } = body;
 
   await connect();
 
-  const newMessage = await Chat.create({
-    senderId,
-    receiverId,
+  const newMessage = await Forum.create({
+    userId,
+    senderRole,
     message,
     timestamp,
     displayName,
     avatarDisp,
     photoURL,
+    forum,
   });
 
   console.log("Message saved to database:", newMessage);
@@ -36,22 +38,9 @@ export const GET = async (req: NextRequest) => {
     req.url,
     process.env.NEXT_PUBLIC_API_URL as string
   );
-  const senderId = searchParams.get("senderId");
-  const receiverId = searchParams.get("receiverId");
+  const forum = searchParams.get("forum");
   await connect();
 
-  const senderMessage = await Chat.find({
-    senderId: senderId,
-    receiverId: receiverId,
-  });
-
-  const receiverMessage = await Chat.find({
-    senderId: receiverId,
-    receiverId: senderId,
-  });
-
-  const messages = [...senderMessage, ...receiverMessage];
-  console.log(messages, senderId, receiverId, "m");
-
+  const messages = await Forum.find({ forum });
   return Response.json(messages);
 };
