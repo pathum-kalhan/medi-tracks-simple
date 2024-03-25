@@ -20,7 +20,7 @@ type Props = {
     age?: number;
     phone?: string;
   };
-  role: string;
+  role?: string;
 };
 
 export function User({ results, role }: Props) {

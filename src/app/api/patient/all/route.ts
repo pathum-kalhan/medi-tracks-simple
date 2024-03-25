@@ -9,11 +9,11 @@ export const GET = auth(async (req) => {
     select: "name",
   });
 
-  const response = user.map((user) => {
-    return {
-      id: user.user._id,
-      name: user.user.name,
-    };
+  const response: { id: string; name: string }[] = [];
+  user.forEach((u) => {
+    if (u.user) {
+      response.push({ id: u._id, name: u.user.name });
+    }
   });
   return Response.json({ data: response });
 });
