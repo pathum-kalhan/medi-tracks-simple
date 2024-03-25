@@ -88,18 +88,8 @@ export default function Page() {
       width: 150,
     },
     {
-      field: "medicine",
-      headerName: "Medicine",
-      width: 100,
-    },
-    {
-      field: "valid",
-      headerName: "Valid Till",
-      width: 200,
-    },
-    {
       field: "action",
-      headerName: "Doctor Notes",
+      headerName: "Medicine",
       renderCell: (params) => handleDoctorNotes(params.row),
       width: 200,
     },

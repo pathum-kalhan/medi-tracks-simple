@@ -20,9 +20,10 @@ type Props = {
     age?: number;
     phone?: string;
   };
+  role: string;
 };
 
-export function User({ results }: Props) {
+export function User({ results, role }: Props) {
   const [applicationStatus, setApplicationStatus] = React.useState("");
 
   const handleChangeApplicationStatus = (event: SelectChangeEvent) => {
@@ -90,14 +91,29 @@ export function User({ results }: Props) {
             gap={2}
           >
             <Grid item>
-              <Button
-                size="large"
-                variant="contained"
-                href={`/dashboard/patient-records?nic=${results.nic}`}
-                sx={{ borderRadius: 2 }}
-              >
-                View
-              </Button>
+              {role === "pharmacist" ? (
+                <Link
+                  href={`/dashboard/pharmacist/patient-prescriptions?nic=${results.nic}`}
+                >
+                  <Button
+                    size="large"
+                    variant="contained"
+                    sx={{ borderRadius: 2 }}
+                  >
+                    View
+                  </Button>
+                </Link>
+              ) : (
+                <Link href={`/dashboard/patient-records?nic=${results.nic}`}>
+                  <Button
+                    size="large"
+                    variant="contained"
+                    sx={{ borderRadius: 2 }}
+                  >
+                    View
+                  </Button>
+                </Link>
+              )}
             </Grid>
           </Grid>
         </Grid>

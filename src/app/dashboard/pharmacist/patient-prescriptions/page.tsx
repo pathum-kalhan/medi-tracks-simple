@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useRouter } from "next/navigation";
+import { SearchPatientButton } from "../../patient-records/Search";
 
 export default function Page({
   searchParams,
@@ -86,31 +87,21 @@ export default function Page({
     {
       field: "doctor",
       headerName: "Doctor",
-      width: 100,
+      width: 200,
     },
     {
       field: "disease",
       headerName: "Disease",
-      width: 150,
+      width: 200,
     },
     {
       field: "hospital",
       headerName: "Hospital",
-      width: 150,
-    },
-    {
-      field: "medicine",
-      headerName: "Medicine",
-      width: 100,
-    },
-    {
-      field: "valid",
-      headerName: "Valid Till",
       width: 200,
     },
     {
       field: "action",
-      headerName: "Doctor Notes",
+      headerName: "Medicine",
       renderCell: (params) => handleDoctorNotes(params.row),
       width: 200,
     },
@@ -134,6 +125,9 @@ export default function Page({
               Prescribe Medication
             </Typography>
           </Grid>
+          <Grid item xs={6} sm={6} md={6}>
+            <SearchPatientButton />
+          </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12}>
@@ -142,7 +136,7 @@ export default function Page({
       <Notes
         open={openNotes}
         setOpen={setOpenNotes}
-        title="Doctor Notes"
+        title="Medicine Details"
         date={notes.date}
         doctorName={notes.doctorName}
         validTill={notes.validTill}

@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { Card } from "@/components/dashboard/card";
 import { ProfileModel } from "@/components/dashboard/profile-model";
 import { Button, Grid } from "@mui/material";
+import { SearchPatientButton } from "./Search";
 
 async function getPrescriptions(nic: string, doctorId: string, type: string) {
   const res = await fetch(
@@ -153,6 +154,7 @@ export default async function Page({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={12} sx={{ textAlign: "center" }}>
+        <SearchPatientButton />
         {(userType === "doctor" || userType === "patient") && (
           <Button
             variant="contained"

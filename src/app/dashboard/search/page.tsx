@@ -13,12 +13,15 @@ import {
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import queryString from "query-string";
+import { useSession } from "next-auth/react";
 
 export default function Page({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  const { data: session } = useSession();
+
   const [postsPerPage, setPostsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchResults, setSearchResults] = useState([]);
@@ -75,7 +78,7 @@ export default function Page({
             )}
             {currentPosts.map((result, index) => (
               <Grid key={index} item xs={12}>
-                <User results={result} />
+                <User results={result} role={session?.user?.type!} />
               </Grid>
             ))}
             {!isLoading && searchResults.length === 0 && (
