@@ -4,7 +4,14 @@ import { TextInput } from "./ChatMessageInput";
 import { MessageLeft, MessageRight } from "./Message";
 import { use, useEffect, useState } from "react";
 import { ChatMediator } from "@/app/api/chat/chatClass";
-import { Select, SelectChangeEvent, Typography } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Typography,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 
 const paperStyles = {
@@ -67,6 +74,8 @@ export const Chat = ({
     setMessages((prevMessages) => [...prevMessages, message]);
   };
 
+  console.log(selectedPatient, "select");
+
   useEffect(() => {
     mediator.subscribe(handleNewMessage);
     return () => mediator.unsubscribe(handleNewMessage);
@@ -104,7 +113,7 @@ export const Chat = ({
   };
 
   return (
-    <div style={W}>
+    <div style={containerStyles}>
       <Paper sx={paperStyles} elevation={2}>
         <Typography variant="h5" component="h2">
           Chat
@@ -136,27 +145,34 @@ export const Chat = ({
             }
           })}
         </Paper>
-        <Paper>
-          <Typography variant="h5" component="h2">
-            Select Patient
-          </Typography>
-          <Select onChange={handleChange} fullWidth>
+
+        <FormControl fullWidth>
+          <InputLabel id="patient">Select Patient</InputLabel>
+          <Select
+            labelId="patient"
+            id="patient"
+            value={selectedPatient}
+            label="Select Patient"
+            onChange={handleChange}
+          >
             {patients &&
               patients.map((patient) => (
-                <option key={patient.id} value={patient.id}>
+                <MenuItem key={patient.id} value={patient.id}>
                   {patient.name}
-                </option>
+                </MenuItem>
               ))}
           </Select>
-          <LoadingButton
-            variant="contained"
-            onClick={() => fetchMessages()}
-            loading={loading}
-            sx={{ marginLeft: "70px", marginTop: "10px" }}
-          >
-            Refetch
-          </LoadingButton>
-        </Paper>
+        </FormControl>
+
+        <LoadingButton
+          variant="contained"
+          onClick={() => fetchMessages()}
+          loading={loading}
+          sx={{ marginLeft: "70px", marginTop: "10px" }}
+        >
+          Refetch
+        </LoadingButton>
+
         <TextInput
           addMessage={addMessage}
           senderId={senderId}
