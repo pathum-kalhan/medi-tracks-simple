@@ -38,18 +38,22 @@ export const GET = auth(async (req) => {
   let consultingData: any = [];
   let diseaseData: any = [];
 
-  patient.prescriptions.forEach((prescription: any) => {
-    consultingData.push({
-      _id: prescription._id,
-      createdAt: formatDate(prescription.createdAt),
-      doctor: prescription.doctor.user.name,
-      hospital: prescription.hospital,
-    });
-  });
+  patient.prescriptions.forEach(
+    (prescription: any, prescriptionIndex: number) => {
+      consultingData.push({
+        _id: prescription._id,
+        index: prescriptionIndex + 1,
+        createdAt: formatDate(prescription.createdAt),
+        doctor: prescription.doctor.user.name,
+        hospital: prescription.hospital,
+      });
+    }
+  );
 
-  patient.prescriptions.forEach((disease: any) => {
+  patient.prescriptions.forEach((disease: any, prescriptionIndex: number) => {
     diseaseData.push({
       _id: disease._id,
+      index: prescriptionIndex + 1,
       createdAt: formatDate(disease.createdAt),
       disease: disease.disease,
     });

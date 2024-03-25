@@ -56,9 +56,10 @@ export const GET = auth(async (req) => {
 
   let res: any = [];
   if (place === "dashboard") {
-    patient.surgeries.forEach((surgeries: any) => {
+    patient.surgeries.forEach((surgeries: any, surgeryIndex: number) => {
       res.push({
         _id: surgeries._id,
+        index: surgeryIndex + 1,
         createdAt: formatDate(surgeries.createdAt),
         doctor: surgeries.doctor.user.name,
       });
@@ -67,9 +68,10 @@ export const GET = auth(async (req) => {
   }
 
   console.log(patient.surgeries, "surgery");
-  patient.surgeries.forEach((surgeries: any) => {
+  patient.surgeries.forEach((surgeries: any, surgeryIndex: number) => {
     res.push({
       _id: surgeries._id,
+      index: surgeryIndex + 1,
       date: formatDate(surgeries.createdAt),
       doctor: surgeries.doctor.user.name,
       valid: formatDate(surgeries.validTill),

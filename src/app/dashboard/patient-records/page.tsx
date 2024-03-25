@@ -78,7 +78,7 @@ export default async function Page({
   const nic = searchParams.nic!;
   const userType = session?.user?.type!;
   const prescribeColumn = [
-    { field: "_id", headerName: "ID", width: 150 },
+    { field: "index", headerName: "ID", width: 150 },
     { field: "createdAt", headerName: "Date", width: 200 },
     { field: "doctor", headerName: "Doctor", width: 150 },
     { field: "medicine", headerName: "Medicine", width: 150 },
@@ -112,13 +112,13 @@ export default async function Page({
   const { consulting, disease } = patientData.data;
 
   const column = [
-    { field: "_id", headerName: "ID", width: 150 },
+    { field: "index", headerName: "ID", width: 150 },
     { field: "createdAt", headerName: "Date", width: 200 },
     { field: "doctor", headerName: "Doctor", width: 150 },
   ];
 
   const consultingColumn = [
-    { field: "_id", headerName: "ID", width: 100 },
+    { field: "index", headerName: "ID", width: 100 },
     { field: "createdAt", headerName: "Date", width: 200 },
     {
       field: "doctor",
@@ -134,7 +134,7 @@ export default async function Page({
 
   const diseaseColumn = [
     {
-      field: "_id",
+      field: "index",
       headerName: "ID",
       width: 100,
     },
@@ -150,7 +150,6 @@ export default async function Page({
     },
   ];
 
-  const row = [{ _id: 1, date: "2021-10-01", doctor: "Dr. John Doe" }];
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={12} sx={{ textAlign: "center" }}>

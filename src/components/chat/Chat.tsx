@@ -104,7 +104,7 @@ export const Chat = ({
   };
 
   return (
-    <div style={containerStyles}>
+    <div style={W}>
       <Paper sx={paperStyles} elevation={2}>
         <Typography variant="h5" component="h2">
           Chat

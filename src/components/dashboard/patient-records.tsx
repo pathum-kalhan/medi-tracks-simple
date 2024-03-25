@@ -32,7 +32,7 @@ export default async function PatientRecords() {
   const data = await getPatientDashboard(session?.user?.id!);
   const { prescriptions, surgeries, consulting, disease, nic } = data.data;
   const column = [
-    { field: "_id", headerName: "ID", width: 100 },
+    { field: "index", headerName: "ID", width: 100 },
     { field: "createdAt", headerName: "Date", width: 200 },
     {
       field: "doctor",
@@ -42,7 +42,7 @@ export default async function PatientRecords() {
   ];
 
   const consultingColumn = [
-    { field: "_id", headerName: "ID", width: 100 },
+    { field: "index", headerName: "ID", width: 100 },
     { field: "createdAt", headerName: "Date", width: 200 },
     {
       field: "doctor",
@@ -58,7 +58,7 @@ export default async function PatientRecords() {
 
   const diseaseColumn = [
     {
-      field: "_id",
+      field: "index",
       headerName: "ID",
       width: 100,
     },

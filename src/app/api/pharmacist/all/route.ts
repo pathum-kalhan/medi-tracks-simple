@@ -14,9 +14,10 @@ export const GET = auth(async (req) => {
     populate: { path: "user" },
   });
 
-  const data = allPrescriptions.map((prescription) => {
+  const data = allPrescriptions.map((prescription, index) => {
     return {
       _id: prescription._id,
+      index: index + 1,
       date: formatDate(prescription.createdAt),
       valid: formatDate(prescription.validTill),
       doctor: prescription.doctor.user.name,

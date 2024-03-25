@@ -3,6 +3,8 @@ import DataTable from "@/components/dashboard/table";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { GridColDef, GridRowParams } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useRouter } from "next/navigation";
 
 async function labReportData(nic: string) {
   const res = await fetch(
@@ -31,6 +33,8 @@ export default function Page({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
+  const router = useRouter();
+
   const [labReports, setLabReports] = useState([]);
   const nic = searchParams.nic!;
 
@@ -106,6 +110,9 @@ export default function Page({
     <main>
       <Box>
         <Typography variant="h4" align="center">
+          <Button onClick={() => router.back()}>
+            <ArrowBackIcon />
+          </Button>{" "}
           Patients Lab Reports
         </Typography>
         <Divider />

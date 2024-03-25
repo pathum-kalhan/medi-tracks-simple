@@ -74,7 +74,7 @@ export default function Page({
     );
   };
   const columns: GridColDef[] = [
-    { field: "_id", headerName: "ID", width: 200 },
+    { field: "index", headerName: "ID", width: 200 },
     {
       field: "date",
       headerName: "Date",

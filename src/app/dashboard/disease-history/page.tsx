@@ -63,9 +63,9 @@ export default function Page({
         onClick={() => {
           setOpenNotes(true);
           setNotes({
-            date: row.date,
+            date: row.createdAt,
             doctorName: row.doctor,
-            validTill: row.valid,
+            validTill: row.validTill,
             notes: row.notes,
           });
         }}
@@ -75,7 +75,7 @@ export default function Page({
     );
   };
   const columns: GridColDef[] = [
-    { field: "_id", headerName: "ID", width: 250 },
+    { field: "index", headerName: "ID", width: 250 },
     { field: "createdAt", headerName: "Date", width: 250 },
     {
       field: "doctor",

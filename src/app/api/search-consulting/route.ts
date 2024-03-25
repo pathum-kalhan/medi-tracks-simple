@@ -23,26 +23,8 @@ export const GET = auth(async (req) => {
     return Response.json({ data: [], error: "Patient nic is required" });
   }
 
-  // if (
-  //   !(
-  //     req.auth?.user?.type === "doctor" || req.auth?.user?.type === "pharmacist"
-  //   )
-  // ) {
-  //   return Response.json({ data: [], error: "Unauthorized" });
-  // }
-  let matcher;
   await connect();
   const doctor = await Doctor.findOne({ user: doctorId });
-
-  switch (userType) {
-    case "doctor":
-      matcher = doctor?._id ?? doctorId;
-      break;
-    case "patient":
-      matcher = undefined;
-      break;
-  }
-
   const patient = await Patient.findOne({ nic }).populate({
     path: "prescriptions",
     populate: {
@@ -58,38 +40,36 @@ export const GET = auth(async (req) => {
     return Response.json({ data: [], error: "Patient not found" });
   }
 
-  // if (userType === "doctor") {
-  //   patient.prescriptions = patient.prescriptions.filter(
-  //     (prescription: any) => {
-  //       return prescription.doctor._id.toString() === doctorId;
-  //     }
-  //   );
-  // }
-
   let res: any = [];
   if (place === "dashboard") {
-    patient.prescriptions.forEach((consulting: any) => {
-      res.push({
-        _id: consulting._id,
-        createdAt: formatDate(consulting.createdAt),
-        doctor: consulting.doctor.name,
-        disease: consulting.disease,
-      });
-    });
+    patient.prescriptions.forEach(
+      (consulting: any, consultingIndex: number) => {
+        res.push({
+          _id: consulting._id,
+          index: consultingIndex + 1,
+          createdAt: formatDate(consulting.createdAt),
+          doctor: consulting.doctor.name,
+          disease: consulting.disease,
+        });
+      }
+    );
     return Response.json({ data: res });
   }
 
-  patient.prescriptions.forEach((prescription: any) => {
-    res.push({
-      _id: prescription._id,
-      createdAt: formatDate(prescription.createdAt),
-      doctor: prescription.doctor.user.name,
-      notes: prescription.doctorNotes,
-      hospital: prescription.hospital,
-      disease: prescription.disease,
-    });
-  });
-  console.log(patient.prescriptions, "om here");
+  patient.prescriptions.forEach(
+    (prescription: any, prescriptionIndex: number) => {
+      res.push({
+        _id: prescription._id,
+        index: prescriptionIndex + 1,
+        createdAt: formatDate(prescription.createdAt),
+        doctor: prescription.doctor.user.name,
+        notes: prescription.doctorNotes,
+        hospital: prescription.hospital,
+        disease: prescription.disease,
+        validTill: formatDate(prescription.validTill),
+      });
+    }
+  );
 
   return Response.json({ data: res });
 });

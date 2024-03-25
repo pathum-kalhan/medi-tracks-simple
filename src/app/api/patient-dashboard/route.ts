@@ -48,34 +48,42 @@ export const GET = auth(async (req) => {
   let consultingData: any = [];
   let diseaseData: any = [];
 
-  patient.prescriptions.forEach((prescription: any) => {
-    consultingData.push({
-      _id: prescription._id,
-      createdAt: formatDate(prescription.createdAt),
-      doctor: prescription.doctor.user.name,
-      hospital: prescription.hospital,
-    });
-  });
+  patient.prescriptions.forEach(
+    (prescription: any, prescriptionIndex: number) => {
+      consultingData.push({
+        _id: prescription._id,
+        index: prescriptionIndex + 1,
+        createdAt: formatDate(prescription.createdAt),
+        doctor: prescription.doctor.user.name,
+        hospital: prescription.hospital,
+      });
+    }
+  );
 
-  patient.prescriptions.forEach((prescription: any) => {
-    prescriptionData.push({
-      _id: prescription._id,
-      createdAt: formatDate(prescription.createdAt),
-      doctor: prescription.doctor.user.name,
-    });
-  });
+  patient.prescriptions.forEach(
+    (prescription: any, prescriptionIndex: number) => {
+      prescriptionData.push({
+        _id: prescription._id,
+        index: prescriptionIndex + 1,
+        createdAt: formatDate(prescription.createdAt),
+        doctor: prescription.doctor.user.name,
+      });
+    }
+  );
 
-  patient.surgeries.forEach((surgery: any) => {
+  patient.surgeries.forEach((surgery: any, surgeryIndex: number) => {
     surgeryData.push({
       _id: surgery._id,
+      index: surgeryIndex + 1,
       createdAt: formatDate(surgery.createdAt),
       doctor: surgery.doctor.user.name,
     });
   });
 
-  patient.prescriptions.forEach((disease: any) => {
+  patient.prescriptions.forEach((disease: any, diseaseIndex: number) => {
     diseaseData.push({
       _id: disease._id,
+      index: diseaseIndex + 1,
       createdAt: formatDate(disease.createdAt),
       disease: disease.disease,
     });
@@ -88,8 +96,6 @@ export const GET = auth(async (req) => {
     disease: diseaseData,
     nic: patient.nic,
   };
-
-  console.log(diseaseData, "patientData");
 
   return Response.json({ data: patientData });
 });
