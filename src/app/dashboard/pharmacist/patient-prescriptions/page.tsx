@@ -22,7 +22,7 @@ export default function Page({
     date: "",
     doctorName: "",
     validTill: "",
-    notes: "",
+    medicine: "",
   });
 
   const nic = searchParams.nic!;
@@ -64,7 +64,7 @@ export default function Page({
             date: row.date,
             doctorName: row.doctor,
             validTill: row.valid,
-            notes: row.notes,
+            medicine: row.medicine,
           });
         }}
       >
@@ -146,7 +146,7 @@ export default function Page({
         date={notes.date}
         doctorName={notes.doctorName}
         validTill={notes.validTill}
-        notes={notes.notes}
+        notes={notes.medicine}
       />
     </Grid>
   );
