@@ -76,6 +76,26 @@ export default function Page({
       </Button>
     );
   };
+
+  const viewMedicine = (row: any) => {
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          setOpenNotes(true);
+          setNotes({
+            date: row.date,
+            doctorName: row.doctor,
+            validTill: row.valid,
+            notes: row.medicine,
+          });
+        }}
+      >
+        View
+      </Button>
+    );
+  };
   const columns: GridColDef[] = [
     {
       field: "index",
@@ -105,6 +125,7 @@ export default function Page({
     {
       field: "medicine",
       headerName: "Medicine",
+      renderCell: (params) => viewMedicine(params.row),
       width: 100,
     },
     {
