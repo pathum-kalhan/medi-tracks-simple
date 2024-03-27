@@ -9,7 +9,7 @@ import { permanentRedirect, redirect } from "next/navigation";
 import { z } from "zod";
 
 export type State = {
-  status: "success" | "error";
+  status: "success" | "error" | "search";
   message: string;
   errors?: {
     nic?: string[];
@@ -28,7 +28,10 @@ const formSchema = z.object({
     ),
 });
 
-export async function createPatient(formData: FormData) {
+export async function createPatient(
+  _prevState: State,
+  formData: FormData
+): Promise<State> {
   const session = await auth();
   if (!session) {
     return { status: "error", message: "Please login first" };
@@ -53,7 +56,7 @@ export async function createPatient(formData: FormData) {
   if (!validationResult.success) {
     return {
       status: "error",
-      message: "Please fill the form correctly",
+      message: "NIC number is required for creating a patient record",
       errors: validationResult.error.flatten().fieldErrors,
     };
   }
@@ -62,12 +65,12 @@ export async function createPatient(formData: FormData) {
 
   const isPatientExist = await Patient.findOne({ nic: nic });
   if (isPatientExist) {
-    permanentRedirect(`/dashboard/search?nic=${nic}`);
+    return { status: "search", message: nic };
   }
 
   const patient = await Patient.create({
     nic,
   });
 
-  permanentRedirect(`/dashboard/patient-records?nic=${nic}`);
+  return { status: "success", message: patient.nic };
 }

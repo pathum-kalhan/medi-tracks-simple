@@ -116,6 +116,9 @@ export default function Page({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={6} md={12}>
+        <Typography textAlign={"center"} variant="h5">
+          Patient: {session?.user.name}
+        </Typography>
         <Grid container justifyContent="space-between">
           <Grid item xs={6} sm={6} md={6}>
             <Typography variant="h4" align="center">

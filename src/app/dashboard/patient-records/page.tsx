@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { Card } from "@/components/dashboard/card";
 import { ProfileModel } from "@/components/dashboard/profile-model";
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { SearchPatientButton } from "./Search";
 
 async function getPrescriptions(nic: string, doctorId: string, type: string) {
@@ -154,6 +154,7 @@ export default async function Page({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={12} sx={{ textAlign: "center" }}>
+        <Typography variant="h5">Patient: {session?.user.name}</Typography>
         <SearchPatientButton />
         {(userType === "doctor" || userType === "patient") && (
           <Button
