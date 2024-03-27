@@ -19,17 +19,22 @@ export const GET = auth(async (req) => {
 
   await connect();
 
-  const patient = await Patient.findOne({ nic }).populate({
-    path: "prescriptions",
-    populate: {
-      path: "doctor",
-      model: Doctor,
+  const patient = await Patient.findOne({ nic })
+    .populate({
+      path: "prescriptions",
       populate: {
-        path: "user",
-        model: User,
+        path: "doctor",
+        model: Doctor,
+        populate: {
+          path: "user",
+          model: User,
+        },
       },
-    },
-  });
+    })
+    .populate({
+      path: "user",
+      model: User,
+    });
 
   if (!patient) {
     return Response.json({ data: [], error: "Patient not found" });
@@ -60,6 +65,7 @@ export const GET = auth(async (req) => {
   });
 
   const patientData = {
+    name: patient?.user?.name || "n/a",
     consulting: consultingData,
     disease: diseaseData,
   };

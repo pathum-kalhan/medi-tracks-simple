@@ -110,7 +110,7 @@ export default async function Page({
   const surgery = await getSurgery(nic, session?.user?.id!);
 
   const patientData = await getPatientDashboard(nic, session?.user?.id!);
-  const { consulting, disease } = patientData.data;
+  const { consulting, disease, name } = patientData.data;
 
   const column = [
     { field: "index", headerName: "ID", width: 150 },
@@ -154,7 +154,7 @@ export default async function Page({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={12} sx={{ textAlign: "center" }}>
-        <Typography variant="h5">Patient: {session?.user.name}</Typography>
+        <Typography variant="h5">Patient Name: {name}</Typography>
         <SearchPatientButton />
         {(userType === "doctor" || userType === "patient") && (
           <Button

@@ -19,6 +19,7 @@ export default function Page({
   const [open, setOpen] = useState(false);
   const [openNotes, setOpenNotes] = useState(false);
   const [rows, setRows] = useState([]);
+  const [name, setName] = useState("");
   const [notes, setNotes] = useState({
     date: "",
     doctorName: "",
@@ -49,7 +50,7 @@ export default function Page({
         console.error("Failed to fetch patient data");
       }
       const data = await res.json();
-
+      setName(data.name);
       setRows(data.data);
     };
     fetchData();
@@ -117,7 +118,7 @@ export default function Page({
     <Grid container spacing={2}>
       <Grid item xs={12} sm={6} md={12}>
         <Typography textAlign={"center"} variant="h5">
-          Patient: {session?.user.name}
+          Patient Name: {name}
         </Typography>
         <Grid container justifyContent="space-between">
           <Grid item xs={6} sm={6} md={6}>

@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { formatDate } from "@/lib/date-format";
 import { Prescription } from "@/models/doctor";
 import { Patient } from "@/models/patient";
+import { User } from "@/models/user";
 
 export const GET = auth(async (req) => {
   const { searchParams } = new URL(
@@ -14,7 +15,11 @@ export const GET = auth(async (req) => {
     return Response.json({ data: [], error: "NIC id is required" });
   }
 
-  const patient = await Patient.findOne({ nic: nic });
+  const patient = await Patient.findOne({ nic: nic }).populate({
+    path: "user",
+    model: User,
+    select: "name",
+  });
   const prescription = await Prescription.find({
     patient: patient?._id,
   }).populate({
@@ -36,5 +41,5 @@ export const GET = auth(async (req) => {
     };
   });
 
-  return Response.json({ data });
+  return Response.json({ data: data, name: patient?.user?.name || "n/a" });
 });
