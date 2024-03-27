@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { useSession } from "next-auth/react";
 
 const paperStyles = {
   width: "100vw",
@@ -62,6 +63,7 @@ export const Chat = ({
   photoURL: string;
   patients: { id: string; name: string }[];
 }) => {
+  const { data: session } = useSession();
   const [messages, setMessages] = useState<Messages>([]);
   const [loading, setLoading] = useState(false);
 
@@ -73,8 +75,6 @@ export const Chat = ({
   const handleNewMessage = (message: Messages[0]) => {
     setMessages((prevMessages) => [...prevMessages, message]);
   };
-
-  console.log(selectedPatient, "select");
 
   useEffect(() => {
     mediator.subscribe(handleNewMessage);
@@ -147,12 +147,20 @@ export const Chat = ({
         </Paper>
 
         <FormControl fullWidth>
-          <InputLabel id="patient">Select Patient</InputLabel>
+          <InputLabel id="patient">
+            {session?.user?.type === "doctor"
+              ? "Select Patient"
+              : "Select Doctor"}
+          </InputLabel>
           <Select
-            labelId="patient"
-            id="patient"
+            labelId={session?.user?.type}
+            id={session?.user?.type}
             value={selectedPatient}
-            label="Select Patient"
+            label={
+              session?.user?.type === "doctor"
+                ? "Select Patient"
+                : "Select Doctor"
+            }
             onChange={handleChange}
           >
             {patients &&
