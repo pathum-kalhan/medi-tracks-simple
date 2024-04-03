@@ -12,7 +12,7 @@ export const GET = auth(async (req) => {
   const response: { id: string; name: string }[] = [];
   user.forEach((u) => {
     if (u.user) {
-      response.push({ id: u._id, name: u.user.name });
+      response.push({ id: u.user._id, name: u.user.name });
     }
   });
   return Response.json({ data: response });
