@@ -65,7 +65,7 @@ export const GET = auth(async (req) => {
   });
 
   const patientData = {
-    name: patient?.user?.name || "n/a",
+    name: patient?.user?.name || patient?.name || "n/a",
     consulting: consultingData,
     disease: diseaseData,
   };

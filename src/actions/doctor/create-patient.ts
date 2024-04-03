@@ -13,6 +13,8 @@ export type State = {
   message: string;
   errors?: {
     nic?: string[];
+    name?: string[];
+    mobile?: string[];
   };
 } | null;
 
@@ -25,6 +27,16 @@ const formSchema = z.object({
     .refine(
       (value) => /^(?:\d{12}|\d{9}V)$/.test(value),
       "Please enter a valid NIC number ex: 123456789012 or 123456789V"
+    ),
+  name: z.string({ required_error: "required field" }),
+  mobile: z
+    .string({
+      required_error: "required field",
+      invalid_type_error: "Mobile number is required",
+    })
+    .refine(
+      (value) => /^07\d{8}$/.test(value),
+      "Please enter a valid mobile number ex: 0712345678"
     ),
 });
 
@@ -51,16 +63,18 @@ export async function createPatient(
 
   const validationResult = formSchema.safeParse({
     nic: formData.get("nic") as string,
+    name: formData.get("name") as string,
+    mobile: formData.get("mobile") as string,
   });
 
   if (!validationResult.success) {
     return {
       status: "error",
-      message: "NIC number is required for creating a patient record",
+      message: "Please enter the data correctly",
       errors: validationResult.error.flatten().fieldErrors,
     };
   }
-  const { nic } = validationResult.data;
+  const { nic, name, mobile } = validationResult.data;
   await connect();
 
   const isPatientExist = await Patient.findOne({ nic: nic });
@@ -70,6 +84,8 @@ export async function createPatient(
 
   const patient = await Patient.create({
     nic,
+    name,
+    mobile,
   });
 
   return { status: "success", message: patient.nic };

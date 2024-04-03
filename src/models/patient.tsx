@@ -8,6 +8,12 @@ const { Schema } = mongoose;
 
 const patientSchema = new Schema(
   {
+    name: {
+      type: String,
+    },
+    mobile: {
+      type: String,
+    },
     nic: {
       type: String,
       required: true,

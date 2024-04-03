@@ -48,10 +48,12 @@ export const CreatePatient = ({ setOpen, open }: Props) => {
     if (state.status === "success") {
       router.push(`/dashboard/patient-records?nic=${state.message}`);
       setOpen(false);
+      setLoading(false);
     }
     if (state.status === "search") {
       router.push(`/dashboard/search?nic=${state.message}`);
       setOpen(false);
+      setLoading(false);
     }
     if (state.status === "error") {
       setLoading(false);
@@ -86,13 +88,17 @@ export const CreatePatient = ({ setOpen, open }: Props) => {
               label="Patient Name"
               size="small"
               fullWidth
+              helperText={state?.errors?.name}
+              error={state?.errors?.name ? true : false}
             />
             <TextField
-              name="phone"
+              name="mobile"
               label="Mobile No"
               size="small"
               fullWidth
               type="tel"
+              helperText={state?.errors?.mobile}
+              error={state?.errors?.mobile ? true : false}
             />
           </Stack>
         </DialogContent>

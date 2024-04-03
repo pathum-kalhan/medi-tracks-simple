@@ -35,8 +35,8 @@ export const GET = auth(async (req) => {
       patientData = [
         {
           nic: patient.nic,
-          name: "No Name",
-          phone: "No Phone",
+          name: patient.name || "n/a",
+          phone: patient.mobile || "n/a",
           labReports: patient.labReports,
           prescriptions: patient.prescriptions,
         },
