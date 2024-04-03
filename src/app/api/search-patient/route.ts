@@ -61,6 +61,23 @@ export const GET = auth(async (req) => {
       phone: new RegExp(params.phone as string, "i"),
     });
 
+    if (user?.length === 0) {
+      patient = await Patient.find({
+        name: new RegExp(params.name as string, "i"),
+        mobile: new RegExp(params.phone as string, "i"),
+      });
+
+      for (const p of patient) {
+        patientData.push({
+          nic: p.nic,
+          name: p.name,
+          phone: p.mobile,
+          labReports: p.labReports,
+          prescriptions: p.prescriptions,
+        });
+      }
+    }
+
     for (const u of user) {
       const p = await Patient.findOne({ user: u._id })
         .populate("user")
