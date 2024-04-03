@@ -29,15 +29,9 @@ const formSchema = z.object({
       "Please enter a valid NIC number ex: 123456789012 or 123456789V"
     ),
   name: z.string({ required_error: "required field" }),
-  mobile: z
-    .string({
-      required_error: "required field",
-      invalid_type_error: "Mobile number is required",
-    })
-    .refine(
-      (value) => /^07\d{8}$/.test(value),
-      "Please enter a valid mobile number ex: 0712345678"
-    ),
+  mobile: z.string({
+    required_error: "required field",
+  }),
 });
 
 export async function createPatient(
