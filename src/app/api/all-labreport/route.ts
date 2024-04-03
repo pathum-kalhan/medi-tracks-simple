@@ -12,6 +12,10 @@ export const GET = auth(async (req) => {
     process.env.NEXT_PUBLIC_API_URL as string
   );
 
+  const nic = searchParams.get("nic");
+
+  let data: any = [];
+
   // if (
   //   !(
   //     req.auth?.user?.type === "doctor" || req.auth?.user?.type === "pharmacist"
@@ -24,8 +28,6 @@ export const GET = auth(async (req) => {
   const laboratory = await Laboratory.findOne({ user: req.auth?.user?.id });
   const labReports = await LabReport.find({ laboratory: laboratory?._id });
 
-  let data: any = [];
-
   labReports.forEach((labReport: any) => {
     data.push({
       _id: labReport._id,
@@ -33,9 +35,23 @@ export const GET = auth(async (req) => {
       testType: labReport.testType,
       url: labReport.url,
       createdAt: formatDate(labReport.createdAt),
-      patient: labReport.patient.name,
+      patient: labReport?.patient?.name,
     });
   });
+
+  if (labReports.length === 0 && req.auth?.user?.type === "doctor") {
+    const patient = await Patient.findOne({ nic }).populate("labReports");
+    patient.labReports.forEach((labReport: any) => {
+      data.push({
+        _id: labReport._id,
+        name: labReport.name,
+        testType: labReport.testType,
+        url: labReport.url,
+        createdAt: formatDate(labReport.createdAt),
+        patient: labReport?.patient?.name,
+      });
+    });
+  }
 
   return Response.json({ data: data });
 });

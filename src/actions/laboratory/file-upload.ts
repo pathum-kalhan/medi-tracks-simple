@@ -90,8 +90,8 @@ export async function fileUpload(
     name,
     testType,
     url,
-    patient: isPatientExist.user._id,
-    laboratory: laboratory._id,
+    patient: isPatientExist?.user?._id,
+    laboratory: laboratory?._id,
   });
 
   if (!labReport) {
@@ -104,16 +104,18 @@ export async function fileUpload(
   laboratory.labReports.push(labReport._id);
   await laboratory.save();
 
-  const laboratoryName = laboratory.user.name;
+  const laboratoryName = laboratory?.user?.name;
 
-  const user = isPatientExist.user;
+  const user = isPatientExist?.user;
   const notification = {
     message: `Lab report uploaded by ${laboratoryName}`,
     read: false,
   };
 
-  user.notifications.push(notification);
-  await user.save();
+  if (isPatientExist?.user) {
+    user?.notifications?.push(notification);
+    await user.save();
+  }
 
   return { status: "success", message: "Lab report uploaded successfully" };
 }

@@ -8,7 +8,10 @@ import { useRouter } from "next/navigation";
 
 async function labReportData(nic: string) {
   const res = await fetch(
-    new URL(`/api/all-labreport`, process.env.NEXT_PUBLIC_API_URL as string),
+    new URL(
+      `/api/all-labreport?nic=${nic}`,
+      process.env.NEXT_PUBLIC_API_URL as string
+    ),
     {
       method: "GET",
       headers: {
