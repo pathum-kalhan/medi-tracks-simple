@@ -8,6 +8,16 @@ import toast from "react-hot-toast";
 import { useFormState } from "react-dom";
 import { FormEvent, useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
+import * as React from "react";
+import Avatar from "@mui/material/Avatar";
+import CssBaseline from "@mui/material/CssBaseline";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 export default function Page() {
   const [state, dispatch] = useFormState<State, FormData>(logIn, null);
@@ -31,76 +41,103 @@ export default function Page() {
     setLoading(true);
   };
 
+  function Copyright(props: any) {
+    return (
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        align="center"
+        {...props}
+      >
+        {"Copyright © "}
+        Medicare pro {new Date().getFullYear()}
+        {"."}
+      </Typography>
+    );
+  }
+
   return (
-    <form action={dispatch} onSubmit={handleSubmit}>
-      <Card
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
         sx={{
-          top: "50%",
-          left: "50%",
-          position: "absolute",
-          transform: "translate(-50%, -50%)",
-          width: "100%",
-          maxWidth: 577,
-          maxHeight: 546,
-          margin: "0 auto",
-          padding: 4,
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <Typography
-          align="center"
-          variant="h3"
-          sx={{
-            mb: 4,
-          }}
-        >
-          Patient Login
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign in
         </Typography>
-        <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
+        <Box
+          component="form"
+          action={dispatch}
+          onSubmit={handleSubmit}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
-            name="nic"
+            margin="normal"
+            required
+            fullWidth
+            id="nic"
             label="NIC"
-            type="text"
-            size="small"
+            name="nic"
+            autoComplete="nic"
+            autoFocus
             error={state?.errors?.nic ? true : false}
             helperText={state?.errors?.nic}
-            fullWidth
           />
           <TextField
+            margin="normal"
+            required
+            fullWidth
             name="password"
             label="Password"
             type="password"
-            size="small"
+            id="password"
+            autoComplete="current-password"
             error={state?.errors?.password ? true : false}
             helperText={state?.errors?.password}
-            fullWidth
           />
-          <MUILink href={`/register/patient`} component={Link}>
-            Register as a new patient
-          </MUILink>
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" />}
+            label="Remember me"
+          />
           <LoadingButton
             type="submit"
+            fullWidth
             variant="contained"
-            sx={{ borderRadius: 15 }}
             loading={loading}
+            sx={{ mt: 3, mb: 2 }}
           >
-            Login
+            Sign In
           </LoadingButton>
+          <Grid container>
+            <Grid item>
+              <MUILink href="/register/patient" component={Link}>
+                {"Don't have an account? Sign Up"}
+              </MUILink>
+            </Grid>
+          </Grid>
+        </Box>
+        <Stack spacing={1} marginTop={2} sx={{ alignItems: "center" }}>
+          <Button href="/login/doctor" variant="contained">
+            {"Login as a doctor"}
+          </Button>
+          <Button href="/login/pharmacist" variant="contained">
+            {"Login as a pharmacist"}
+          </Button>
+          <Button href="/login/laboratory" variant="contained">
+            {"Login as laboratorian"}
+          </Button>
         </Stack>
-        <Stack spacing={1} sx={{ alignItems: "center" }}>
-          <MUILink href="/login/doctor" component={Link}>
-            Login as a doctor
-          </MUILink>
-
-          <MUILink href="/login/laboratory" component={Link}>
-            Login as a laboratory
-          </MUILink>
-
-          <MUILink href="/login/pharmacist" component={Link}>
-            Login as a pharmacy
-          </MUILink>
-        </Stack>
-      </Card>
-    </form>
+      </Box>
+      <Copyright sx={{ mt: 8, mb: 4 }} />
+    </Container>
   );
 }
