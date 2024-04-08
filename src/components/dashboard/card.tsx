@@ -18,8 +18,8 @@ export const Card = ({ title, row, column, href }: Props) => {
     router.push(href);
   };
   return (
-    <Box sx={{ p: 1, bgcolor: "background.paper" }}>
-      <Box sx={{ p: 1, bgcolor: "background.paper" }}>
+    <Box sx={{ p: 4, bgcolor: "background.paper" }}>
+      <Box sx={{ bgcolor: "background.paper" }}>
         <Typography variant="h6">{title}</Typography>
       </Box>
       <DataTable columns={column} rows={row} pageSize={4} hideFooter />

@@ -75,7 +75,7 @@ export default async function PatientRecords() {
   ];
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} sx={{ bgcolor: "action.hover", p: 2 }}>
       <Grid item xs={12} md={12} sx={{ textAlign: "center" }}>
         <Button
           variant="contained"

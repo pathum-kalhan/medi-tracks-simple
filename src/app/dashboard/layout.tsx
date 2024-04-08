@@ -121,6 +121,7 @@ export default async function RootLayout({
           alignItems: "center",
           padding: 2,
           height: 135,
+          bgcolor: "action.hover",
         }}
       >
         <Image src={Logo} alt="MediTracks Pro" width={160} height={100} />

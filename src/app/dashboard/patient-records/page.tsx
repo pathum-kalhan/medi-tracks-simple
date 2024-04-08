@@ -152,7 +152,7 @@ export default async function Page({
   ];
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} sx={{ bgcolor: "action.hover", p: 2 }}>
       <Grid item xs={12} md={12} sx={{ textAlign: "center" }}>
         <Typography variant="h5">Patient Name: {name}</Typography>
         <SearchPatientButton />

@@ -1,7 +1,7 @@
 "use client";
 import { Notes } from "@/components/dashboard/notes";
 import { Prescribe } from "@/components/dashboard/precribe";
-import { Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -146,51 +146,53 @@ export default function Page({
   };
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} sm={6} md={12}>
-        <Grid container justifyContent="space-between">
-          <Grid item xs={6} sm={6} md={6}>
-            <Typography variant="h4" align="center">
-              <Button onClick={() => router.back()}>
-                <ArrowBackIcon />
-              </Button>{" "}
-              Prescribe Medication
-            </Typography>
-          </Grid>
-          <Grid item xs={6} sm={6} md={6}>
-            {session?.user?.type === "doctor" && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={addMedication}
-              >
-                Add Prescription
-              </Button>
-            )}
+    <Box sx={{ p: 4, bgcolor: "background.paper" }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6} md={12}>
+          <Grid container justifyContent="space-between">
+            <Grid item xs={6} sm={6} md={6}>
+              <Typography variant="h4" align="center">
+                <Button onClick={() => router.back()}>
+                  <ArrowBackIcon />
+                </Button>{" "}
+                Prescribe Medication
+              </Typography>
+            </Grid>
+            <Grid item xs={6} sm={6} md={6}>
+              {session?.user?.type === "doctor" && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={addMedication}
+                >
+                  Add Prescription
+                </Button>
+              )}
+            </Grid>
           </Grid>
         </Grid>
+        <Grid item xs={12}>
+          <DataGrid rows={rows} columns={columns} getRowId={(row) => row._id} />
+        </Grid>
+        <Prescribe
+          open={open}
+          setOpen={setOpen}
+          name={name}
+          title="Prescribe Medication"
+          date={new Date().toDateString()}
+          type="prescribe"
+          nic={nic}
+        />
+        <Notes
+          open={openNotes}
+          setOpen={setOpenNotes}
+          title="Doctor Notes"
+          date={notes.date}
+          doctorName={notes.doctorName}
+          validTill={notes.validTill}
+          notes={notes.notes}
+        />
       </Grid>
-      <Grid item xs={12}>
-        <DataGrid rows={rows} columns={columns} getRowId={(row) => row._id} />
-      </Grid>
-      <Prescribe
-        open={open}
-        setOpen={setOpen}
-        name={name}
-        title="Prescribe Medication"
-        date={new Date().toDateString()}
-        type="prescribe"
-        nic={nic}
-      />
-      <Notes
-        open={openNotes}
-        setOpen={setOpenNotes}
-        title="Doctor Notes"
-        date={notes.date}
-        doctorName={notes.doctorName}
-        validTill={notes.validTill}
-        notes={notes.notes}
-      />
-    </Grid>
+    </Box>
   );
 }
