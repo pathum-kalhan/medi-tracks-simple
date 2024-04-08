@@ -6,8 +6,13 @@ import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
+  Avatar,
+  Box,
   Button,
   Card,
+  Container,
+  CssBaseline,
+  Grid,
   Link as MUILink,
   Stack,
   TextField,
@@ -20,6 +25,7 @@ import { useFormState } from "react-dom";
 import { pharmacist, State } from "@/actions/register/pharmacist";
 import { FormEvent, useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 export default function Home() {
   const [state, dispatch] = useFormState<State, FormData>(pharmacist, null);
@@ -43,114 +49,150 @@ export default function Home() {
     setLoading(true);
   };
 
+  function Copyright(props: any) {
+    return (
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        align="center"
+        {...props}
+      >
+        {"Copyright © "}
+        Medicare Pro {new Date().getFullYear()}
+        {"."}
+      </Typography>
+    );
+  }
+
   return (
-    <main>
-      <form action={dispatch} onSubmit={handleSubmit}>
-        <Card
-          sx={{
-            top: "50%",
-            left: "50%",
-            position: "absolute",
-            transform: "translate(-50%, -50%)",
-            width: "100%",
-            maxWidth: 505,
-            maxHeight: 1000,
-            margin: "0 auto",
-            padding: 4,
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 1)",
-          }}
-        >
-          <Typography
-            align="center"
-            variant="h3"
-            sx={{
-              mb: 4,
-            }}
-          >
-            Pharmacy Register
-          </Typography>
-          <Stack spacing={2} sx={{ mb: 2, alignItems: "center" }}>
-            <TextField
-              name="name"
-              label="Pharmacy Name"
-              size="small"
-              error={state?.errors?.name ? true : false}
-              helperText={state?.errors?.name}
-              fullWidth
-            />
-            <TextField
-              name="regNo"
-              label="Pharmacy Registration Number"
-              size="small"
-              error={state?.errors?.regNo ? true : false}
-              helperText={state?.errors?.regNo}
-              fullWidth
-            />
-            <TextField
-              name="location"
-              label="Pharmacy Location"
-              size="small"
-              error={state?.errors?.location ? true : false}
-              helperText={state?.errors?.location}
-              fullWidth
-            />
-            <TextField
-              name="phone"
-              label="Contact Number"
-              type="number"
-              size="small"
-              error={state?.errors?.phone ? true : false}
-              helperText={state?.errors?.phone}
-              fullWidth
-            />
-
-            <TextField
-              name="email"
-              label="Email"
-              type="email"
-              size="small"
-              error={state?.errors?.email ? true : false}
-              helperText={state?.errors?.email}
-              fullWidth
-            />
-
-            <TextField
-              name="password"
-              label="Password"
-              type="password"
-              size="small"
-              error={state?.errors?.password ? true : false}
-              helperText={state?.errors?.password}
-              fullWidth
-            />
-            <TextField
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              size="small"
-              error={state?.errors?.confirmPassword ? true : false}
-              helperText={state?.errors?.confirmPassword}
-              fullWidth
-            />
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Pharmacist Sign up
+        </Typography>
+        <form action={dispatch} onSubmit={handleSubmit}>
+          <Box sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  name="name"
+                  label="Pharmacy Name"
+                  id="name"
+                  autoComplete="name"
+                  autoFocus
+                  error={state?.errors?.name ? true : false}
+                  helperText={state?.errors?.name}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="regNo"
+                  label="Lab Registration Number"
+                  id="regNo"
+                  autoComplete="regNo"
+                  autoFocus
+                  error={state?.errors?.regNo ? true : false}
+                  helperText={state?.errors?.regNo}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="location"
+                  label="Lab Location"
+                  id="location"
+                  autoComplete="location"
+                  autoFocus
+                  error={state?.errors?.location ? true : false}
+                  helperText={state?.errors?.location}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="phone"
+                  label="Contact Number"
+                  type="tel"
+                  id="phone"
+                  autoComplete="phone"
+                  autoFocus
+                  error={state?.errors?.phone ? true : false}
+                  helperText={state?.errors?.phone}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="email"
+                  label="Email"
+                  type="email"
+                  id="email"
+                  autoComplete="email"
+                  autoFocus
+                  error={state?.errors?.email ? true : false}
+                  helperText={state?.errors?.email}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                  autoFocus
+                  error={state?.errors?.password ? true : false}
+                  helperText={state?.errors?.password}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  autoComplete="new-password"
+                  autoFocus
+                  error={state?.errors?.confirmPassword ? true : false}
+                  helperText={state?.errors?.confirmPassword}
+                  fullWidth
+                />
+              </Grid>
+            </Grid>
             <LoadingButton
               type="submit"
+              fullWidth
               variant="contained"
-              sx={{ borderRadius: 15 }}
+              sx={{ mt: 3, mb: 2 }}
               loading={loading}
             >
-              Register
+              Sign Up
             </LoadingButton>
-            <Button
-              href="/login/patient"
-              variant="contained"
-              sx={{ borderRadius: 15 }}
-            >
-              Have an account? Sign in
-            </Button>
-          </Stack>
-        </Card>
-      </form>
-      <Toaster />
-    </main>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link href="/login/pharmacist">
+                  Already have an account? Sign in
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </form>
+      </Box>
+      <Copyright sx={{ mt: 5 }} />
+    </Container>
   );
 }
