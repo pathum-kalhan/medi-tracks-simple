@@ -92,7 +92,7 @@ export default function Page({
     },
     {
       field: "disease",
-      headerName: "Disease",
+      headerName: "Disease / Surgery",
       width: 200,
     },
     {

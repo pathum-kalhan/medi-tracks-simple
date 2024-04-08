@@ -64,12 +64,24 @@ export const GET = auth(async (req) => {
     (prescription: any, prescriptionIndex: number) => {
       prescriptionData.push({
         _id: prescription._id,
-        index: prescriptionIndex + 1,
         createdAt: formatDate(prescription.createdAt),
         doctor: prescription.doctor.user.name,
       });
     }
   );
+
+  patient.surgeries.forEach((surgery: any, surgeryIndex: number) => {
+    prescriptionData.push({
+      _id: surgery._id,
+      createdAt: formatDate(surgery.createdAt),
+      doctor: surgery.doctor.user.name,
+    });
+  });
+
+  prescriptionData = prescriptionData.map((row: any, index: number) => ({
+    ...row,
+    index: index + 1,
+  }));
 
   patient.surgeries.forEach((surgery: any, surgeryIndex: number) => {
     surgeryData.push({

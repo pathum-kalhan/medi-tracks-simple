@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { formatDate } from "@/lib/date-format";
-import { Prescription } from "@/models/doctor";
+import { Prescription, Surgery } from "@/models/doctor";
 import { Patient } from "@/models/patient";
 import { User } from "@/models/user";
 
@@ -27,10 +27,16 @@ export const GET = auth(async (req) => {
     populate: { path: "user" },
   });
 
-  const data = prescription.map((prescription, index) => {
+  const surgeries = await Surgery.find({
+    patient: patient?._id,
+  }).populate({
+    path: "doctor",
+    populate: { path: "user" },
+  });
+
+  const prescriptionData = prescription.map((prescription, index) => {
     return {
       _id: prescription._id,
-      index: index + 1,
       date: formatDate(prescription.createdAt),
       valid: formatDate(prescription.validTill),
       doctor: prescription.doctor.user.name,
@@ -40,6 +46,25 @@ export const GET = auth(async (req) => {
       notes: prescription.doctorNotes,
     };
   });
+
+  const surgeryData = surgeries.map((surgery, index) => {
+    return {
+      _id: surgery._id,
+      date: formatDate(surgery.createdAt),
+      valid: formatDate(surgery.validTill),
+      doctor: surgery.doctor.user.name,
+      medicine: surgery.medicine,
+      disease: surgery.surgeryName,
+      hospital: surgery.hospital,
+      notes: surgery.notes,
+    };
+  });
+
+  const data = [...prescriptionData, ...surgeryData]
+    .sort((b, a) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .map((item, index) => {
+      return { ...item, index: index + 1 };
+    });
 
   return Response.json({ data: data, name: patient?.user?.name || "n/a" });
 });

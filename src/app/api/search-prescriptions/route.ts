@@ -49,17 +49,33 @@ export const GET = auth(async (req) => {
     return Response.json({ data: res });
   }
 
-  const patient = await Patient.findOne({ nic }).populate({
-    path: "prescriptions",
-    populate: {
-      path: "doctor",
-      model: Doctor,
-      populate: {
-        path: "user",
-        model: User,
-      },
-    },
-  });
+  const patient = await Patient.findOne({ nic })
+    .populate({
+      path: "prescriptions",
+      populate: [
+        {
+          path: "doctor",
+          model: Doctor,
+          populate: {
+            path: "user",
+            model: User,
+          },
+        },
+      ],
+    })
+    .populate({
+      path: "surgeries",
+      populate: [
+        {
+          path: "doctor",
+          model: Doctor,
+          populate: {
+            path: "user",
+            model: User,
+          },
+        },
+      ],
+    });
   if (!patient) {
     return Response.json({ data: [], error: "Patient not found" });
   }
@@ -70,13 +86,26 @@ export const GET = auth(async (req) => {
       (prescription: any, prescriptionIndex: number) => {
         res.push({
           _id: prescription._id,
-          index: prescriptionIndex + 1,
           createdAt: formatDate(prescription.createdAt),
           doctor: prescription.doctor.user.name,
           medicine: prescription.medicine,
         });
       }
     );
+
+    patient.surgeries.forEach((surgery: any, surgeryIndex: number) => {
+      res.push({
+        _id: surgery._id,
+        createdAt: formatDate(surgery.createdAt),
+        doctor: surgery.doctor.user.name,
+        medicine: surgery.medicine,
+      });
+    });
+
+    res = res.map((row: any, index: number) => ({
+      ...row,
+      index: index + 1,
+    }));
 
     return Response.json({ data: res });
   }
@@ -85,7 +114,6 @@ export const GET = auth(async (req) => {
     (prescription: any, prescriptionIndex: number) => {
       res.push({
         _id: prescription._id,
-        index: prescriptionIndex + 1,
         date: formatDate(prescription.createdAt),
         doctor: prescription.doctor.user.name,
         valid: formatDate(prescription.validTill),
@@ -97,6 +125,25 @@ export const GET = auth(async (req) => {
       });
     }
   );
+
+  patient.surgeries.forEach((surgery: any, surgeryIndex: number) => {
+    res.push({
+      _id: surgery._id,
+      date: formatDate(surgery.createdAt),
+      doctor: surgery.doctor.user.name,
+      valid: formatDate(surgery.validTill),
+      notes: surgery.doctorNotes,
+      disease: surgery.surgeryName,
+      medicine: surgery.medicine,
+      hospital: surgery.hospital,
+      location: surgery.doctor,
+    });
+  });
+
+  res = res.map((row: any, index: number) => ({
+    ...row,
+    index: index + 1,
+  }));
 
   return Response.json({ data: res });
 });
