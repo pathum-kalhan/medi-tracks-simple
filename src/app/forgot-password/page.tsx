@@ -4,7 +4,7 @@ import { Button, Card, Stack, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { Link as MUILink } from "@mui/material";
 
-import { logIn, State } from "@/actions/login/doctor";
+import { PasswordForget, State } from "@/actions/profile/password-forgot";
 import toast from "react-hot-toast";
 import { useFormState } from "react-dom";
 import { FormEvent, useEffect, useState } from "react";
@@ -20,7 +20,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Container from "@mui/material/Container";
 
 export default function Page() {
-  const [state, dispatch] = useFormState<State, FormData>(logIn, null);
+  const [state, dispatch] = useFormState<State, FormData>(PasswordForget, null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function Page() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Doctor Sign in
+          Forgot Password
         </Typography>
         <Box
           component="form"
@@ -84,29 +84,13 @@ export default function Page() {
             margin="normal"
             required
             fullWidth
-            id="slmcNo"
-            label="SLMC Number"
-            name="slmcNo"
-            autoComplete="slmcNo"
-            autoFocus
-            error={state?.errors?.slmcNo ? true : false}
-            helperText={state?.errors?.slmcNo}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            error={state?.errors?.password ? true : false}
-            helperText={state?.errors?.password}
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            name="email"
+            label="Email"
+            type="email"
+            id="email"
+            autoComplete="email"
+            error={state?.errors?.email ? true : false}
+            helperText={state?.errors?.email}
           />
           <LoadingButton
             type="submit"
@@ -115,32 +99,9 @@ export default function Page() {
             loading={loading}
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign In
+            Get the OTP to your email
           </LoadingButton>
-          <Grid container>
-            <Grid item>
-              <MUILink href="/forgot-password" component={Link}>
-                {"Forgot password?"}
-              </MUILink>
-            </Grid>
-            <Grid item>
-              <MUILink href="/register/doctor" component={Link}>
-                {"Don't have an account? Sign Up"}
-              </MUILink>
-            </Grid>
-          </Grid>
         </Box>
-        <Stack spacing={1} marginTop={2} sx={{ alignItems: "center" }}>
-          <Button href="/login/patient" variant="contained">
-            {"Login as a patient"}
-          </Button>
-          <Button href="/login/laboratory" variant="contained">
-            {"Login as a laboratorian"}
-          </Button>
-          <Button href="/login/pharmacist" variant="contained">
-            {"Login as pharmacist"}
-          </Button>
-        </Stack>
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>

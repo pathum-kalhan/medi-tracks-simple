@@ -3,11 +3,12 @@ import { Doctor } from "@/models/doctor";
 
 const userSchema = new Schema({
   name: { type: String, required: true },
+  email: { type: String, required: true, lowercase: true },
   phone: { type: String, required: true },
   password: { type: String },
   userType: {
     type: String,
-    enum: ["doctor", "patient", "laboratory", "pharmacist"],
+    enum: ["doctor", "patient", "laboratory", "pharmacist", "admin"],
     required: true,
   },
   avatar: { type: String },

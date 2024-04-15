@@ -110,6 +110,18 @@ export default function Home() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  name="email"
+                  label="Email"
+                  id="email"
+                  autoComplete="email"
+                  fullWidth
+                  autoFocus
+                  error={state?.errors?.email ? true : false}
+                  helperText={state?.errors?.email}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
                   name="phone"
                   label="Contact Number"
                   type="tel"

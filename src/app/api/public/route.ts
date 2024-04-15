@@ -29,7 +29,11 @@ export const POST = auth(async (req) => {
 
     let fetchUser;
 
-    if (user === "doctor") {
+    if (user === "admin") {
+      const { email } = body;
+      const admin = await User.findOne({ email });
+      return Response.json({ user: admin }, { status: 200 });
+    } else if (user === "doctor") {
       const { slmcNo } = body;
       const doctor = await Doctor.findOne({ slmcNo }).populate("user");
       if (!doctor) {

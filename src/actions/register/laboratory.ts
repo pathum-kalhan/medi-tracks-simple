@@ -57,7 +57,8 @@ const formSchema = z
         required_error: "required field",
         invalid_type_error: "Email is required",
       })
-      .email("Please enter a valid email"),
+      .email("Please enter a valid email")
+      .transform((data) => data.toLowerCase()),
     password: z
       .string({
         required_error: "required field",
@@ -110,15 +111,20 @@ export async function laboratory(
   if (isDoctorExist) {
     return { status: "error", message: "Laboratory already exist" };
   }
+  const emailRegistered = await User.findOne({ email });
+  if (emailRegistered) {
+    return { status: "error", message: "Email already registered" };
+  }
   const hashedPassword = await hash(password, 10);
 
   const newUser = await User.create({
     name,
+    email,
     phone,
     password: hashedPassword,
     userType: "laboratory",
   });
-  console.log(newUser._id, "newUser._id");
+
   const newLaboratory = await Laboratory.create({
     regNo,
     location,

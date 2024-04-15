@@ -4,7 +4,7 @@ import { Button, Card, Stack, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { Link as MUILink } from "@mui/material";
 
-import { logIn, State } from "@/actions/login/doctor";
+import { logIn, State } from "@/actions/login/admin";
 import toast from "react-hot-toast";
 import { useFormState } from "react-dom";
 import { FormEvent, useEffect, useState } from "react";
@@ -71,7 +71,7 @@ export default function Page() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Doctor Sign in
+          Admin Sign in
         </Typography>
         <Box
           component="form"
@@ -84,13 +84,14 @@ export default function Page() {
             margin="normal"
             required
             fullWidth
-            id="slmcNo"
-            label="SLMC Number"
-            name="slmcNo"
-            autoComplete="slmcNo"
+            id="email"
+            label="Email"
+            name="email"
+            type="email"
+            autoComplete="email"
             autoFocus
-            error={state?.errors?.slmcNo ? true : false}
-            helperText={state?.errors?.slmcNo}
+            error={state?.errors?.email ? true : false}
+            helperText={state?.errors?.email}
           />
           <TextField
             margin="normal"
@@ -117,30 +118,7 @@ export default function Page() {
           >
             Sign In
           </LoadingButton>
-          <Grid container>
-            <Grid item>
-              <MUILink href="/forgot-password" component={Link}>
-                {"Forgot password?"}
-              </MUILink>
-            </Grid>
-            <Grid item>
-              <MUILink href="/register/doctor" component={Link}>
-                {"Don't have an account? Sign Up"}
-              </MUILink>
-            </Grid>
-          </Grid>
         </Box>
-        <Stack spacing={1} marginTop={2} sx={{ alignItems: "center" }}>
-          <Button href="/login/patient" variant="contained">
-            {"Login as a patient"}
-          </Button>
-          <Button href="/login/laboratory" variant="contained">
-            {"Login as a laboratorian"}
-          </Button>
-          <Button href="/login/pharmacist" variant="contained">
-            {"Login as pharmacist"}
-          </Button>
-        </Stack>
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>

@@ -12,6 +12,7 @@ export type State = {
   errors?: {
     name?: string[];
     slmcNo?: string[];
+    email?: string[];
     phone?: string[];
     password?: string[];
     confirmPassword?: string[];
@@ -32,6 +33,13 @@ const formSchema = z
         invalid_type_error: "NIC is required",
       })
       .min(3, "SLMCC No. must be at least 3 characters"),
+    email: z
+      .string({
+        required_error: "required field",
+        invalid_type_error: "Email is required",
+      })
+      .email("Please enter a valid email")
+      .transform((data) => data.toLowerCase()),
     phone: z
       .string({
         required_error: "required field",
@@ -74,6 +82,7 @@ export async function doctor(
   const validationResult = formSchema.safeParse({
     name: formData.get("name"),
     slmcNo: formData.get("slmcNo"),
+    email: formData.get("email"),
     phone: formData.get("phone"),
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
@@ -85,16 +94,22 @@ export async function doctor(
       errors: validationResult.error.flatten().fieldErrors,
     };
   }
-  const { name, slmcNo, phone, password } = validationResult.data;
+  const { name, slmcNo, email, phone, password } = validationResult.data;
   await connect();
   const isDoctorExist = await Doctor.findOne({ slmcNo });
   if (isDoctorExist) {
     return { status: "error", message: "Doctor already exist" };
   }
+  const emailRegistered = await User.findOne({ email });
+  if (emailRegistered) {
+    return { status: "error", message: "Email already registered" };
+  }
+
   const hashedPassword = await hash(password, 10);
 
   const newUser = await User.create({
     name,
+    email,
     phone,
     password: hashedPassword,
     userType: "doctor",

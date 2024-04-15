@@ -13,6 +13,7 @@ export type State = {
   errors?: {
     name?: string[];
     nic?: string[];
+    email?: string[];
     phone?: string[];
     password?: string[];
     confirmPassword?: string[];
@@ -36,6 +37,13 @@ const formSchema = z
         (value) => /^(?:\d{12}|\d{9}V)$/.test(value),
         "Please enter a valid NIC number ex: 123456789012 or 123456789V"
       ),
+    email: z
+      .string({
+        required_error: "required field",
+        invalid_type_error: "Email is required",
+      })
+      .email("Please enter a valid email")
+      .transform((data) => data.toLowerCase()),
     phone: z
       .string({
         required_error: "required field",
@@ -78,6 +86,7 @@ export async function patient(
   const validationResult = formSchema.safeParse({
     name: formData.get("name"),
     nic: formData.get("nic"),
+    email: formData.get("email"),
     phone: formData.get("phone"),
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
@@ -89,12 +98,16 @@ export async function patient(
       errors: validationResult.error.flatten().fieldErrors,
     };
   }
-  const { name, nic, phone, password } = validationResult.data;
+  const { name, nic, email, phone, password } = validationResult.data;
   await connect();
   const isPatientExist = await Patient.findOne({ nic });
   const isUserExist = await User.findById(isPatientExist?.user);
   if (isPatientExist && isUserExist) {
     return { status: "error", message: "Patient already exist" };
+  }
+  const emailRegistered = await User.findOne({ email });
+  if (emailRegistered) {
+    return { status: "error", message: "Email already registered" };
   }
 
   const hashedPassword = await hash(password, 10);
@@ -103,6 +116,7 @@ export async function patient(
     const newUser = await User.create({
       name,
       phone,
+      email,
       password: hashedPassword,
       userType: "patient",
     });
@@ -117,6 +131,7 @@ export async function patient(
     const newUser = await User.create({
       name,
       phone,
+      email,
       password: hashedPassword,
       userType: "patient",
     });
