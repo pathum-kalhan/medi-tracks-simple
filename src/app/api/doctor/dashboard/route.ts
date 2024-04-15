@@ -45,7 +45,7 @@ export const GET = auth(async (req) => {
   const data = [
     { left: "SLMC number", right: doctor?.slmcNo },
     {
-      left: "Number of treat patients",
+      left: "Number of treated patients",
       right: Object.keys(uniquePatients).length,
     },
   ];
