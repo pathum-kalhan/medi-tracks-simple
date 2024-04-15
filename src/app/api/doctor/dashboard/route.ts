@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { Doctor } from "@/models/doctor";
+import { Doctor, Prescription, Surgery } from "@/models/doctor";
 
 export const GET = auth(async (req) => {
   const { searchParams } = new URL(
@@ -14,7 +14,41 @@ export const GET = auth(async (req) => {
 
   const doctor = await Doctor.findOne({ user: userId });
 
-  const data = [{ left: "SLMC Number", right: doctor?.slmcNo }];
+  const prescriptionGivenPatients = await Prescription.find({
+    doctor: doctor._id,
+  }).populate("patient");
+
+  const uniquePrescriptionGivenPatients = Array.from(
+    new Set(prescriptionGivenPatients?.map((p) => p.patient._id))
+  ).map((id) => prescriptionGivenPatients.find((p) => p.patient._id === id));
+
+  const surgeryGivenPatients = await Surgery.find({
+    doctor: doctor._id,
+  }).populate("patient");
+  const uniqueSurgeryGivenPatients = Array.from(
+    new Set(surgeryGivenPatients.map((p) => p.patient._id))
+  ).map((id) => surgeryGivenPatients.find((p) => p.patient._id === id));
+
+  const allPatients = [
+    ...uniquePrescriptionGivenPatients,
+    ...uniqueSurgeryGivenPatients,
+  ];
+
+  let uniquePatients: { [key: string]: boolean } = {};
+
+  allPatients.forEach((pt) => {
+    if (pt && !uniquePatients[pt.patient._id]) {
+      uniquePatients[pt.patient._id] = true;
+    }
+  });
+
+  const data = [
+    { left: "SLMC Number", right: doctor?.slmcNo },
+    {
+      left: "Patient Count",
+      right: Object.keys(uniquePatients).length,
+    },
+  ];
 
   return Response.json({ data });
 });
