@@ -28,6 +28,10 @@ const ChatSchema = new Schema({
   photoURL: {
     type: String,
   },
+  read: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 export const Chat = mongoose.models.Chat || mongoose.model("Chat", ChatSchema);

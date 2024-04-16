@@ -7,6 +7,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 type Patient = {
   id: string;
   name: string;
+  unread: number;
 };
 
 export const SelectPatient = ({

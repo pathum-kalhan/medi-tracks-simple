@@ -24,6 +24,7 @@ export const POST = async (req: NextRequest) => {
     displayName,
     avatarDisp,
     photoURL,
+    read: false,
   });
 
   console.log("Message saved to database:", newMessage);
@@ -50,11 +51,21 @@ export const GET = async (req: NextRequest) => {
     receiverId: senderId,
   });
 
+  senderMessage.forEach(async (message) => {
+    if (!message.read) {
+      await Chat.findByIdAndUpdate(message._id, { read: true });
+    }
+  });
+
+  receiverMessage.forEach(async (message) => {
+    if (!message.read) {
+      await Chat.findByIdAndUpdate(message._id, { read: true });
+    }
+  });
+
   const messages = senderMessage.concat(receiverMessage).sort((a, b) => {
     return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
   });
-
-  console.log(messages, senderId, receiverId, "m");
 
   return Response.json(messages);
 };

@@ -61,7 +61,7 @@ export const Chat = ({
   senderId: string;
   name: string;
   photoURL: string;
-  patients: { id: string; name: string }[];
+  patients: { id: string; name: string; unread: number }[];
 }) => {
   const { data: session } = useSession();
   const [messages, setMessages] = useState<Messages>([]);
@@ -166,7 +166,7 @@ export const Chat = ({
             {patients &&
               patients.map((patient) => (
                 <MenuItem key={patient.id} value={patient.id}>
-                  {patient.name}
+                  {`${patient.name} - ${patient.unread} new messages`}
                 </MenuItem>
               ))}
           </Select>

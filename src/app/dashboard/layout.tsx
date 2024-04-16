@@ -11,11 +11,12 @@ import {
   Divider,
   Typography,
   Button,
+  Badge,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ArticleIcon from "@mui/icons-material/Article";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import HelpCenterIcon from "@mui/icons-material/HelpCenter";
+import MailIcon from "@mui/icons-material/Mail";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -66,6 +67,29 @@ async function fetchAdvertisements() {
   return data;
 }
 
+async function getUnreadMsgCount(id: string) {
+  const res = await fetch(
+    new URL(
+      `/api/chat/unread-messages?id=${id}`,
+      process.env.NEXT_PUBLIC_API_URL as string
+    ),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+
+  if (!res.ok) {
+    console.error("Failed to fetch unread messages");
+  }
+
+  const data = await res.json();
+  return data;
+}
+
 export default async function RootLayout({
   children,
 }: {
@@ -79,6 +103,8 @@ export default async function RootLayout({
   const advertisements = await fetchAdvertisements();
   const AdLogo = advertisements.data[advertisements.data.length - 1]
     .URL as string;
+
+  const unreadMsgCount = await getUnreadMsgCount(session?.user?.id!);
 
   const routes = [
     {
@@ -126,7 +152,11 @@ export default async function RootLayout({
     {
       path: "/dashboard/support",
       name: "Help & Support",
-      icon: <HelpCenterIcon />,
+      icon: (
+        <Badge badgeContent={unreadMsgCount?.data} color="primary">
+          <MailIcon />
+        </Badge>
+      ),
       userType: ["doctor", "patient", "laboratory", "pharmacist"],
     },
     {
