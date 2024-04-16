@@ -2,6 +2,8 @@ import { Forum } from "@/components/chat/Forum";
 import { auth } from "@/auth";
 import { Button, Grid, Select, Typography } from "@mui/material";
 import { SelectPatient } from "./Select";
+import { AdminInquiry } from "./AdminInquiry";
+import { AdminChat } from "./AdminChat";
 
 async function getAvatarURL(id: string) {
   const res = await fetch(
@@ -51,6 +53,22 @@ async function getDoctors() {
   return data.data;
 }
 
+async function getAllUsers() {
+  const res = await fetch(
+    new URL(`/api/chat/admin/all`, process.env.NEXT_PUBLIC_API_URL as string),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+  const data = await res.json();
+
+  return data;
+}
+
 export default async function Home() {
   const session = await auth();
   const userType = session?.user.type!!;
@@ -64,9 +82,16 @@ export default async function Home() {
 
     return (
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12} sm={6}>
           <SelectPatient
             patients={patients}
+            senderId={userId}
+            name={userName}
+            photoURL={avatarURL}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <AdminInquiry
             senderId={userId}
             name={userName}
             photoURL={avatarURL}
@@ -79,15 +104,6 @@ export default async function Home() {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
-          <Forum
-            forum="Patient"
-            role="patient"
-            id={userId}
-            photoURL={avatarURL}
-            name={userName}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
           <SelectPatient
             patients={doctors}
             senderId={userId}
@@ -95,11 +111,34 @@ export default async function Home() {
             photoURL={avatarURL}
           />
         </Grid>
+        <Grid item xs={12} sm={6}>
+          <AdminInquiry
+            senderId={userId}
+            name={userName}
+            photoURL={avatarURL}
+          />
+        </Grid>
+      </Grid>
+    );
+  } else if (userType === "admin") {
+    const users = await getAllUsers();
+    return (
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={12}>
+          <AdminChat name={userName} photoURL={avatarURL} users={users} />
+        </Grid>
       </Grid>
     );
   } else {
     return (
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <AdminInquiry
+            senderId={userId}
+            name={userName}
+            photoURL={avatarURL}
+          />
+        </Grid>
         <Grid item xs={12} md={12} sx={{ textAlign: "center" }}>
           <Typography variant="h4">For Technical Support</Typography>
         </Grid>

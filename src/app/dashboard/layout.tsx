@@ -157,7 +157,7 @@ export default async function RootLayout({
           <MailIcon />
         </Badge>
       ),
-      userType: ["doctor", "patient", "laboratory", "pharmacist"],
+      userType: ["doctor", "patient", "laboratory", "pharmacist", "admin"],
     },
     {
       path: "/dashboard/settings",

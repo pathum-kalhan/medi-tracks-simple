@@ -46,7 +46,7 @@ export async function logIn(
   }
   await connect();
   const { email, password } = validationResult.data;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: email, userType: "admin" });
   if (!user) {
     return { status: "error", message: "Admin not found" };
   }
