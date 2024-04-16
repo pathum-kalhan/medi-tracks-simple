@@ -54,7 +54,7 @@ export default async function Home() {
       {(type === "doctor" || type === "pharmacist") &&
         data.data &&
         data.data.length > 0 && (
-          <Welcome name={session?.user?.name!} data={data.data} type={type} />
+          <Welcome name={session?.user?.name!} data={data?.data} type={type} />
         )}
       {type === "laboratory" && (
         <Welcome name={session?.user?.name!} type={type} />
@@ -62,10 +62,10 @@ export default async function Home() {
       {type === "patient" && <PatientRecords />}
       {type === "admin" && (
         <AdminCard
-          patients={data.data.totalPatientCount}
-          doctors={data.data.totalDoctorCount}
-          labs={data.data.totalLaboratoryCount}
-          pharmacies={data.data.totalPharmacistCount}
+          patients={data?.data?.totalPatientCount}
+          doctors={data?.data?.totalDoctorCount}
+          labs={data?.data?.totalLaboratoryCount}
+          pharmacies={data?.data?.totalPharmacistCount}
         />
       )}
     </main>

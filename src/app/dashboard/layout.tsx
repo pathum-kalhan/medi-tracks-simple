@@ -23,6 +23,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Logo from "../../../logo.png";
 import { signOut, auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
+import "@uploadthing/react/styles.css";
 
 async function getPatientDashboard(id: string) {
   const res = await fetch(
@@ -46,6 +47,25 @@ async function getPatientDashboard(id: string) {
   return data;
 }
 
+async function fetchAdvertisements() {
+  const res = await fetch(
+    new URL(`/api/advertisements`, process.env.NEXT_PUBLIC_API_URL as string),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    }
+  );
+
+  if (!res.ok) {
+    console.error("Failed to fetch advertisements");
+  }
+  const data = await res.json();
+  return data;
+}
+
 export default async function RootLayout({
   children,
 }: {
@@ -56,12 +76,16 @@ export default async function RootLayout({
   const data = await getPatientDashboard(session?.user?.id!);
   const { nic } = data.data;
 
+  const advertisements = await fetchAdvertisements();
+  const AdLogo = advertisements.data[advertisements.data.length - 1]
+    .URL as string;
+
   const routes = [
     {
       path: "/dashboard",
       name: "Dashboard",
       icon: <DashboardIcon />,
-      userType: ["doctor", "patient", "laboratory", "pharmacist"],
+      userType: ["doctor", "patient", "laboratory", "pharmacist", "admin"],
     },
     {
       path: "/dashboard/pharmacist/all-prescriptions",
@@ -109,7 +133,13 @@ export default async function RootLayout({
       path: "/dashboard/settings",
       name: "Account Settings",
       icon: <SettingsIcon />,
-      userType: ["doctor", "patient", "laboratory", "pharmacist"],
+      userType: ["doctor", "patient", "laboratory", "pharmacist", "admin"],
+    },
+    {
+      path: "/dashboard/advertisements",
+      name: "Advertisements",
+      icon: <SettingsIcon />,
+      userType: ["admin"],
     },
   ];
   const drawer = (
@@ -149,9 +179,7 @@ export default async function RootLayout({
           height: 135,
         }}
       >
-        <Typography variant="caption" align="center">
-          AD
-        </Typography>
+        <Image src={AdLogo} alt="MediTracks Pro" width={160} height={100} />
       </Box>
       <Divider />
       <List>

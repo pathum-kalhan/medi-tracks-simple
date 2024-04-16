@@ -7,7 +7,7 @@ import { Toaster } from "react-hot-toast";
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={{ backgroundColor: "#0000000a" }}>
+      <body>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ToggleColorMode>
             <CssBaseline />
