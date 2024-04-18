@@ -26,8 +26,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import FormProvider from "@/Forms/FormProvider";
 import Iconify from "@/components/iconify";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const { push } = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
   const email =
@@ -114,6 +116,7 @@ export default function Page() {
         body: JSON.stringify(req),
       });
       toast.success("Password updated successfully");
+      push("/login");
     } catch (error) {
       toast.error("Something went wrong");
     }

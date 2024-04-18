@@ -18,11 +18,8 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Container from "@mui/material/Container";
-import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const { push } = useRouter();
-
   const [state, dispatch] = useFormState<State, FormData>(logIn, null);
   const [loading, setLoading] = useState(false);
 
@@ -32,14 +29,13 @@ export default function Page() {
     }
     if (state.status === "success") {
       setLoading(false);
-      push("/new-password");
       toast.success(state.message);
     }
     if (state.status === "error") {
       setLoading(false);
       toast.error(state.message);
     }
-  }, [state, push]);
+  }, [state]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     setLoading(true);

@@ -18,6 +18,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Container from "@mui/material/Container";
+import { useRouter } from "next/navigation";
 
 export default function Page({
   searchParams,
@@ -25,6 +26,8 @@ export default function Page({
   searchParams: { [key: string]: string | undefined };
 }) {
   const userType = searchParams["user"];
+
+  const { push } = useRouter();
 
   const [state, dispatch] = useFormState<State, FormData>(PasswordForget, null);
   const [loading, setLoading] = useState(false);
@@ -37,12 +40,13 @@ export default function Page({
       setLoading(false);
       sessionStorage.setItem("otp", state.otp as string);
       toast.success(state.message);
+      push("/new-password");
     }
     if (state.status === "error") {
       setLoading(false);
       toast.error(state.message);
     }
-  }, [state]);
+  }, [state, push]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     setLoading(true);
