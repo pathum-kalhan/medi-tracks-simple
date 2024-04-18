@@ -84,13 +84,13 @@ export default function Page() {
             margin="normal"
             required
             fullWidth
-            id="nic"
-            label="NIC"
-            name="nic"
-            autoComplete="nic"
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
             autoFocus
-            error={state?.errors?.nic ? true : false}
-            helperText={state?.errors?.nic}
+            error={state?.errors?.email ? true : false}
+            helperText={state?.errors?.email}
           />
           <TextField
             margin="normal"

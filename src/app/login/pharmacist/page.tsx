@@ -82,13 +82,13 @@ export default function Page() {
             margin="normal"
             required
             fullWidth
-            id="regNo"
-            label="Registration Number"
-            name="regNo"
-            autoComplete="regNo"
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
             autoFocus
-            error={state?.errors?.regNo ? true : false}
-            helperText={state?.errors?.regNo}
+            error={state?.errors?.email ? true : false}
+            helperText={state?.errors?.email}
           />
           <TextField
             margin="normal"

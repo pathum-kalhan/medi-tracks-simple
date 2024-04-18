@@ -3,6 +3,7 @@ import { signIn } from "@/auth";
 import { connect } from "@/lib/mongo";
 import { Doctor } from "@/models/doctor";
 import { Patient } from "@/models/patient";
+import { User } from "@/models/user";
 import { compare } from "bcryptjs";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
@@ -12,21 +13,19 @@ export type State = {
   status: "success" | "error";
   message: string;
   errors?: {
-    nic?: string[];
+    email?: string[];
     password?: string[];
   };
 } | null;
 
 const formSchema = z.object({
-  nic: z
+  email: z
     .string({
       required_error: "required field",
-      invalid_type_error: "NIC is required",
+      invalid_type_error: "Email is required",
     })
-    .refine(
-      (value) => /^(?:\d{12}|\d{9}V)$/.test(value),
-      "Please enter a valid NIC number ex: 123456789012 or 123456789V"
-    ),
+    .email("Please enter a valid email")
+    .transform((data) => data.toLowerCase()),
   password: z.string({
     required_error: "required field",
     invalid_type_error: "Password is required",
@@ -38,7 +37,7 @@ export async function logIn(
   formData: FormData
 ): Promise<State> {
   const validationResult = formSchema.safeParse({
-    nic: formData.get("nic"),
+    email: formData.get("email"),
     password: formData.get("password"),
   });
 
@@ -50,16 +49,17 @@ export async function logIn(
     };
   }
   await connect();
-  const { nic, password } = validationResult.data;
-  const user = await Patient.findOne({ nic }).populate("user");
-  if (!user) {
+  const { email, password } = validationResult.data;
+  const user = await User.findOne({ email });
+  const patient = await Patient.findOne({ user: user?._id });
+  if (!patient) {
     return { status: "error", message: "Patient not found" };
   }
-  console.log(user, "user");
-  if (!user.user) {
+
+  if (!user) {
     return { status: "error", message: "Please register first " };
   }
-  const isPasswordMatch = await compare(password, user.user.password);
+  const isPasswordMatch = await compare(password, user.password);
   if (!isPasswordMatch) {
     return { status: "error", message: "Password is incorrect" };
   }

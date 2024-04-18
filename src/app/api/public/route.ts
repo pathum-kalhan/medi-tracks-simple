@@ -34,64 +34,32 @@ export const POST = auth(async (req) => {
       const admin = await User.findOne({ email });
       return Response.json({ user: admin }, { status: 200 });
     } else if (user === "doctor") {
-      const { slmcNo } = body;
-      const doctor = await Doctor.findOne({ slmcNo }).populate("user");
-      if (!doctor) {
-        return Response.json({ message: "Doctor not found" }, { status: 404 });
-      }
-
-      fetchUser = doctor.user;
+      const { email } = body;
+      const fetchUser = await User.findOne({ email });
       const isValid = await compare(password, fetchUser.password);
       if (!isValid) {
         return Response.json({ message: "Invalid password" }, { status: 401 });
       }
-
       return Response.json({ user: fetchUser }, { status: 200 });
     } else if (user === "patient") {
-      const { nic } = body;
-      const patient = await Patient.findOne({ nic: nic }).populate("user");
-
-      if (!patient) {
-        return Response.json({ message: "Patient not found" }, { status: 404 });
-      }
-
-      fetchUser = patient.user;
+      const { email } = body;
+      const fetchUser = await User.findOne({ email });
       const isValid = await compare(password, fetchUser.password);
       if (!isValid) {
         return Response.json({ message: "Invalid password" }, { status: 401 });
       }
-
       return Response.json({ user: fetchUser }, { status: 200 });
     } else if (user === "laboratory") {
-      const { regNo } = body;
-      const lab = await Laboratory.findOne({ regNo }).populate("user");
-
-      if (!lab) {
-        return Response.json(
-          { message: "Laboratory not found" },
-          { status: 404 }
-        );
-      }
-
-      fetchUser = lab.user;
+      const { email } = body;
+      const fetchUser = await User.findOne({ email });
       const isValid = await compare(password, fetchUser.password);
       if (!isValid) {
         return Response.json({ message: "Invalid password" }, { status: 401 });
       }
-
       return Response.json({ user: fetchUser }, { status: 200 });
     } else {
-      const { regNo } = body;
-      const pharmacist = await Pharmacist.findOne({ regNo }).populate("user");
-
-      if (!pharmacist) {
-        return Response.json(
-          { message: "Pharmacist not found" },
-          { status: 404 }
-        );
-      }
-
-      fetchUser = pharmacist.user;
+      const { email } = body;
+      const fetchUser = await User.findOne({ email });
       const isValid = await compare(password, fetchUser.password);
       if (!isValid) {
         return Response.json({ message: "Invalid password" }, { status: 401 });

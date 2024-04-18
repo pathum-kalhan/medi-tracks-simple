@@ -15,18 +15,19 @@ export type State = {
   status: "success" | "error";
   message: string;
   errors?: {
-    regNo?: string[];
+    email?: string[];
     password?: string[];
   };
 } | null;
 
 const formSchema = z.object({
-  regNo: z
+  email: z
     .string({
       required_error: "required field",
-      invalid_type_error: "Laboratory Registration Number is required",
+      invalid_type_error: "Email is required",
     })
-    .min(3, "Laboratory Registration Number must be at least 3 characters"),
+    .email("Please enter a valid email")
+    .transform((data) => data.toLowerCase()),
   password: z.string({
     required_error: "required field",
     invalid_type_error: "Password is required",
@@ -37,10 +38,8 @@ export async function logIn(
   prevState: State | null,
   formData: FormData
 ): Promise<State> {
-  console.log("im in the lab server action 1");
-
   const validationResult = formSchema.safeParse({
-    regNo: formData.get("regNo"),
+    email: formData.get("email"),
     password: formData.get("password"),
   });
 
@@ -51,25 +50,20 @@ export async function logIn(
       errors: validationResult.error.flatten().fieldErrors,
     };
   }
-  console.log("before connect");
+
   await connect();
 
-  const { regNo, password } = validationResult.data;
-  console.log(regNo, password, "after connect");
-  const results = await Laboratory.findOne({ regNo });
-  console.log(results, "results");
+  const { email, password } = validationResult.data;
+  const user = await User.findOne({ email });
+  const Lab = await Laboratory.findOne({ user: user?._id });
 
-  const user = await Laboratory.findOne({ regNo }).populate("user");
-  console.log(user, "user");
-  if (!user) {
+  if (!Lab) {
     return { status: "error", message: "Laboratory not found" };
   }
-  console.log("im in the lab server action 2");
-  const isPasswordMatch = await compare(password, user.user.password);
+  const isPasswordMatch = await compare(password, user.password);
   if (!isPasswordMatch) {
     return { status: "error", message: "Password is incorrect" };
   }
-  console.log(validationResult.data, "validationResult.data");
   await signIn("credentials", {
     user: "laboratory",
     ...validationResult.data,

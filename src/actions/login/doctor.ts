@@ -2,6 +2,7 @@
 import { signIn } from "@/auth";
 import { connect } from "@/lib/mongo";
 import { Doctor } from "@/models/doctor";
+import { User } from "@/models/user";
 import { compare } from "bcryptjs";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
@@ -11,16 +12,19 @@ export type State = {
   status: "success" | "error";
   message: string;
   errors?: {
-    slmcNo?: string[];
+    email?: string[];
     password?: string[];
   };
 } | null;
 
 const formSchema = z.object({
-  slmcNo: z.string({
-    required_error: "required field",
-    invalid_type_error: "SLMC is required",
-  }),
+  email: z
+    .string({
+      required_error: "required field",
+      invalid_type_error: "Email is required",
+    })
+    .email("Please enter a valid email")
+    .transform((data) => data.toLowerCase()),
   password: z.string({
     required_error: "required field",
     invalid_type_error: "Password is required",
@@ -32,7 +36,7 @@ export async function logIn(
   formData: FormData
 ): Promise<State> {
   const validationResult = formSchema.safeParse({
-    slmcNo: formData.get("slmcNo"),
+    email: formData.get("email"),
     password: formData.get("password"),
   });
 
@@ -44,12 +48,13 @@ export async function logIn(
     };
   }
   await connect();
-  const { slmcNo, password } = validationResult.data;
-  const user = await Doctor.findOne({ slmcNo }).populate("user");
-  if (!user) {
+  const { email, password } = validationResult.data;
+  const user = await User.findOne({ email });
+  const doctor = await Doctor.findOne({ user: user?._id });
+  if (!doctor) {
     return { status: "error", message: "Doctor not found" };
   }
-  const isPasswordMatch = await compare(password, user.user.password);
+  const isPasswordMatch = await compare(password, user.password);
   if (!isPasswordMatch) {
     return { status: "error", message: "Password is incorrect" };
   }
