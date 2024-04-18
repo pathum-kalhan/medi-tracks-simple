@@ -14,6 +14,7 @@ import MessageIcon from "@mui/icons-material/Message";
 import PermissionModal from "./PermissionModal";
 import toast from "react-hot-toast";
 import { LoadingButton } from "@mui/lab";
+import { useSession } from "next-auth/react";
 
 type Props = {
   results: {
@@ -36,6 +37,9 @@ export function User({ results, role }: Props) {
   const [applicationStatus, setApplicationStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const { data: session } = useSession();
+  const name = session?.user?.name;
+
   const handleChangeApplicationStatus = (event: SelectChangeEvent) => {
     setApplicationStatus(event.target.value as string);
   };
@@ -53,6 +57,7 @@ export function User({ results, role }: Props) {
         body: JSON.stringify({
           nic: results.nic,
           otp: DoctorPermission,
+          doctor: name,
         }),
       });
       setIsLoading(false);

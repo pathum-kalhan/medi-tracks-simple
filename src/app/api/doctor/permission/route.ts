@@ -7,7 +7,7 @@ export const POST = auth(async (req) => {
     return Response.json({ status: "error", message: "Unauthorized" });
   }
   const body = await req.json();
-  const { nic, otp } = body;
+  const { nic, otp, doctor } = body;
 
   try {
     const patient = await Patient.findOne({ nic }).populate({ path: "user" });
@@ -30,7 +30,7 @@ export const POST = auth(async (req) => {
         "Your doctor is requesting permission to view your medical records",
       html: `<h1>Hi, ${patient?.user?.name}!</h1>
     <p>
-        Your doctor is requesting permission to view your medical records. Please send the following OTP to your doctor.
+        Your doctor ${doctor}, is requesting permission to view your medical records. Please send the following OTP to your doctor.
     </p>
     <h2>${otp}</h2>
     <p>
