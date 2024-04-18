@@ -8,9 +8,12 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import React from "react";
+import { useState } from "react";
 import Link from "next/link";
 import MessageIcon from "@mui/icons-material/Message";
+import PermissionModal from "./PermissionModal";
+import toast from "react-hot-toast";
+import { LoadingButton } from "@mui/lab";
 
 type Props = {
   results: {
@@ -23,11 +26,43 @@ type Props = {
   role?: string;
 };
 
+function generateToken() {
+  const randomNum = Math.random() * 9000;
+  return Math.floor(100000 + randomNum).toString();
+}
+
 export function User({ results, role }: Props) {
-  const [applicationStatus, setApplicationStatus] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [applicationStatus, setApplicationStatus] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChangeApplicationStatus = (event: SelectChangeEvent) => {
     setApplicationStatus(event.target.value as string);
+  };
+
+  const handlePermission = async () => {
+    try {
+      setIsLoading(true);
+      const DoctorPermission = generateToken();
+      sessionStorage.setItem("DoctorPermission", DoctorPermission);
+      const response = await fetch("/api/doctor/permission", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nic: results.nic,
+          otp: DoctorPermission,
+        }),
+      });
+      setIsLoading(false);
+      toast.success("An OTP has been sent to the patient's email address");
+      setOpen(true);
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+      toast.error("An unexpected error happened");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -104,20 +139,21 @@ export function User({ results, role }: Props) {
                   </Button>
                 </Link>
               ) : (
-                <Link href={`/dashboard/patient-records?nic=${results.nic}`}>
-                  <Button
-                    size="large"
-                    variant="contained"
-                    sx={{ borderRadius: 2 }}
-                  >
-                    View
-                  </Button>
-                </Link>
+                <LoadingButton
+                  size="large"
+                  variant="contained"
+                  sx={{ borderRadius: 2 }}
+                  onClick={handlePermission}
+                  loading={isLoading}
+                >
+                  Request Permission
+                </LoadingButton>
               )}
             </Grid>
           </Grid>
         </Grid>
       </Grid>
+      <PermissionModal nic={results.nic} open={open} onClose={setOpen} />
     </Card>
   );
 }
