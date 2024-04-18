@@ -19,7 +19,13 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Container from "@mui/material/Container";
 
-export default function Page() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
+  const userType = searchParams["user"];
+
   const [state, dispatch] = useFormState<State, FormData>(PasswordForget, null);
   const [loading, setLoading] = useState(false);
 
@@ -29,6 +35,7 @@ export default function Page() {
     }
     if (state.status === "success") {
       setLoading(false);
+      sessionStorage.setItem("otp", state.otp as string);
       toast.success(state.message);
     }
     if (state.status === "error") {
@@ -39,7 +46,13 @@ export default function Page() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     setLoading(true);
+    sessionStorage.setItem("email-recovery", e.currentTarget.email.value);
   };
+
+  function generateToken() {
+    const randomNum = Math.random() * 9000;
+    return Math.floor(1000 + randomNum).toString();
+  }
 
   function Copyright(props: any) {
     return (
@@ -92,6 +105,7 @@ export default function Page() {
             error={state?.errors?.email ? true : false}
             helperText={state?.errors?.email}
           />
+          <input type="hidden" id="userType" name="userType" value={userType} />
           <LoadingButton
             type="submit"
             fullWidth

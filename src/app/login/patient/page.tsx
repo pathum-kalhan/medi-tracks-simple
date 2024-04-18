@@ -119,6 +119,11 @@ export default function Page() {
           </LoadingButton>
           <Grid container>
             <Grid item>
+              <Grid item>
+                <MUILink href="/forgot-password?user=patient" component={Link}>
+                  {"Forgot password?"}
+                </MUILink>
+              </Grid>
               <MUILink href="/register/patient" component={Link}>
                 {"Don't have an account? Sign Up"}
               </MUILink>
