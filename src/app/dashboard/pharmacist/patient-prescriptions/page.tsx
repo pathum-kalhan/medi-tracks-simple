@@ -21,10 +21,14 @@ export default function Page({
   const [rows, setRows] = useState([]);
   const [name, setName] = useState("");
   const [notes, setNotes] = useState({
+    _id: "",
     date: "",
     doctorName: "",
     validTill: "",
     medicine: "",
+    isIssued: false,
+    issuedRange: 0,
+    type: "",
   });
 
   const nic = searchParams.nic!;
@@ -54,7 +58,8 @@ export default function Page({
       setRows(data.data);
     };
     fetchData();
-  }, [nic]);
+  }, [nic, openNotes]);
+
   const handleDoctorNotes = (row: any) => {
     return (
       <Button
@@ -63,10 +68,14 @@ export default function Page({
         onClick={() => {
           setOpenNotes(true);
           setNotes({
+            _id: row._id,
             date: row.date,
             doctorName: row.doctor,
             validTill: row.valid,
             medicine: row.medicine,
+            isIssued: row.isIssued,
+            issuedRange: row.issuedRange,
+            type: row.type,
           });
         }}
       >
@@ -138,6 +147,7 @@ export default function Page({
         <DataGrid rows={rows} columns={columns} getRowId={(row) => row._id} />
       </Grid>
       <Notes
+        id={notes._id}
         open={openNotes}
         setOpen={setOpenNotes}
         title="Medicine Details"
@@ -145,6 +155,9 @@ export default function Page({
         doctorName={notes.doctorName}
         validTill={notes.validTill}
         notes={notes.medicine}
+        isIssued={notes?.isIssued}
+        issuedRange={notes?.issuedRange}
+        type={notes.type}
       />
     </Grid>
   );

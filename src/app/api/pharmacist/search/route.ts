@@ -37,6 +37,7 @@ export const GET = auth(async (req) => {
   const prescriptionData = prescription.map((prescription, index) => {
     return {
       _id: prescription._id,
+      type: "prescription",
       date: formatDate(prescription.createdAt),
       valid: formatDate(prescription.validTill),
       doctor: prescription.doctor.user.name,
@@ -44,12 +45,15 @@ export const GET = auth(async (req) => {
       disease: prescription.disease,
       hospital: prescription.hospital,
       notes: prescription.doctorNotes,
+      isIssued: prescription.isIssued,
+      issuedRange: prescription.issuedRange,
     };
   });
 
   const surgeryData = surgeries.map((surgery, index) => {
     return {
       _id: surgery._id,
+      type: "surgery",
       date: formatDate(surgery.createdAt),
       valid: formatDate(surgery.validTill),
       doctor: surgery.doctor.user.name,
@@ -57,6 +61,8 @@ export const GET = auth(async (req) => {
       disease: surgery.surgeryName,
       hospital: surgery.hospital,
       notes: surgery.notes,
+      isIssued: surgery.isIssued,
+      issuedRange: surgery.issuedRange,
     };
   });
 

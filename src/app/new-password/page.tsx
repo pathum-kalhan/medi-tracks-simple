@@ -116,7 +116,7 @@ export default function Page() {
         body: JSON.stringify(req),
       });
       toast.success("Password updated successfully");
-      push("/login");
+      push("/login/patient");
     } catch (error) {
       toast.error("Something went wrong");
     }

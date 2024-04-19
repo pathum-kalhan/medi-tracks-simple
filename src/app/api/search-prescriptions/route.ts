@@ -114,6 +114,7 @@ export const GET = auth(async (req) => {
     (prescription: any, prescriptionIndex: number) => {
       res.push({
         _id: prescription._id,
+        type: "prescription",
         date: formatDate(prescription.createdAt),
         doctor: prescription.doctor.user.name,
         valid: formatDate(prescription.validTill),
@@ -122,6 +123,8 @@ export const GET = auth(async (req) => {
         medicine: prescription.medicine,
         hospital: prescription.hospital,
         location: prescription.doctor,
+        isIssued: prescription.isIssued,
+        issuedRange: prescription.issuedRange,
       });
     }
   );
@@ -129,6 +132,7 @@ export const GET = auth(async (req) => {
   patient.surgeries.forEach((surgery: any, surgeryIndex: number) => {
     res.push({
       _id: surgery._id,
+      type: "surgery",
       date: formatDate(surgery.createdAt),
       doctor: surgery.doctor.user.name,
       valid: formatDate(surgery.validTill),
@@ -137,6 +141,8 @@ export const GET = auth(async (req) => {
       medicine: surgery.medicine,
       hospital: surgery.hospital,
       location: surgery.doctor,
+      isIssued: surgery.isIssued,
+      issuedRange: surgery.issuedRange,
     });
   });
 

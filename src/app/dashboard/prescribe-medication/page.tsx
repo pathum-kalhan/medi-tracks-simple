@@ -23,6 +23,9 @@ export default function Page({
     doctorName: "",
     validTill: "",
     notes: "",
+    isIssued: false,
+    issuedRange: 0,
+    type: "",
   });
 
   const nic = searchParams.nic!;
@@ -69,6 +72,9 @@ export default function Page({
             doctorName: row.doctor,
             validTill: row.valid,
             notes: row.notes,
+            isIssued: row.isIssued,
+            issuedRange: row.issuedRange,
+            type: row.type,
           });
         }}
       >
@@ -89,6 +95,9 @@ export default function Page({
             doctorName: row.doctor,
             validTill: row.valid,
             notes: row.medicine,
+            isIssued: row.isIssued,
+            issuedRange: row.issuedRange,
+            type: row.type,
           });
         }}
       >
@@ -191,6 +200,9 @@ export default function Page({
           doctorName={notes.doctorName}
           validTill={notes.validTill}
           notes={notes.notes}
+          isIssued={notes?.isIssued}
+          issuedRange={notes?.issuedRange}
+          type={notes.type}
         />
       </Grid>
     </Box>

@@ -57,6 +57,14 @@ const prescriptionSchema = new Schema(
       ref: "Doctor",
     },
     doctorNotes: String,
+    isIssued: {
+      type: Boolean,
+      default: false,
+    },
+    issuedRange: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
@@ -88,6 +96,14 @@ const surgerySchema = new Schema(
       ref: "Doctor",
     },
     doctorNotes: String,
+    isIssued: {
+      type: Boolean,
+      default: false,
+    },
+    issuedRange: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
