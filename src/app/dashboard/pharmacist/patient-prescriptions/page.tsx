@@ -1,13 +1,14 @@
 "use client";
 import { Notes } from "@/components/dashboard/notes";
 import { Prescribe } from "@/components/dashboard/precribe";
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Grid, TextField, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useRouter } from "next/navigation";
 import { SearchPatientButton } from "../../patient-records/Search";
+import DateRangePicker from "@mui/lab/DateRangePicker";
 
 export default function Page({
   searchParams,

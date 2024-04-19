@@ -15,6 +15,9 @@ export const GET = auth(async (req) => {
   const place = searchParams.get("place");
   const id = searchParams.get("doctorId");
   const type = searchParams.get("type");
+  const startDate = searchParams.get("startDate");
+  const endDate = searchParams.get("endDate");
+  const disease = searchParams.get("disease");
 
   const userType = req.auth?.user?.type ?? type;
   const doctorId = req.auth?.user?.id ?? id;
@@ -150,6 +153,20 @@ export const GET = auth(async (req) => {
     ...row,
     index: index + 1,
   }));
+
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    res = res.filter((row: any) => {
+      const rowDate = new Date(row.date);
+      return rowDate >= start && rowDate <= end;
+    });
+  }
+
+  if (disease) {
+    console.log(res, "disease");
+    res = res.filter((row: any) => row.disease.includes(disease));
+  }
 
   return Response.json({ data: res });
 });

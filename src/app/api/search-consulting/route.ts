@@ -15,6 +15,8 @@ export const GET = auth(async (req) => {
   const place = searchParams.get("place");
   const id = searchParams.get("doctorId");
   const type = searchParams.get("type");
+  const startDate = searchParams.get("startDate");
+  const endDate = searchParams.get("endDate");
 
   const userType = req.auth?.user?.type ?? type;
   const doctorId = req.auth?.user?.id ?? id;
@@ -70,6 +72,14 @@ export const GET = auth(async (req) => {
       });
     }
   );
+
+  if (startDate && endDate) {
+    const filteredRes = res.filter((item: any) => {
+      const itemDate = new Date(item.createdAt);
+      return itemDate >= new Date(startDate) && itemDate <= new Date(endDate);
+    });
+    res = filteredRes;
+  }
 
   return Response.json({ data: res });
 });
