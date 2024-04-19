@@ -51,6 +51,9 @@ export async function logIn(
   await connect();
   const { email, password } = validationResult.data;
   const user = await User.findOne({ email });
+  if (user.status === "ban") {
+    return { status: "error", message: "Your account is banned" };
+  }
   const patient = await Patient.findOne({ user: user?._id });
   if (!patient) {
     return { status: "error", message: "Patient not found" };

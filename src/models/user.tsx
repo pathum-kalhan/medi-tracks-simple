@@ -18,6 +18,10 @@ const userSchema = new Schema({
       read: { type: Boolean, default: false },
     },
   ],
+  status: {
+    type: String,
+    default: "active",
+  },
 });
 
 export const User = models.User || model("User", userSchema);
