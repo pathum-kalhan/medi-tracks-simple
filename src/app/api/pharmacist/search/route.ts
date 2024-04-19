@@ -10,6 +10,9 @@ export const GET = auth(async (req) => {
     process.env.NEXT_PUBLIC_API_URL as string
   );
   const nic = searchParams.get("nic");
+  const startDate = searchParams.get("startDate");
+  const endDate = searchParams.get("endDate");
+  const disease = searchParams.get("disease");
 
   if (!nic) {
     return Response.json({ data: [], error: "NIC id is required" });
@@ -66,11 +69,24 @@ export const GET = auth(async (req) => {
     };
   });
 
-  const data = [...prescriptionData, ...surgeryData]
+  let data = [...prescriptionData, ...surgeryData]
     .sort((b, a) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .map((item, index) => {
       return { ...item, index: index + 1 };
     });
+
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    data = data.filter((row: any) => {
+      const rowDate = new Date(row.date);
+      return rowDate >= start && rowDate <= end;
+    });
+  }
+
+  if (disease) {
+    data = data.filter((row: any) => row.disease.includes(disease));
+  }
 
   return Response.json({ data: data, name: patient?.user?.name || "n/a" });
 });
