@@ -18,6 +18,7 @@ import ArticleIcon from "@mui/icons-material/Article";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import MailIcon from "@mui/icons-material/Mail";
 import SettingsIcon from "@mui/icons-material/Settings";
+import BlockIcon from "@mui/icons-material/Block";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -169,6 +170,12 @@ export default async function RootLayout({
       path: "/dashboard/advertisements",
       name: "Advertisements",
       icon: <SettingsIcon />,
+      userType: ["admin"],
+    },
+    {
+      path: "/dashboard/block",
+      name: "Ban Users",
+      icon: <BlockIcon />,
       userType: ["admin"],
     },
   ];
