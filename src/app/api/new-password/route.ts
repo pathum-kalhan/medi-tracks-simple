@@ -9,16 +9,16 @@ export const POST = async (req: Request) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return {
+      Response.json({
         status: "error",
         message: "There is no account with this email",
-      };
+      });
     }
     const hashedPassword = await hash(password, 10);
     user.password = hashedPassword;
     await user.save();
-    return { status: "success", message: "Password updated successfully" };
+    Response.json({ status: "success", message: "Password updated" });
   } catch (error) {
-    return { status: "error", message: "Something went wrong" };
+    Response.json({ status: "error", message: "Something went wrong" });
   }
 };

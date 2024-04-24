@@ -33,6 +33,7 @@ export default function Page({
   const [formData, setFormData] = useState({
     startDate: "",
     endDate: "",
+    disease: "",
   });
   const [filterLoading, setFilterLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
