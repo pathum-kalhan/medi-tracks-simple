@@ -99,7 +99,7 @@ export default function Home() {
               <Grid item xs={12}>
                 <TextField
                   name="regNo"
-                  label="Lab Registration Number"
+                  label="Pharmacy Registration Number"
                   id="regNo"
                   autoComplete="regNo"
                   autoFocus
@@ -111,7 +111,7 @@ export default function Home() {
               <Grid item xs={12}>
                 <TextField
                   name="location"
-                  label="Lab Location"
+                  label="Pharmacy Location"
                   id="location"
                   autoComplete="location"
                   autoFocus
