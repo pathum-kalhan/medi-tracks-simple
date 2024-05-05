@@ -14,6 +14,7 @@ import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import queryString from "query-string";
 import { useSession } from "next-auth/react";
+import FormDialog from "@/components/dashboard/search";
 
 export default function Page({
   searchParams,
@@ -26,6 +27,8 @@ export default function Page({
   const [currentPage, setCurrentPage] = useState(1);
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [open, setOpen] = useState(false);
 
   const query = queryString.stringify(searchParams);
 
@@ -62,6 +65,10 @@ export default function Page({
     setCurrentPage(pageNumber);
   };
 
+  const handlePatientClick = () => {
+    setOpen(true);
+  };
+
   return (
     <div>
       <Grid container spacing={2} direction="column">
@@ -76,6 +83,12 @@ export default function Page({
                 <CircularProgress />
               </Grid>
             )}
+            <Grid item xs={12} sm={12} md={12} textAlign={"center"}>
+              <Button variant="contained" onClick={handlePatientClick}>
+                Search Patient
+              </Button>
+            </Grid>
+            <FormDialog open={open} setOpen={setOpen} />
             {currentPosts.map((result, index) => (
               <Grid key={index} item xs={12}>
                 <User results={result} role={session?.user?.type!} />

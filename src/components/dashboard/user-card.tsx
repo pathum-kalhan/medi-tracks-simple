@@ -15,6 +15,7 @@ import PermissionModal from "./PermissionModal";
 import toast from "react-hot-toast";
 import { LoadingButton } from "@mui/lab";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   results: {
@@ -33,6 +34,8 @@ function generateToken() {
 }
 
 export function User({ results, role }: Props) {
+  const { push: redirect } = useRouter();
+
   const [open, setOpen] = useState(false);
   const [applicationStatus, setApplicationStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -60,9 +63,18 @@ export function User({ results, role }: Props) {
           doctor: name,
         }),
       });
-      setIsLoading(false);
-      toast.success("An OTP has been sent to the patient's email address");
-      setOpen(true);
+      const data = await response.json();
+      if (data.message === "Patient doesn't have an account") {
+        setOpen(false);
+        setIsLoading(false);
+        redirect(
+          `/dashboard/pharmacist/patient-prescriptions?nic=${results.nic}`
+        );
+      } else {
+        setIsLoading(false);
+        toast.success("An OTP has been sent to the patient's email address");
+        setOpen(true);
+      }
     } catch (error) {
       console.error("An unexpected error happened:", error);
       toast.error("An unexpected error happened");
