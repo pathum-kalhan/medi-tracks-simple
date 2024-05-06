@@ -30,6 +30,8 @@ export default function Page({
 
   const [open, setOpen] = useState(false);
 
+  const userType = searchParams.type as string;
+
   const query = queryString.stringify(searchParams);
 
   useEffect(() => {
@@ -88,10 +90,10 @@ export default function Page({
                 Search Patient
               </Button>
             </Grid>
-            <FormDialog open={open} setOpen={setOpen} />
+            <FormDialog open={open} setOpen={setOpen} type={userType} />
             {currentPosts.map((result, index) => (
               <Grid key={index} item xs={12}>
-                <User results={result} role={session?.user?.type!} />
+                <User results={result} role={userType} />
               </Grid>
             ))}
             {!isLoading && searchResults.length === 0 && (

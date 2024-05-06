@@ -39,6 +39,7 @@ export const POST = auth(async (req) => {
     };
 
     const response = await sgMail.send(msg);
+    return Response.json({ status: "success", message: "OTP sent" });
   } catch (error) {
     return Response.json({ status: "error", message: "error" });
   }

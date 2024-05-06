@@ -30,9 +30,10 @@ type FormValues = {
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  type: string;
 };
 
-export default function FormDialog({ open, setOpen }: Props) {
+export default function FormDialog({ open, setOpen, type }: Props) {
   const [openCreate, setOpenCreate] = useState(false);
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
@@ -54,7 +55,7 @@ export default function FormDialog({ open, setOpen }: Props) {
   const onSubmit = (data: FormValues) => {
     const query = queryString.stringify(data);
     if (query) {
-      router.push(`/dashboard/search?${query}`);
+      router.push(`/dashboard/search?${query}&type=${type}`);
     }
   };
 

@@ -64,16 +64,14 @@ export function User({ results, role }: Props) {
         }),
       });
       const data = await response.json();
-      if (data.message === "Patient doesn't have an account") {
-        setOpen(false);
-        setIsLoading(false);
-        redirect(
-          `/dashboard/pharmacist/patient-prescriptions?nic=${results.nic}`
-        );
-      } else {
+      if (data.message !== "Patient doesn't have an account") {
         setIsLoading(false);
         toast.success("An OTP has been sent to the patient's email address");
         setOpen(true);
+      } else {
+        setOpen(false);
+        setIsLoading(false);
+        redirect(`/dashboard/patient-records?nic=${results.nic}`);
       }
     } catch (error) {
       console.error("An unexpected error happened:", error);

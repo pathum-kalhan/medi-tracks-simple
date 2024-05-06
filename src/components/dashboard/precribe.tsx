@@ -144,7 +144,6 @@ export const Prescribe = ({
               name="doctorNotes"
               label="Doctor Notes"
               size="small"
-              required
               fullWidth
               multiline
               rows={3}

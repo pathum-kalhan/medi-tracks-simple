@@ -59,7 +59,7 @@ export const Welcome = ({ name, data, type }: Props) => {
               Search Patient
             </Button>
           </Grid>
-          <FormDialog open={open} setOpen={setOpen} />
+          <FormDialog open={open} setOpen={setOpen} type={type} />
         </>
       )}
 

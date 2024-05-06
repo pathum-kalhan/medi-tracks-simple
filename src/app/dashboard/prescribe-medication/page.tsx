@@ -27,6 +27,7 @@ export default function Page({
     isIssued: false,
     issuedRange: 0,
     type: "",
+    id: "",
   });
 
   const [formData, setFormData] = useState({
@@ -85,6 +86,7 @@ export default function Page({
             isIssued: row.isIssued,
             issuedRange: row.issuedRange,
             type: row.type,
+            id: row._id,
           });
         }}
       >
@@ -108,6 +110,7 @@ export default function Page({
             isIssued: row.isIssued,
             issuedRange: row.issuedRange,
             type: row.type,
+            id: row._id,
           });
         }}
       >
@@ -132,11 +135,6 @@ export default function Page({
       width: 100,
     },
     {
-      field: "disease",
-      headerName: "Disease/Surgery",
-      width: 150,
-    },
-    {
       field: "hospital",
       headerName: "Hospital",
       width: 150,
@@ -150,12 +148,6 @@ export default function Page({
     {
       field: "valid",
       headerName: "Valid Till",
-      width: 200,
-    },
-    {
-      field: "action",
-      headerName: "Doctor Notes",
-      renderCell: (params) => handleDoctorNotes(params.row),
       width: 200,
     },
   ];
@@ -245,17 +237,7 @@ export default function Page({
                 Prescribe Medication
               </Typography>
             </Grid>
-            <Grid item xs={6} sm={6} md={6}>
-              {session?.user?.type === "doctor" && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={addMedication}
-                >
-                  Add Prescription
-                </Button>
-              )}
-            </Grid>
+
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2} sx={{ mt: 1 }}>
                 <Grid item xs={3}>
@@ -334,7 +316,7 @@ export default function Page({
         <Notes
           open={openNotes}
           setOpen={setOpenNotes}
-          title="Doctor Notes"
+          title="Medicine"
           date={notes.date}
           doctorName={notes.doctorName}
           validTill={notes.validTill}
@@ -342,6 +324,7 @@ export default function Page({
           isIssued={notes?.isIssued}
           issuedRange={notes?.issuedRange}
           type={notes.type}
+          id={notes.id}
         />
       </Grid>
     </Box>
