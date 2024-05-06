@@ -30,7 +30,7 @@ type FormValues = {
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  type: string;
+  type?: string;
 };
 
 export default function FormDialog({ open, setOpen, type }: Props) {
